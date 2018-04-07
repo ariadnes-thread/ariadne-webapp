@@ -1,4 +1,5 @@
 {
+  "baseUri": "/",
   "apiHost": "https://my-api-host.here",
   "googleApiKey": "your-key-here"
 }
