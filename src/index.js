@@ -18,7 +18,8 @@ let auth = new Auth(rawConfig);
 let componentToRender;
 Promise.resolve()
     .then(() => auth.init())
-    .then(() => componentToRender = <BrowserRouter><App auth={auth}/></BrowserRouter>)
+    .then(() => componentToRender =
+        <BrowserRouter basename={rawConfig.baseUri}><App auth={auth}/></BrowserRouter>)
     .catch(error => {
         componentToRender = <StartupError/>;
         console.error(error);
