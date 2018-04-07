@@ -2,6 +2,7 @@
   "name": "ariadne-webapp",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@fortawesome/fontawesome": "^1.1.5",
     "@fortawesome/fontawesome-free-solid": "^5.0.9",
@@ -15,6 +16,12 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.1.4"
   },
+  "author": {
+    "name": "Timur Kuzhagaluyev",
+    "email": "tim.kuzh@gmail.com",
+    "url": "https://foxypanda.me/"
+  },
+  "license": "GPL-3.0",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
