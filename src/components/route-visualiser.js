@@ -58,7 +58,6 @@ export default class RouteVisualiser extends Component {
         Promise.resolve()
             .then(() => JSON.parse(this.state.jsonInput).route)
             .then(route => this.setState({route}))
-            .then(() => console.log('Success!'))
             .catch(error => {
                 console.error(error);
                 // TODO: Replace with user-friendly warning/modal

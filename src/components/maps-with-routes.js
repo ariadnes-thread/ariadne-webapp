@@ -64,7 +64,10 @@ export default class MapWithRoutes extends Component {
         for (let i = 0; i < arrayClone.length; i++) {
             const lat = arrayClone[i][0];
             const lng = arrayClone[i][1];
-            waypoints[i] = `${lat}, ${lng}`;
+            waypoints[i] = {
+                location: `${lat}, ${lng}`,
+                stopover: true,
+            };
         }
 
         const origin = new google.maps.LatLng(originCoord[0], originCoord[1]);
@@ -72,16 +75,13 @@ export default class MapWithRoutes extends Component {
 
         const DirectionsService = new google.maps.DirectionsService();
 
-        console.log('making request');
-
         DirectionsService.route({
             origin,
             destination,
-            // waypoints,
+            waypoints,
             optimizeWaypoints: true,
             travelMode: google.maps.TravelMode.WALKING,
         }, (result, status) => {
-            console.log('request done');
             if (status === google.maps.DirectionsStatus.OK) {
                 this.setState({
                     directions: result,
@@ -94,16 +94,12 @@ export default class MapWithRoutes extends Component {
     }
 
     render() {
-        const apiKey = this.props.auth.config.googleApiKey;
-        let googleMapUrl = 'https://maps.googleapis.com/maps/api/js';
-        googleMapUrl += '?v=3.exp&libraries=geometry,drawing,places';
-        if (apiKey) googleMapUrl += `&key=${apiKey}`;
 
         return (
             <MapComponent
                 defaultZoom={this.props.defaultZoom}
                 defaultCenter={this.props.defaultCenter}
-                googleMapURL={googleMapUrl}
+                googleMapURL={this.props.auth.getGoogleApiUrl()}
                 loadingElement={<div style={{height: `100%`}}/>}
                 containerElement={<div style={{height: `500px`}}/>}
                 mapElement={<div style={{height: `100%`}}/>}

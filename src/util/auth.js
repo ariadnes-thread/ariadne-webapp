@@ -24,4 +24,12 @@ export default class Auth {
         return Promise.resolve();
     }
 
+    getGoogleApiUrl() {
+        const apiKey = this.config.googleApiKey;
+        let googleMapUrl = 'https://maps.googleapis.com/maps/api/js';
+        googleMapUrl += '?v=3.exp&libraries=geometry,drawing,places';
+        if (apiKey) googleMapUrl += `&key=${apiKey}`;
+        return googleMapUrl;
+    }
+
 }
