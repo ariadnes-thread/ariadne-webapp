@@ -6,12 +6,17 @@
 
 import Promise from 'bluebird';
 
-import API from './api';
+import Api from './api';
 
 export default class Auth {
 
+    /**
+     * @param {object} config
+     */
     constructor(config) {
+        this.config = config;
 
+        this.api = new Api(this);
     }
 
     init() {

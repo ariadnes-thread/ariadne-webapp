@@ -4,9 +4,14 @@
  * @license GPL-3.0
  */
 
-export default class API {
+export default class Api {
 
-
+    /**
+     * @param {Auth} auth
+     */
+    constructor(auth) {
+        this.auth = auth;
+    }
 
 }
  

@@ -22,10 +22,14 @@ export default class App extends Component {
     };
 
     render() {
+        const apiKey = this.props.auth.config.googleApiKey;
+        let googleApiScriptUrl = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        googleApiScriptUrl += '&v=3.exp&libraries=geometry,drawing,places';
         return (
             <div className="App">
+                <script src={googleApiScriptUrl}/>
                 <Navbar auth={this.props.auth}/>
-                <RouteVisualiser/>
+                <RouteVisualiser auth={this.props.auth}/>
             </div>
         );
     }

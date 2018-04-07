@@ -4,9 +4,12 @@
  * @license GPL-3.0
  */
 
-import {withScriptjs, withGoogleMap, GoogleMap, Marker} from 'react-google-maps';
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import Promise from 'bluebird';
 
+import MapWithRoutes from './maps-with-routes';
+import Auth from '../util/auth';
 
 // Generate JSON for the example route and make formatting prettier
 const EXAMPLE_ROUTE = {
@@ -27,23 +30,18 @@ const EXAMPLE_ROUTE_JSON = JSON
     });
 
 
-// Setup GoogleMap component as per https://tomchentw.github.io/react-google-maps/#introduction
-const MapComponent = withScriptjs(withGoogleMap((props) =>
-    <GoogleMap
-        defaultZoom={16}
-        defaultCenter={{lat: 34.138, lng: -118.125}}>
-        {props.isMarkerShown && <Marker position={{lat: -34.397, lng: 150.644}}/>}
-    </GoogleMap>,
-));
-
-
 export default class RouteVisualiser extends Component {
+
+    static propTypes = {
+        auth: PropTypes.instanceOf(Auth).isRequired,
+    };
 
     constructor(props) {
         super(props);
 
         this.state = {
             jsonInput: EXAMPLE_ROUTE_JSON,
+            route: null,
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -55,8 +53,17 @@ export default class RouteVisualiser extends Component {
         this.setState({jsonInput: event.target.value});
     }
 
-    handleSubmit() {
-
+    handleSubmit(event) {
+        event.preventDefault();
+        Promise.resolve()
+            .then(() => JSON.parse(this.state.jsonInput).route)
+            .then(route => this.setState({route}))
+            .then(() => console.log('Success!'))
+            .catch(error => {
+                console.error(error);
+                // TODO: Replace with user-friendly warning/modal
+                alert('Error occurred during form submission. Check console.');
+            });
     }
 
     render() {
@@ -80,10 +87,8 @@ export default class RouteVisualiser extends Component {
                                                     value={this.state.jsonInput}/>
                                             </div>
                                         </div>
+                                        <button className="button is-info">Update route</button>
                                     </form>
-                                    <br/>
-                                    <button className="button is-info">Update route</button>
-                                    <br/>
                                     <hr/>
                                     <p>Example structure (latitude first):</p>
                                     <br/>
@@ -94,13 +99,9 @@ export default class RouteVisualiser extends Component {
                         <div className="column">
                             <div className="card">
                                 <div className="card-content ariadne-no-padding">
-                                    <MapComponent
-                                        isMarkerShown={false}
-                                        googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
-                                        loadingElement={<div style={{height: `100%`}}/>}
-                                        containerElement={<div style={{height: `500px`}}/>}
-                                        mapElement={<div style={{height: `100%`}}/>}
-                                    />
+                                    <MapWithRoutes
+                                        auth={this.props.auth}
+                                        route={this.state.route}/>
                                 </div>
                             </div>
                         </div>

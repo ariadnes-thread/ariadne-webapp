@@ -1,3 +1,4 @@
 {
-  "apiHost": "https://my-api-host.here"
+  "apiHost": "https://my-api-host.here",
+  "googleApiKey": "your-key-here"
 }
