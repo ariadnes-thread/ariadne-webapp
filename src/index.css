@@ -1,5 +1,20 @@
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
+/**
+=============== Fixes and global CSS styles
+ */
+
+html {
+    background-color: #f2f2f2;
+}
+
+/**
+=============== Generic utility classes
+ */
+
+.ariadne-no-padding {
+    padding: 0 !important;
+}
+
+.ariadne-section-uniform-padding {
+    /* Default built-in padding on .section in Bulma is not uniform, use this to override it. */
+    padding: 1.5rem !important;
 }
