@@ -48,15 +48,9 @@ export default class RoutesList extends Component {
     handleChange(idx, event) {
         event.preventDefault();
         this.setState({selected: idx});
-        // TODO: Communicate the chosen route back to the route_visualizer
-        // Promise.resolve()
-        //     .then(() => JSON.parse(this.state.routes[idx]).route)
-        //     .then(route => this.setState({route}))
-        //     .catch(error => {
-        //         console.error(error);
-        //         // TODO: Replace with user-friendly warning/modal
-        //         alert('Error occurred during form submission. Check console.');
-        //     });
+        console.log(this.props.customSubmit);
+        console.log(this.state.routes[idx]);
+        this.props.customSubmit(this.state.routes[idx]);
     }
 
     render() {

@@ -47,14 +47,16 @@ export default class RouteVisualiser extends Component {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        console.log(this.refs.routesList);
     }
 
 
-    handleSubmit(event) {
-        event.preventDefault();
+    handleSubmit(routeData) {
+        // event.preventDefault();
+
         Promise.resolve()
-            .then(() => JSON.parse(this.state.jsonInput).route)
-            .then(route => this.setState({route}))
+            .then(() => routeData ? routeData.route : null)
+            .then(route => this.setState({route: route}))
             .catch(error => {
                 console.error(error);
                 // TODO: Replace with user-friendly warning/modal
@@ -72,11 +74,11 @@ export default class RouteVisualiser extends Component {
                                 <div className="card-content">
                                     <p>Choose your route preferences:</p>
                                     <br/>
-                                    <PreferencesList auth={this.props.auth}/>
+                                    <PreferencesList auth={this.props.auth} ref="preferencesList"/>
                                     <hr/>
                                     <p>Results List: {this.state.greenery}</p>
                                     <br/>
-                                    <RoutesList auth={this.props.auth}/>
+                                    <RoutesList auth={this.props.auth} ref="routesList" customSubmit={this.handleSubmit}/>
                                 </div>
                             </div>
                         </div>
