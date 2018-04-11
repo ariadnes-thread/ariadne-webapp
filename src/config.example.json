@@ -1,5 +1,5 @@
 {
   "baseUri": "/",
-  "apiHost": "https://my-api-host.here",
+  "apiHost": "https://api.ariadnes-thread.me",
   "googleApiKey": "your-key-here"
 }

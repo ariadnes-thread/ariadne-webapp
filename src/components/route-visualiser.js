@@ -54,7 +54,7 @@ export default class RouteVisualiser extends Component {
     handleSubmit(routeData) {
         // event.preventDefault();
 
-        Promise.resolve()
+        return Promise.resolve()
             .then(() => routeData ? routeData.route : null)
             .then(route => this.setState({route: route}))
             .catch(error => {
@@ -74,7 +74,7 @@ export default class RouteVisualiser extends Component {
                                 <div className="card-content">
                                     <p>Choose your route preferences:</p>
                                     <br/>
-                                    <PreferencesList auth={this.props.auth} ref="preferencesList"/>
+                                    <PreferencesList auth={this.props.auth} ref="preferencesList" customSubmit={this.handleSubmit}/>
                                     <hr/>
                                     <p>Results List: {this.state.greenery}</p>
                                     <br/>

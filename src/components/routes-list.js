@@ -6,13 +6,12 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import Promise from 'bluebird';
 
 import Auth from '../util/auth';
 
 const EXAMPLE_ROUTE_JSON_WITH_INFO = [
 {
-    "name": "Route1", 
+    "name": "Route1",
     "route": [
     [34.14093, -118.129366],
     [34.140947, -118.12801],
@@ -22,7 +21,7 @@ const EXAMPLE_ROUTE_JSON_WITH_INFO = [
     "elevation": "1500"
 },
 {
-    "name": "Route2", 
+    "name": "Route2",
     "route": [
     [35.14093, -118.129366],
     [35.140947, -118.12801],
@@ -37,6 +36,7 @@ export default class RoutesList extends Component {
 
     static propTypes = {
         auth: PropTypes.instanceOf(Auth).isRequired,
+        customSubmit: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -50,19 +50,19 @@ export default class RoutesList extends Component {
         this.setState({selected: idx});
         console.log(this.props.customSubmit);
         console.log(this.state.routes[idx]);
-        this.props.customSubmit(this.state.routes[idx]);
+        return this.props.customSubmit(this.state.routes[idx]);
     }
 
     render() {
-        if (this.state.selected == -1)
+        if (this.state.selected === -1)
         {
             return (
                 <div className="routes-list">
                         {
                             this.state.routes.map((route, idx) => {
                                 return (<div key={'route-input'+idx}>
-                                 <button className="button is-info" onClick={this.handleChange.bind(this, idx)}> 
-                                 {route["name"]} 
+                                 <button className="button is-info" onClick={this.handleChange.bind(this, idx)}>
+                                 {route["name"]}
                                  </button>
                                  <hr/>
                                 </div>);
@@ -79,12 +79,12 @@ export default class RoutesList extends Component {
                     <br/>
                     <p> Elevation Gain: {this.state.routes[this.state.selected].elevation} ft</p>
                     <br/>
-                    <button className="button is-info" onClick={this.handleChange.bind(this, -1)}> 
-                    Back to Results List 
+                    <button className="button is-info" onClick={this.handleChange.bind(this, -1)}>
+                    Back to Results List
                     </button>
 
                 </div>
-            ); 
+            );
         }
     }
 }
