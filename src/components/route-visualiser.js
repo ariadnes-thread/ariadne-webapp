@@ -46,22 +46,14 @@ export default class RouteVisualiser extends Component {
             route: null,
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        console.log(this.refs.routesList);
+        this.visualizeRoute = this.visualizeRoute.bind(this);
     }
 
 
-    handleSubmit(routeData) {
-        // event.preventDefault();
-
+    visualizeRoute(routeData) {
         return Promise.resolve()
             .then(() => routeData ? routeData.route : null)
-            .then(route => this.setState({route}))
-            .catch(error => {
-                console.error(error);
-                // TODO: Replace with user-friendly warning/modal
-                alert('Error occurred during form submission. Check console.');
-            });
+            .then(route => this.setState({route}));
     }
 
     render() {
@@ -74,13 +66,11 @@ export default class RouteVisualiser extends Component {
                                 <div className="card-content">
                                     <p>Choose your route preferences:</p>
                                     <br/>
-                                    <PreferencesList auth={this.props.auth} ref="preferencesList"
-                                                     customSubmit={this.handleSubmit}/>
+                                    <PreferencesList auth={this.props.auth} visualizeRoute={this.visualizeRoute}/>
                                     <hr/>
-                                    <p>Results List: {this.state.greenery}</p>
+                                    <p>Results:</p>
                                     <br/>
-                                    <RoutesList auth={this.props.auth} ref="routesList"
-                                                customSubmit={this.handleSubmit}/>
+                                    <RoutesList auth={this.props.auth} visualizeRoute={this.visualizeRoute}/>
                                 </div>
                             </div>
                         </div>

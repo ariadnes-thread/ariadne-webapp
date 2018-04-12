@@ -15,7 +15,7 @@ export default class PreferencesList extends Component {
 
     static propTypes = {
         auth: PropTypes.instanceOf(Auth).isRequired,
-        customSubmit: PropTypes.func.isRequired,
+        visualizeRoute: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -57,7 +57,7 @@ export default class PreferencesList extends Component {
                 }
                 return newRoute;
             })
-            .then(route => this.props.customSubmit({route}))
+            .then(route => this.props.visualizeRoute({route}))
 
             // TODO: Replace this with a nice error modal.
             .catch(error => {

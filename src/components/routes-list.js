@@ -45,7 +45,7 @@ export default class RoutesList extends Component {
 
     static propTypes = {
         auth: PropTypes.instanceOf(Auth).isRequired,
-        customSubmit: PropTypes.func.isRequired,
+        visualizeRoute: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -56,21 +56,25 @@ export default class RoutesList extends Component {
 
     handleChange(idx, event) {
         event.preventDefault();
-        this.setState({selected: idx});
-        console.log(this.props.customSubmit);
-        console.log(this.state.routes[idx]);
-        return this.props.customSubmit(this.state.routes[idx]);
+        return Promise.resolve()
+            .then(() => this.props.visualizeRoute(this.state.routes[idx]))
+            .then(() => this.setState({selected: idx}))
+            .catch(error => {
+                console.error(error);
+                // TODO: Replace with user-friendly warning/modal
+                alert('Error occurred during route visualization. Check console.');
+            });
     }
 
     renderRouteList() {
         const routeListComponents = new Array(this.state.routes.length);
         for (let i = 0; i < this.state.routes.length; i++) {
             const route = this.state.routes[i];
-            const activeClass = i === this.state.selected ? ' has-text-red' : '';
+            const activeClass = i === this.state.selected ? ' has-text-danger' : '';
             routeListComponents[i] = (
-                <div>
+                <div key={`route-input-${i}`}>
                     {i !== 0 && <br/>}
-                    <a key={`route-input-${i}`} onClick={this.handleChange.bind(this, i)}>
+                    <a onClick={this.handleChange.bind(this, i)}>
                         <div className="box">
                             <article className="media">
                                 <div className="media-content">
@@ -83,7 +87,7 @@ export default class RoutesList extends Component {
                                             <br/>
                                             <small>Elevation: {route.elevation} ft ({route.route.length} points)</small>
                                             <br/>
-                                            <small><a>Choose this route</a></small>
+                                            <small><span className="is-link">Choose this route</span></small>
                                         </p>
                                     </div>
                                 </div>

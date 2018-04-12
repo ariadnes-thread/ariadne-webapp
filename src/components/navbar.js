@@ -20,7 +20,14 @@ export default class Navbar extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            burgerMenuActive: false,
+        };
+
         this.rootHtmlElement = document.getElementsByTagName('html').item(0);
+        this.toggleBurgerMenu = this.toggleBurgerMenu.bind(this);
+        this.buttonClick = this.buttonClick.bind(this);
+        this.tableFlip = this.tableFlip.bind(this);
     }
 
     componentDidMount() {
@@ -32,11 +39,21 @@ export default class Navbar extends Component {
         this.rootHtmlElement.classList.remove('has-navbar-fixed-top');
     }
 
-    static tableFlip() {
+    toggleBurgerMenu() {
+        this.setState({burgerMenuActive: !this.state.burgerMenuActive});
+    }
+
+    buttonClick() {
+        this.setState({burgerMenuActive: false});
+    }
+
+    tableFlip() {
+        this.buttonClick();
         alert('(╯°□°)╯︵ ┻━┻ ');
     }
 
     render() {
+        const navbarMenuClass = this.state.burgerMenuActive ? 'navbar-menu is-active' : 'navbar-menu';
         return (
             <nav className="navbar is-info is-fixed-top" aria-label="main navigation">
                 <div className="container">
@@ -45,39 +62,47 @@ export default class Navbar extends Component {
                             Ariadne's Thread
                         </a>
 
-                        <div className="navbar-burger">
+                        <div className="navbar-burger" onClick={this.toggleBurgerMenu}>
                             <span/>
                             <span/>
                             <span/>
                         </div>
                     </div>
 
-                    <div className="navbar-start">
-                        <div className="navbar-item">
-                            <div className="field is-grouped">
-                                <p className="control">
-                                    <Link className="button is-info" to="/">
+                    <div className={navbarMenuClass}>
+                        <div className="navbar-start">
+                            <div className="navbar-item">
+                                <div className="field is-grouped">
+                                    <p className="control">
+                                        <Link className="button is-info" to="/" onClick={this.buttonClick}>
                                         <span className="icon">
                                             <Icon icon="home"/>
                                         </span>
-                                        <span>Home</span>
-                                    </Link>
-                                </p>
+                                            <span>Home</span>
+                                        </Link>
+                                    </p>
+                                    <p className="control">
+                                        <Link className="button is-info" to="/debug" onClick={this.buttonClick}>
+                                        <span className="icon">
+                                            <Icon icon="magic"/>
+                                        </span>
+                                            <span>Debug</span>
+                                        </Link>
+                                    </p>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="navbar-end">
-                        <div className="navbar-item">
-                            <div className="field is-grouped">
-                                <p className="control">
-                                    <a className="button is-info" onClick={Navbar.tableFlip}>
-                                        <span className="icon">
-                                            <Icon icon="exclamation-circle"/>
-                                        </span>
-                                        <span>Don't click me</span>
-                                    </a>
-                                </p>
+                        <div className="navbar-end">
+                            <div className="navbar-item">
+                                <div className="field is-grouped">
+                                    <p className="control">
+                                        <a className="button is-info" onClick={this.tableFlip}>
+                                            <span className="icon"><Icon icon="exclamation-circle"/></span>
+                                            <span>Don't click me</span>
+                                        </a>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
