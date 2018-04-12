@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 
-import MapWithRoutes from './maps-with-routes';
+import MapWithRoutes from './map-with-routes';
 import PreferencesList from './preferences-list';
 import RoutesList from './routes-list';
 import Auth from '../util/auth';
@@ -44,6 +44,7 @@ export default class RouteVisualiser extends Component {
         this.state = {
             jsonInput: EXAMPLE_ROUTE_JSON,
             route: null,
+            geometry: null,
         };
 
         this.visualizeRoute = this.visualizeRoute.bind(this);
@@ -52,8 +53,12 @@ export default class RouteVisualiser extends Component {
 
     visualizeRoute(routeData) {
         return Promise.resolve()
-            .then(() => routeData ? routeData.route : null)
-            .then(route => this.setState({route}));
+            .then(() => {
+                if (!routeData) return {};
+                if (routeData.geometry) return {geometry: routeData.geometry, route: null};
+                if (routeData.route) return {geometry: null, route: routeData.route};
+            })
+            .then(stateUpdate => this.setState(stateUpdate))
     }
 
     render() {
@@ -79,7 +84,8 @@ export default class RouteVisualiser extends Component {
                                 <div className="card-content is-paddingless">
                                     <MapWithRoutes
                                         auth={this.props.auth}
-                                        route={this.state.route}/>
+                                        route={this.state.route}
+                                        geometry={this.state.geometry}/>
                                 </div>
                             </div>
                         </div>

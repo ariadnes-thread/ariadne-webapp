@@ -26,8 +26,15 @@ export default class ApiPlanningModule {
      * @returns {Promise<object[]>}
      */
     planRoute(data) {
-        return this.api.postWithAuth('/v1/planning/route', data)
-            .then(responseBody => responseBody.route);
+        return this.api.postWithAuth('/v1/planning/route', data);
+    }
+
+    /**
+     * @returns {Promise<object[]>}
+     */
+    fetchPointsOfInterest() {
+        return this.api.getWithAuth('/v1/planning/points-of-interest')
+            .then(responseBody => responseBody.pointsOfInterest)
     }
 
 }

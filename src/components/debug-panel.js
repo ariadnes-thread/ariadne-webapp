@@ -8,7 +8,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 
-import MapWithRoutes from './maps-with-routes';
+import MapWithRoutes from './map-with-routes';
 import Auth from '../util/auth';
 
 // Generate JSON for the example route and make formatting prettier

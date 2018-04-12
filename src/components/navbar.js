@@ -4,9 +4,9 @@
  * @license GPL-3.0
  */
 
-import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import Icon from '@fortawesome/react-fontawesome';
+import {NavLink} from 'react-router-dom';
+import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import Auth from '../util/auth';
@@ -58,7 +58,7 @@ export default class Navbar extends Component {
             <nav className="navbar is-info is-fixed-top" aria-label="main navigation">
                 <div className="container">
                     <div className="navbar-brand">
-                        <a className="navbar-item" href={this.props.auth.baseUrl}>
+                        <a className="navbar-item" href={this.props.auth.config.baseUri}>
                             Ariadne's Thread
                         </a>
 
@@ -74,20 +74,22 @@ export default class Navbar extends Component {
                             <div className="navbar-item">
                                 <div className="field is-grouped">
                                     <p className="control">
-                                        <Link className="button is-info" to="/" onClick={this.buttonClick}>
+                                        <NavLink className="button is-info" activeClassName="is-active"
+                                                 exact to="/" onClick={this.buttonClick}>
                                         <span className="icon">
                                             <Icon icon="home"/>
                                         </span>
                                             <span>Home</span>
-                                        </Link>
+                                        </NavLink>
                                     </p>
                                     <p className="control">
-                                        <Link className="button is-info" to="/debug" onClick={this.buttonClick}>
+                                        <NavLink className="button is-info" activeClassName="is-active"
+                                                 to="/debug" onClick={this.buttonClick}>
                                         <span className="icon">
                                             <Icon icon="magic"/>
                                         </span>
                                             <span>Debug</span>
-                                        </Link>
+                                        </NavLink>
                                     </p>
                                 </div>
                             </div>
