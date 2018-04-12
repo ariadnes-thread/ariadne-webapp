@@ -4,12 +4,14 @@
  * @license GPL-3.0
  */
 
-import PropTypes from 'prop-types';
-import React, {Component} from 'react';
-import fontawesome from '@fortawesome/fontawesome';
 import faFreeSolid from '@fortawesome/fontawesome-free-solid';
+import fontawesome from '@fortawesome/fontawesome';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+import {Switch, Route, Redirect} from 'react-router-dom';
 
 import RouteVisualiser from './route-visualiser';
+import DebugPanel from './debug-panel';
 import Auth from '../util/auth';
 import Navbar from './navbar';
 
@@ -26,7 +28,11 @@ export default class App extends Component {
             <div className="App">
                 <script src={this.props.auth.getGoogleApiUrl()}/>
                 <Navbar auth={this.props.auth}/>
-                <RouteVisualiser auth={this.props.auth}/>
+                <Switch>
+                    <Route path="/debug" component={(props) => <DebugPanel {...props} auth={this.props.auth}/>}/>
+                    <Route exact path="/" component={(props) => <RouteVisualiser {...props} auth={this.props.auth}/>}/>
+                    <Route><Redirect to="/"/></Route>
+                </Switch>
             </div>
         );
     }

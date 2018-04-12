@@ -9,8 +9,6 @@ import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 
 import MapWithRoutes from './maps-with-routes';
-import PreferencesList from './preferences-list';
-import RoutesList from './routes-list';
 import Auth from '../util/auth';
 
 // Generate JSON for the example route and make formatting prettier
@@ -31,8 +29,7 @@ const EXAMPLE_ROUTE_JSON = JSON
         return `[${lat}, ${lng}]`;
     });
 
-
-export default class RouteVisualiser extends Component {
+export default class DebugPanel extends Component {
 
     static propTypes = {
         auth: PropTypes.instanceOf(Auth).isRequired,
@@ -46,16 +43,19 @@ export default class RouteVisualiser extends Component {
             route: null,
         };
 
+        this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        console.log(this.refs.routesList);
     }
 
+    handleChange(event) {
+        event.preventDefault();
+        this.setState({jsonInput: event.target.value});
+    }
 
-    handleSubmit(routeData) {
-        // event.preventDefault();
-
-        return Promise.resolve()
-            .then(() => routeData ? routeData.route : null)
+    handleSubmit(event) {
+        event.preventDefault();
+        Promise.resolve()
+            .then(() => JSON.parse(this.state.jsonInput).route)
             .then(route => this.setState({route}))
             .catch(error => {
                 console.error(error);
@@ -72,15 +72,25 @@ export default class RouteVisualiser extends Component {
                         <div className="column is-one-third has-text-left">
                             <div className="card">
                                 <div className="card-content">
-                                    <p>Choose your route preferences:</p>
+                                    <p>Drop your JSON into the text box below.</p>
                                     <br/>
-                                    <PreferencesList auth={this.props.auth} ref="preferencesList"
-                                                     customSubmit={this.handleSubmit}/>
+                                    <form onSubmit={this.handleSubmit}>
+                                        <div className="field">
+                                            <div className="control">
+                                                <textarea
+                                                    onChange={this.handleChange}
+                                                    style={{minHeight: '250px'}}
+                                                    className="textarea"
+                                                    placeholder={EXAMPLE_ROUTE_JSON}
+                                                    value={this.state.jsonInput}/>
+                                            </div>
+                                        </div>
+                                        <button className="button is-info">Update route</button>
+                                    </form>
                                     <hr/>
-                                    <p>Results List: {this.state.greenery}</p>
+                                    <p>Example structure (latitude first):</p>
                                     <br/>
-                                    <RoutesList auth={this.props.auth} ref="routesList"
-                                                customSubmit={this.handleSubmit}/>
+                                    <pre><code>{EXAMPLE_ROUTE_JSON}</code></pre>
                                 </div>
                             </div>
                         </div>

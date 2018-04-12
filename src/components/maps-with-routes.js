@@ -53,6 +53,8 @@ export default class MapWithRoutes extends Component {
         // undefined while it is actually provided by `react-google-maps` through `withGoogleMap`.
         /* eslint-disable no-undef */
 
+        console.log('Fetching directions based on the following coord array:', coordArray);
+
         const arrayClone = coordArray.slice(0);
 
         // Remove start/finish coords
@@ -87,8 +89,8 @@ export default class MapWithRoutes extends Component {
                     directions: result,
                 });
             } else {
-                alert('Error'); // TODO: Replace this with nicer warning
-                console.error(`error fetching directions ${result}`);
+                alert('Error fetching directions from Google Maps'); // TODO: Replace this with nicer warning
+                console.error(result);
             }
         });
     }

@@ -4,7 +4,8 @@ import Promise from 'bluebird';
 import 'bulma/css/bulma.css';
 import React from 'react';
 
-import registerServiceWorker from './registerServiceWorker';
+// TODO: Uncomment once development is complete, scroll down for more info.
+// import registerServiceWorker from './registerServiceWorker';
 import StartupError from './components/startup-error';
 import rawConfig from './config.json';
 import App from './components/app';
@@ -34,5 +35,9 @@ Promise.resolve()
 
     .finally(() => {
         ReactDOM.render(componentToRender, document.getElementById('root'));
-        registerServiceWorker();
+
+        // TODO: ServiceWorker is useful for faster loading in production but is a real pain in development since it
+        //       makes it hard to deploy the new webapp version (old version "lingers" in the cache due to the
+        //       service worker). Uncomment once the active development phase is over.
+        // registerServiceWorker();
     });

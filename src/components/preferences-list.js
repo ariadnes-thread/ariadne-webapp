@@ -24,8 +24,8 @@ export default class PreferencesList extends Component {
         this.state = {};
 
         // TO DO: drag and drop ordering of preferences
-        this.preferences = ["greenery", "elevation", "distance"];
-        this.defaultValues = ["50", "20", "30"];
+        this.preferences = ['greenery', 'elevation', 'distance'];
+        this.defaultValues = ['50', '20', '30'];
 
         for (let i = 0; i < this.preferences.length; i++) {
             this.state[this.preferences[i]] = this.defaultValues[i];
@@ -60,7 +60,11 @@ export default class PreferencesList extends Component {
             .then(route => this.props.customSubmit({route}))
 
             // TODO: Replace this with a nice error modal.
-            .catch(error => alert(error.message));
+            .catch(error => {
+                console.error(error);
+                // TODO: Replace with user-friendly warning/modal
+                alert(error.message);
+            });
     }
 
     render() {
@@ -69,18 +73,18 @@ export default class PreferencesList extends Component {
                 <form onSubmit={this.handleSubmit}>
                     {
                         this.preferences.map((preference, idx) => {
-                            return (<div key={'preference-input'+idx}>
-                             {preference}:
-                             {this.state[preference] ? this.state[preference] : this.defaultValues[idx]}
-                             <input type="range" defaultValue={this.defaultValues[idx]}
-                             onChange={this.handleChange.bind(this, preference)}/>
+                            return (<div key={'preference-input' + idx}>
+                                {preference}:
+                                {this.state[preference] ? this.state[preference] : this.defaultValues[idx]}
+                                <input type="range" defaultValue={this.defaultValues[idx]}
+                                       onChange={this.handleChange.bind(this, preference)}/>
                             </div>);
                         })
                     }
                     <br/>
                     <button className="button is-info">Update route</button>
                 </form>
-        	</div>
+            </div>
         );
     }
 }
