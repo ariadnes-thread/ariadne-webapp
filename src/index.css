@@ -9,11 +9,6 @@ html {
 /**
 =============== Generic utility classes
  */
-
-.ariadne-no-padding {
-    padding: 0 !important;
-}
-
 .ariadne-section-uniform-padding {
     /* Default built-in padding on .section in Bulma is not uniform, use this to override it. */
     padding: 1.5rem !important;

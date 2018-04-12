@@ -10,27 +10,36 @@ import PropTypes from 'prop-types';
 import Auth from '../util/auth';
 
 const EXAMPLE_ROUTE_JSON_WITH_INFO = [
-{
-    "name": "Route1",
-    "route": [
-    [34.14093, -118.129366],
-    [34.140947, -118.12801],
-    [34.140388, -118.128002],
-    [34.139434, -118.122862]
-    ],
-    "elevation": "1500"
-},
-{
-    "name": "Route2",
-    "route": [
-    [35.14093, -118.129366],
-    [35.140947, -118.12801],
-    [35.140388, -118.128002],
-    [35.139434, -118.122862]
-    ],
-    "elevation": "2700"
-}
-  ];
+    {
+        name: 'Caltech #1',
+        route: [
+            [34.14093, -118.129366],
+            [34.140947, -118.12801],
+            [34.140388, -118.128002],
+            [34.139434, -118.122862],
+        ],
+        elevation: '1500',
+    },
+    {
+        name: 'Caltech #2',
+        route: [
+            [34.137234, -118.127962],
+            [34.136871, -118.125630],
+            [34.137543, -118.123713],
+        ],
+        elevation: '1500',
+    },
+    {
+        name: 'Route2',
+        route: [
+            [35.14093, -118.129366],
+            [35.140947, -118.12801],
+            [35.140388, -118.128002],
+            [35.139434, -118.122862],
+        ],
+        elevation: '2700',
+    },
+];
 
 export default class RoutesList extends Component {
 
@@ -53,38 +62,43 @@ export default class RoutesList extends Component {
         return this.props.customSubmit(this.state.routes[idx]);
     }
 
-    render() {
-        if (this.state.selected === -1)
-        {
-            return (
-                <div className="routes-list">
-                        {
-                            this.state.routes.map((route, idx) => {
-                                return (<div key={'route-input'+idx}>
-                                 <button className="button is-info" onClick={this.handleChange.bind(this, idx)}>
-                                 {route["name"]}
-                                 </button>
-                                 <hr/>
-                                </div>);
-                            })
-                        }
-            	</div>
-            );
-        }
-        else
-        {
-            return (
-                <div className="routes-list">
-                    <p> {this.state.routes[this.state.selected].name}: </p>
-                    <br/>
-                    <p> Elevation Gain: {this.state.routes[this.state.selected].elevation} ft</p>
-                    <br/>
-                    <button className="button is-info" onClick={this.handleChange.bind(this, -1)}>
-                    Back to Results List
-                    </button>
-
+    renderRouteList() {
+        const routeListComponents = new Array(this.state.routes.length);
+        for (let i = 0; i < this.state.routes.length; i++) {
+            const route = this.state.routes[i];
+            const activeClass = i === this.state.selected ? ' has-text-red' : '';
+            routeListComponents[i] = (
+                <div>
+                    {i !== 0 && <br/>}
+                    <a key={`route-input-${i}`} onClick={this.handleChange.bind(this, i)}>
+                        <div className="box">
+                            <article className="media">
+                                <div className="media-content">
+                                    <div className="content">
+                                        <p>
+                                            <strong>
+                                                <span className="has-text-grey">Route:&nbsp;</span>
+                                                <span className={activeClass}>{route.name}</span>
+                                            </strong>
+                                            <br/>
+                                            <small>Elevation: {route.elevation} ft ({route.route.length} points)</small>
+                                            <br/>
+                                            <small><a>Choose this route</a></small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    </a>
                 </div>
             );
         }
+        return routeListComponents;
+    }
+
+    render() {
+        return (
+            <div>{this.renderRouteList()}</div>
+        );
     }
 }

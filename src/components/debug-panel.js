@@ -96,7 +96,7 @@ export default class DebugPanel extends Component {
                         </div>
                         <div className="column">
                             <div className="card">
-                                <div className="card-content ariadne-no-padding">
+                                <div className="card-content is-paddingless">
                                     <MapWithRoutes
                                         auth={this.props.auth}
                                         route={this.state.route}/>
