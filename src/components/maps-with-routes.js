@@ -13,9 +13,21 @@ import Auth from '../util/auth';
 // GoogleMap component wrapper as per https://tomchentw.github.io/react-google-maps/#introduction
 const MapComponent = withScriptjs(withGoogleMap(props =>
     <GoogleMap defaultZoom={props.defaultZoom} defaultCenter={props.defaultCenter}>
-        {props.directions && <DirectionsRenderer directions={props.directions}/>}
+        {props.directions &&
+                            props.directions.map((direction, idx) => {
+                                return (<div key={'direction-input'+idx}>
+                                	<DirectionsRenderer directions={direction}/>
+                                </div>);
+                            })
+                        }
     </GoogleMap>,
 ));
+
+// const MapComponent = withScriptjs(withGoogleMap(props =>
+//     <GoogleMap defaultZoom={props.defaultZoom} defaultCenter={props.defaultCenter}>
+//         {props.directions && <DirectionsRenderer directions={props.directions}/>}
+//     </GoogleMap>,
+// ));
 
 export default class MapWithRoutes extends Component {
 
@@ -36,7 +48,7 @@ export default class MapWithRoutes extends Component {
         super(props);
 
         this.state = {
-            directions: null,
+            directions: []//null,
         };
     }
 
@@ -46,9 +58,9 @@ export default class MapWithRoutes extends Component {
 
     componentWillReceiveProps(nextProps) {
     	        console.log(nextProps);
-
+    	 this.setState({directions: []});
         if (nextProps.route) this.fetchDirectionBasedOnRoute(nextProps.route);
-        else this.setState({directions: null});
+        else this.setState({directions: []});
     }
 
     fetchDirectionBasedOnRoute(coordArray) {
@@ -94,7 +106,7 @@ export default class MapWithRoutes extends Component {
 	        }, (result, status) => {
 	            if (status === google.maps.DirectionsStatus.OK) {
 	                this.setState({
-	                    directions: result, // TO DO: Make this display all the routes at once
+	                    directions: this.state.directions.concat([result])//result, // TO DO: Make this display all the routes at once
 	                });
 	            } else {
 	                alert('Error'); // TODO: Replace this with nicer warning
