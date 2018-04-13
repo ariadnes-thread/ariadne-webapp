@@ -55,7 +55,7 @@ export default class RouteVisualiser extends Component {
         // event.preventDefault();
 
         Promise.resolve()
-            .then(() => routeData ? routeData.route : null)
+            .then(() => routeData ? [routeData.route] : this.refs.routesList.getRoutes())
             .then(route => this.setState({route: route}))
             .catch(error => {
                 console.error(error);
@@ -71,14 +71,18 @@ export default class RouteVisualiser extends Component {
                     <div className="columns is-centered">
                         <div className="column is-one-third has-text-left">
                             <div className="card">
-                                <div className="card-content">
+                                <div className="card-content card-ariadne-lists">
+                                	<div className="preferences-list">
                                     <p>Choose your route preferences:</p>
                                     <br/>
                                     <PreferencesList auth={this.props.auth} ref="preferencesList"/>
+                                    </div>
                                     <hr/>
-                                    <p>Results List: {this.state.greenery}</p>
+                                    <div className="container-routes-list">
+                                    <p>Results List:</p>
                                     <br/>
                                     <RoutesList auth={this.props.auth} ref="routesList" customSubmit={this.handleSubmit}/>
+                                    </div>
                                 </div>
                             </div>
                         </div>

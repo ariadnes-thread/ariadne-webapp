@@ -10,6 +10,11 @@ import Promise from 'bluebird';
 
 import Auth from '../util/auth';
 
+const defaultPreferences = {"greenery": "50",
+                            "elevation": "20",
+                            "distance": "30",
+                            "cofeeshops": "2",
+                            "time": "60"};
 
 export default class PreferencesList extends Component {
 
@@ -20,11 +25,15 @@ export default class PreferencesList extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {};
+        this.state = defaultPreferences;
 
         // TO DO: drag and drop ordering of preferences
-        this.preferences = ["greenery", "elevation", "distance"];
-        this.defaultValues = ["50", "20", "30"];
+
+        // this.setState(this.defaultPreferences);
+
+        console.log(Object.keys(defaultPreferences));
+        // this.preferences = ["greenery", "elevation", "distance", "coffeeshops", "time (minutes)"];
+        // this.defaultValues = ["50", "20", "30", "2", "60"];
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -45,20 +54,43 @@ export default class PreferencesList extends Component {
         return (
             <div className="preferences-list">
                 <form onSubmit={this.handleSubmit}>
+                    <div className="ariadne-scrollable card-preferences-list">
                     {
-                        this.preferences.map((preference, idx) => {
+                        this.state ? Object.keys(this.state).map((preference, idx) => {
                             return (<div key={'preference-input'+idx}>
                              {preference}:
-                             {this.state[preference] ? this.state[preference] : this.defaultValues[idx]} 
-                             <input type="range" defaultValue={this.defaultValues[idx]} 
+                             {this.state[preference]} 
+                             <input type="range" defaultValue={defaultPreferences[preference]} 
                              onChange={this.handleChange.bind(this, preference)}/>
                             </div>);
                         })
+                        : "Missing State"
                     }
+                    </div>
                     <br/>
-                    <button className="button is-info">Update route</button>
+                    <button className="button is-info">Update routes list</button>
                 </form>
-        	</div>
+            </div>
         );
+        // return (
+        //     <div className="preferences-list">
+        //         <form onSubmit={this.handleSubmit}>
+        //             <div className="ariadne-scrollable card-preferences-list">
+        //             {
+        //                 this.preferences.map((preference, idx) => {
+        //                     return (<div key={'preference-input'+idx}>
+        //                      {preference}:
+        //                      {this.state[preference] ? this.state[preference] : this.defaultValues[idx]} 
+        //                      <input type="range" defaultValue={this.defaultValues[idx]} 
+        //                      onChange={this.handleChange.bind(this, preference)}/>
+        //                     </div>);
+        //                 })
+        //             }
+        //             </div>
+        //             <br/>
+        //             <button className="button is-info">Update routes list</button>
+        //         </form>
+        // 	</div>
+        // );
     }
 }

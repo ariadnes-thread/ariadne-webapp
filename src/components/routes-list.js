@@ -12,7 +12,7 @@ import Auth from '../util/auth';
 
 const EXAMPLE_ROUTE_JSON_WITH_INFO = [
 {
-    "name": "Route1", 
+    "name": "Avery to Catalina", 
     "route": [
     [34.14093, -118.129366],
     [34.140947, -118.12801],
@@ -22,14 +22,22 @@ const EXAMPLE_ROUTE_JSON_WITH_INFO = [
     "elevation": "1500"
 },
 {
-    "name": "Route2", 
+    "name": "Avery to Colorado", 
     "route": [
-    [35.14093, -118.129366],
-    [35.140947, -118.12801],
-    [35.140388, -118.128002],
-    [35.139434, -118.122862]
+    [34.139434, -118.122862],
+    [34.141804, -118.121323],
+    [34.144651, -118.121418],
+    [34.145987, -118.117835]
     ],
     "elevation": "2700"
+},
+{
+    "name": "Avery to Gym", 
+    "route": [
+    [34.140478, -118.122876],
+    [34.134290, -118.125798]
+    ],
+    "elevation": "100"
 }
   ];
 
@@ -53,11 +61,21 @@ export default class RoutesList extends Component {
         this.props.customSubmit(this.state.routes[idx]);
     }
 
+    getRoutes() {
+        let returnRoutes = []
+        for (let i = 0; i < this.state.routes.length; i++)
+        {
+            returnRoutes.push(this.state.routes[i].route);
+        }
+        return returnRoutes;
+    }
+
     render() {
         if (this.state.selected == -1)
         {
             return (
                 <div className="routes-list">
+                        <div className="ariadne-scrollable card-routes-list">
                         {
                             this.state.routes.map((route, idx) => {
                                 return (<div key={'route-input'+idx}>
@@ -68,6 +86,7 @@ export default class RoutesList extends Component {
                                 </div>);
                             })
                         }
+                        </div>
             	</div>
             );
         }
@@ -75,13 +94,20 @@ export default class RoutesList extends Component {
         {
             return (
                 <div className="routes-list">
+                    <div className="ariadne-scrollable card-routes-list">
                     <p> {this.state.routes[this.state.selected].name}: </p>
                     <br/>
                     <p> Elevation Gain: {this.state.routes[this.state.selected].elevation} ft</p>
+                    <p> This will be a concise description of the route. </p>
+                    <p> Number of waypoints: {this.state.routes[this.state.selected].route.length}</p>
+                    <p> More description of the route. </p>
                     <br/>
+                    </div>
+                    <div className="ariadne-button-no-scroll">
                     <button className="button is-info" onClick={this.handleChange.bind(this, -1)}> 
                     Back to Results List 
                     </button>
+                    </div>
 
                 </div>
             ); 

@@ -18,3 +18,46 @@ html {
     /* Default built-in padding on .section in Bulma is not uniform, use this to override it. */
     padding: 1.5rem !important;
 }
+
+.ariadne-scrollable {
+	overflow: scroll;
+}
+
+.card-routes-list {
+	/*background-color: #000000;*/
+	max-height: 100%;/*50%;*/
+	position: relative;
+	box-sizing: border-box;
+
+}
+
+.card-preferences-list {
+	/*background-color: #FF0000;*/
+	max-height: 100px;/*50%;*/
+}
+
+.preferences-list {
+	max-height: 200px;
+}
+
+.routes-list {
+	/*max-height: 150px;	*/
+	box-sizing: border-box;
+	/*overflow: hidden;*/
+	height: 80%;
+	position: relative;
+}
+
+.container-routes-list {
+	height: 100%;
+	max-height: 200px;/*200px;*/
+}
+.card-ariadne-lists {
+	/*background-color: #00FF00;*/
+	height: 500px;
+	max-height: 500px;
+}
+
+.ariadne-button-no-scroll {
+	min-height: 35px;
+}
