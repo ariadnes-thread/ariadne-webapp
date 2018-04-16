@@ -54,9 +54,11 @@ export default class RouteVisualiser extends Component {
     visualizeRoute(routeData) {
         return Promise.resolve()
             .then(() => {
-                if (!routeData) return {};
+                console.log("made it here");
+                console.log(routeData);
+                if (!routeData) return {route: this.refs.routesList.getRoutes()};
                 if (routeData.geometry) return {geometry: routeData.geometry, route: null};
-                if (routeData.route) return {geometry: null, route: routeData.route};
+                if (routeData.route) return {geometry: null, route: [routeData.route]};
             })
             .then(stateUpdate => this.setState(stateUpdate))
     }
@@ -68,15 +70,20 @@ export default class RouteVisualiser extends Component {
                     <div className="columns is-centered">
                         <div className="column is-one-third has-text-left">
                             <div className="card">
-                                <div className="card-content">
+                                <div className="card-content card-ariadne-lists">
+                                    <div className="preferences-list">
                                     <p>Choose your route preferences:</p>
                                     <br/>
-                                    <PreferencesList auth={this.props.auth} visualizeRoute={this.visualizeRoute}/>
+                                    <PreferencesList auth={this.props.auth} ref="preferencesList" visualizeRoute={this.visualizeRoute}/>
+                                    </div>
                                     <hr/>
-                                    <p>Results:</p>
+                                    <div className="container-routes-list">
+                                    <p>Results List:</p>
                                     <br/>
-                                    <RoutesList auth={this.props.auth} visualizeRoute={this.visualizeRoute}/>
+                                    <RoutesList auth={this.props.auth} ref="routesList" visualizeRoute={this.visualizeRoute}/>
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                         <div className="column">

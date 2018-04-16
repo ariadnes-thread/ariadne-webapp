@@ -49,7 +49,10 @@ const MapComponent = withScriptjs(withGoogleMap(props => {
     // No geometry, try to render the route using directions.
     if (!props.geometry) return (
         <GoogleMap defaultZoom={props.defaultZoom} defaultCenter={props.defaultCenter}>
-            {props.directions && <DirectionsRenderer directions={props.directions}/>}
+            {props.directions && props.directions.map((direction, idx) => {
+                                return (<div key={'direction-input'+idx}>
+                                    <DirectionsRenderer directions={direction}/>
+                                </div>);} )}
         </GoogleMap>
     );
 
@@ -86,7 +89,7 @@ export default class MapWithRoutes extends Component {
 
         this.state = {
             geometry: null,
-            directions: null,
+            directions: []//null,
         };
     }
 
@@ -116,6 +119,7 @@ export default class MapWithRoutes extends Component {
         if (props.geometry) {
             return this.setGeometry(props.geometry);
         }
+        this.setState({directions: []});
         if (props.route) this.fetchDirectionBasedOnRoute(props.route);
     }
 
@@ -124,42 +128,61 @@ export default class MapWithRoutes extends Component {
         // undefined while it is actually provided by `react-google-maps` through `withGoogleMap`.
         /* eslint-disable no-undef */
 
+        let bounds = new google.maps.LatLngBounds();
+         this.setState(
+            {directions: [],             
+            bounds: bounds
+         });
+
         const arrayClone = coordArray.slice(0);
+        for (let n = 0; n < arrayClone.length; n++)
+        {
+            // Remove start/finish coords
+            console.log(arrayClone[n]);
+            const originCoord = arrayClone[n][0]//(arrayClone[n]).shift();
+            const destCoord = arrayClone[n].slice(-1)[0]//arrayClone[n].pop();
+            // Now `arrayClone[n]` only has inner coords
 
-        // Remove start/finish coords
-        const originCoord = arrayClone.shift();
-        const destCoord = arrayClone.pop();
-        // Now `arrayClone` only has inner coords
-
-        const waypoints = new Array(arrayClone.length);
-        for (let i = 0; i < arrayClone.length; i++) {
-            const lat = arrayClone[i][0];
-            const lng = arrayClone[i][1];
-            waypoints[i] = {
-                location: `${lat}, ${lng}`,
-                stopover: true,
-            };
-        }
-
-        const origin = new google.maps.LatLng(originCoord[0], originCoord[1]);
-        const destination = new google.maps.LatLng(destCoord[0], destCoord[1]);
-
-        const DirectionsService = new google.maps.DirectionsService();
-
-        DirectionsService.route({
-            origin,
-            destination,
-            waypoints,
-            optimizeWaypoints: true,
-            travelMode: google.maps.TravelMode.WALKING,
-        }, (result, status) => {
-            if (status === google.maps.DirectionsStatus.OK) {
-                this.setDirections(result);
-            } else {
-                console.error(result);
-                alert('Error fetching directions from Google Maps'); // TODO: Replace this with nicer warning
+            const waypoints = new Array(arrayClone[n].length-2);
+            for (let i = 0; i < arrayClone[n].length-2; i++) {
+                const lat = arrayClone[n][i+1][0];
+                const lng = arrayClone[n][i+1][1];
+                waypoints[i] = {
+                    location: `${lat}, ${lng}`,
+                    stopover: true,
+                };
+                // bounds.extend(waypoints[i]);
             }
-        });
+            console.log(waypoints);
+
+            const origin = new google.maps.LatLng(originCoord[0], originCoord[1]);
+            const destination = new google.maps.LatLng(destCoord[0], destCoord[1]);
+
+            bounds.extend(origin);
+            bounds.extend(destination);
+
+            const DirectionsService = new google.maps.DirectionsService();
+
+            DirectionsService.route({
+                origin,
+                destination,
+                waypoints,
+                optimizeWaypoints: true,
+                travelMode: google.maps.TravelMode.WALKING,
+            }, (result, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    this.setState({
+                        bounds: bounds,
+                        directions: this.state.directions.concat([result])//result, // TO DO: Make this display all the routes at once
+                    });
+                } else {
+                    alert('Error'); // TODO: Replace this with nicer warning
+                    console.error(`error fetching directions ${result}`);
+                }
+            });
+        }
+        console.log(this.refs.mymap);
+        console.log(MapComponent);
         /* eslint-enable no-undef */
     }
 
@@ -167,11 +190,12 @@ export default class MapWithRoutes extends Component {
 
         return (
             <MapComponent
+                ref = "mymap"
                 defaultZoom={this.props.defaultZoom}
                 defaultCenter={this.props.defaultCenter}
                 googleMapURL={this.props.auth.getGoogleApiUrl()}
                 loadingElement={<div style={{height: `100%`}}/>}
-                containerElement={<div style={{height: `500px`}}/>}
+                containerElement={<div style={{height: `75vh`}}/>}
                 mapElement={<div style={{height: `100%`}}/>}
                 geometry={this.state.geometry}
                 directions={this.state.directions}

@@ -12,6 +12,13 @@ import Promise from 'bluebird';
 
 import Auth from '../util/auth';
 
+
+const defaultPreferences = {"greenery": "50",
+                            "elevation": "20",
+                            "distance": "30",
+                            "cofeeshops": "2",
+                            "time": "60"};
+
 export default class PreferencesList extends Component {
 
     static propTypes = {
@@ -22,24 +29,26 @@ export default class PreferencesList extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            preferences: {
-                origin: null,
-                destination: null,
-                greenery: null,
-                elevation: null,
-                distance: null,
-            },
-            pointsOfInterest: null,
-        };
+        // this.state = {
+        //     preferences: {
+        //         origin: null,
+        //         destination: null,
+        //         greenery: null,
+        //         elevation: null,
+        //         distance: null,
+        //     },
+        //     pointsOfInterest: null,
+        // };
+        this.state = {preferences: defaultPreferences,
+                        pointsOfInterest: null};
 
         // TO DO: drag and drop ordering of preferences
-        this.preferences = ['greenery', 'elevation', 'distance'];
-        this.defaultValues = [50, 20, 30];
+        // this.preferences = ['greenery', 'elevation', 'distance'];
+        // this.defaultValues = [50, 20, 30];
 
-        for (let i = 0; i < this.preferences.length; i++) {
-            this.state.preferences[this.preferences[i]] = this.defaultValues[i];
-        }
+        // for (let i = 0; i < this.preferences.length; i++) {
+        //     this.state.preferences[this.preferences[i]] = this.defaultValues[i];
+        // }
 
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -115,7 +124,7 @@ export default class PreferencesList extends Component {
 
     render() {
         return (
-            <div className="preferences-list">
+            <div className="container-preferences-list">
                 <form onSubmit={this.handleSubmit}>
                     <div className="field is-horizontal">
                         <div className="field-label is-normal">
@@ -151,18 +160,21 @@ export default class PreferencesList extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="ariadne-scrollable card-preferences-list">
                     {
-                        this.preferences.map((preference, idx) => {
-                            return (<div key={'preference-input' + idx}>
-                                {preference}:
-                                {this.state[preference] ? this.state[preference] : this.defaultValues[idx]}
-                                <input type="range" defaultValue={this.defaultValues[idx]}
-                                       onChange={this.handleChange.bind(this, preference)}/>
+                        this.state ? Object.keys(this.state.preferences).map((preference, idx) => {
+                            return (<div key={'preference-input'+idx}>
+                             {preference}:
+                             {this.state[preference]} 
+                             <input type="range" defaultValue={defaultPreferences[preference]} 
+                             onChange={this.handleChange.bind(this, preference)}/>
                             </div>);
                         })
+                        : "Missing State"
                     }
+                    </div>
                     <br/>
-                    <button className="button is-info">Update route</button>
+                    <button className="button is-info">Update routes list</button>
                 </form>
             </div>
         );
