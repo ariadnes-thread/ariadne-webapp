@@ -48,6 +48,8 @@ export default class RouteVisualiser extends Component {
         };
 
         this.visualizeRoute = this.visualizeRoute.bind(this);
+        this.getZipFromLatLon = this.getZipFromLatLon.bind(this);
+        this.selectedZip = 0;
     }
 
 
@@ -63,6 +65,75 @@ export default class RouteVisualiser extends Component {
             .then(stateUpdate => this.setState(stateUpdate))
     }
 
+
+    getZipFromLatLon(geocoder, eventData, callback)
+    {
+        geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
+            {
+                if (status == 'OK')
+                {
+                    if (results[0])
+                    {
+                        // console.log(results[0]);
+                        // console.log(results[0].address_components);
+                        for (let i = 0; i < results[0].address_components.length; i++)
+                        {
+                            if (results[0].address_components[i].types[0] == "postal_code")
+                            {
+                                let zip = results[0].address_components[i].short_name;
+                                console.log(zip);
+                                callback(zip);
+                                // this.setState({selectedZip: zip});
+                                // this.refs.preferencesList.updateZipPref(zip);
+                            }
+
+                        }
+                    }
+                }
+            });
+    }
+
+    setZip(zip)
+    {
+        console.log(zip);
+
+        // this.setState({selectedZip: zip});
+        this.refs.preferencesList.updateZipPref(zip);
+    }
+
+    handleMapClick(eventData) {
+        /* eslint-disable no-undef */
+        console.log(eventData);
+        const geocoder = new google.maps.Geocoder;
+        /* eslint-enable no-undef */
+        // this.getZipFromLatLon(geocoder, eventData, this.setZip);
+        const zipret = geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
+            {
+                if (status == 'OK')
+                {
+                    if (results[0])
+                    {
+                        // console.log(results[0]);
+                        // console.log(results[0].address_components);
+                        for (let i = 0; i < results[0].address_components.length; i++)
+                        {
+                            if (results[0].address_components[i].types[0] == "postal_code")
+                            {
+                                let zip = results[0].address_components[i].short_name;
+                                console.log(zip);
+                                // this.setZip(zip);
+                                return zip;
+                                // this.setState({selectedZip: zip});
+                                // this.refs.preferencesList.updateZipPref(zip);
+                            }
+
+                        }
+                    }
+                }
+            });
+        console.log(zipret);
+    }
+
     render() {
         return (
             <section className="section ariadne-section-uniform-padding">
@@ -74,13 +145,22 @@ export default class RouteVisualiser extends Component {
                                     <div className="preferences-list">
                                     <p>Choose your route preferences:</p>
                                     <br/>
-                                    <PreferencesList auth={this.props.auth} ref="preferencesList" visualizeRoute={this.visualizeRoute}/>
+                                    <PreferencesList
+                                        auth={this.props.auth}
+                                        ref="preferencesList"
+                                        visualizeRoute={this.visualizeRoute}
+                                        selectedPoint={this.state.selectedZip}
+                                        />
                                     </div>
                                     <hr/>
                                     <div className="container-routes-list">
                                     <p>Results List:</p>
                                     <br/>
-                                    <RoutesList auth={this.props.auth} ref="routesList" visualizeRoute={this.visualizeRoute}/>
+                                    <RoutesList 
+                                        auth={this.props.auth} 
+                                        ref="routesList" 
+                                        visualizeRoute={this.visualizeRoute}
+                                    />
                                     </div>
                                 </div>
 
@@ -92,6 +172,7 @@ export default class RouteVisualiser extends Component {
                                     <MapWithRoutes
                                         auth={this.props.auth}
                                         route={this.state.route}
+                                        handleClick={this.handleMapClick}
                                         geometry={this.state.geometry}/>
                                 </div>
                             </div>

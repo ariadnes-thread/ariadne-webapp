@@ -4,6 +4,7 @@
  * @license GPL-3.0
  */
 
+
 import {withScriptjs, withGoogleMap, Polyline, Polygon, InfoWindow, Marker, GoogleMap, DirectionsRenderer} from 'react-google-maps';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
@@ -47,15 +48,28 @@ const geometryToComponentWithLatLng = function(geometry) {
 // GoogleMap component wrapper as per https://tomchentw.github.io/react-google-maps/#introduction
 const MapComponent = withScriptjs(withGoogleMap(props => {
     // No geometry, try to render the route using directions.
-    if (!props.geometry) return (
-        <GoogleMap defaultZoom={props.defaultZoom} defaultCenter={props.defaultCenter}>
+    if (!props.geometry) {
+        const mapComponent = <GoogleMap 
+            onClick={props.kerflagle}
+            defaultZoom={props.defaultZoom} 
+            defaultCenter={props.defaultCenter}
+        >
             {props.directions && props.directions.map((direction, idx) => {
-                                return (<div key={'direction-input'+idx}>
+                return (
+                    <div key={'direction-input'+idx}>
                                     <DirectionsRenderer directions={direction}/>
-                                </div>);} )}
-        </GoogleMap>
-    );
+                    </div>
+                );
+            })}
+        </GoogleMap>;
+        if (this.state)
+        {
+            mapComponent.fitBounds(this.state.bounds);
+            mapComponent.center(this.state.bounds.getCenter());
+        }
+        return (mapComponent);
 
+    }
     console.log('Rendering geometry', props.geometry);
     // Geometry is set, draw relevant component on the map (without consulting Google Maps API).
     const {ElementClass, ChildElementClass, ...geometry} = geometryToComponentWithLatLng(props.geometry);
@@ -91,6 +105,8 @@ export default class MapWithRoutes extends Component {
             geometry: null,
             directions: []//null,
         };
+
+        console.log(this.refs.mymap);
     }
 
     componentDidMount() {
@@ -113,6 +129,11 @@ export default class MapWithRoutes extends Component {
             geometry,
             directions: null,
         })
+    }
+
+    customOnClick(event) {
+        console.log("IN ONCLICK");
+        console.log(event);
     }
 
     updateMap(props) {
@@ -181,16 +202,13 @@ export default class MapWithRoutes extends Component {
                 }
             });
         }
-        console.log(this.refs.mymap);
-        console.log(MapComponent);
         /* eslint-enable no-undef */
     }
 
     render() {
-
         return (
             <MapComponent
-                ref = "mymap"
+                kerflagle={this.props.handleClick}
                 defaultZoom={this.props.defaultZoom}
                 defaultCenter={this.props.defaultCenter}
                 googleMapURL={this.props.auth.getGoogleApiUrl()}
