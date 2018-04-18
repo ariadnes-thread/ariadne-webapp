@@ -62,33 +62,47 @@ export default class PreferencesList extends Component {
             });
     }
 
-    handleChange(fieldName, event) {
-        console.log(fieldName);
-        console.log(event);
+    handleChange(fieldName, fieldType, event) {
+        // console.log(fieldName);
+        // console.log(fieldType);
+        // console.log(event);
         let value = event.target.value;
-        if (['origin', 'destination'].includes(fieldName)) {
-            value = this.state.pointsOfInterest[value];
-            console.log(value);
-        }
-
+        // if (['origin', 'destination'].includes(fieldName)) {
+        //     value = this.state.pointsOfInterest[value];
+        //     console.log(value);
+        // }
         this.setState({
             preferences: {
                 ...this.state.preferences,
-                [fieldName]: value,
+                [fieldName]: [value, fieldType],
             },
         });
     }
 
     handleSelectZip(index, event) {
         event.preventDefault();
-        console.log(index);
         this.setState({selectedInput: index});
     }
 
     updateZipPref(zip) {
-        console.log("HERE");
-        console.log("zip to update is " + zip);
-        console.log("index to update is " + this.state.selectedInput);
+        if (this.state.selectedInput == 0)
+        {        
+            this.setState({
+                preferences: {
+                    ...this.state.preferences,
+                    ["startZip"]: [zip, "text"],
+                },
+            });
+        }
+        else if (this.state.selectedInput == 1)
+        {
+            this.setState({
+                preferences: {
+                    ...this.state.preferences,
+                    ["endZip"]: [zip, "text"],
+                },
+            });
+        }
 
     }
 
@@ -165,6 +179,8 @@ export default class PreferencesList extends Component {
                         </div>
                     </div>
                     <div className="ariadne-scrollable card-preferences-list">
+                    <div className="ariadne-scroll-card">
+
                     {
                         this.state ? Object.keys(this.state.preferences).map((preference, idx) => {
                             return (<div key={'preference-input'+idx}>
@@ -174,13 +190,21 @@ export default class PreferencesList extends Component {
                                 : <button onClick={this.handleSelectZip.bind(this,idx)}>Select on Map</button>} 
                              <input 
                                 type={this.state.preferences[preference][1]}
-                                defaultValue={defaultPreferences[preference][0]} 
-                                onChange={this.handleChange.bind(this, preference)}
+                                defaultValue={
+                                    this.state.preferences[preference][1]!="text"
+                                    ? defaultPreferences[preference][0]
+                                    : this.state.preferences[preference][0]
+                                } 
+                                value={
+                                    this.state.preferences[preference][0]
+                                } 
+                                onChange={this.handleChange.bind(this, preference, this.state.preferences[preference][1])}
                              />
                             </div>);
                         })
                         : "Missing State"
                     }
+                    </div>
                     </div>
                     <br/>
                     <button className="button is-info">Update routes list</button>

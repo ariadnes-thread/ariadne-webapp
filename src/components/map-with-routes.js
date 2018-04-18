@@ -1,5 +1,6 @@
 /**
  * @author Timur Kuzhagaliyev <tim.kuzh@gmail.com>
+ * @author Mary Giambrone
  * @copyright 2018
  * @license GPL-3.0
  */
@@ -49,8 +50,17 @@ const geometryToComponentWithLatLng = function(geometry) {
 const MapComponent = withScriptjs(withGoogleMap(props => {
     // No geometry, try to render the route using directions.
     if (!props.geometry) {
-        const mapComponent = <GoogleMap 
-            onClick={props.kerflagle}
+        return <GoogleMap 
+            ref={(map) => {
+                 console.log(map);
+                 if(map && props.bounds) {
+                    map.fitBounds(props.bounds);
+                    console.log(props.bounds);
+                    console.log(props.bounds.getCenter().lat() + ", " + props.bounds.getCenter().lng());
+                    map.panTo(props.bounds.getCenter());
+                }}}
+            center={props.bounds ? props.bounds.getCenter() : props.defaultCenter}
+            onClick={(eventData) =>{props.clickHandle(props.callbackClick, eventData);}}
             defaultZoom={props.defaultZoom} 
             defaultCenter={props.defaultCenter}
         >
@@ -62,13 +72,6 @@ const MapComponent = withScriptjs(withGoogleMap(props => {
                 );
             })}
         </GoogleMap>;
-        if (this.state)
-        {
-            mapComponent.fitBounds(this.state.bounds);
-            mapComponent.center(this.state.bounds.getCenter());
-        }
-        return (mapComponent);
-
     }
     console.log('Rendering geometry', props.geometry);
     // Geometry is set, draw relevant component on the map (without consulting Google Maps API).
@@ -105,8 +108,6 @@ export default class MapWithRoutes extends Component {
             geometry: null,
             directions: []//null,
         };
-
-        console.log(this.refs.mymap);
     }
 
     componentDidMount() {
@@ -129,11 +130,6 @@ export default class MapWithRoutes extends Component {
             geometry,
             directions: null,
         })
-    }
-
-    customOnClick(event) {
-        console.log("IN ONCLICK");
-        console.log(event);
     }
 
     updateMap(props) {
@@ -159,7 +155,6 @@ export default class MapWithRoutes extends Component {
         for (let n = 0; n < arrayClone.length; n++)
         {
             // Remove start/finish coords
-            console.log(arrayClone[n]);
             const originCoord = arrayClone[n][0]//(arrayClone[n]).shift();
             const destCoord = arrayClone[n].slice(-1)[0]//arrayClone[n].pop();
             // Now `arrayClone[n]` only has inner coords
@@ -208,7 +203,9 @@ export default class MapWithRoutes extends Component {
     render() {
         return (
             <MapComponent
-                kerflagle={this.props.handleClick}
+                bounds={this.state.bounds ? this.state.bounds : null}
+                clickHandle={this.props.handleClick}
+                callbackClick={this.props.parent}
                 defaultZoom={this.props.defaultZoom}
                 defaultCenter={this.props.defaultCenter}
                 googleMapURL={this.props.auth.getGoogleApiUrl()}

@@ -1,5 +1,6 @@
 /**
  * @author Timur Kuzhagaliyev <tim.kuzh@gmail.com>
+ * @author Mary Giambrone
  * @copyright 2018
  * @license GPL-3.0
  */
@@ -48,7 +49,6 @@ export default class RouteVisualiser extends Component {
         };
 
         this.visualizeRoute = this.visualizeRoute.bind(this);
-        this.getZipFromLatLon = this.getZipFromLatLon.bind(this);
         this.selectedZip = 0;
     }
 
@@ -56,8 +56,6 @@ export default class RouteVisualiser extends Component {
     visualizeRoute(routeData) {
         return Promise.resolve()
             .then(() => {
-                console.log("made it here");
-                console.log(routeData);
                 if (!routeData) return {route: this.refs.routesList.getRoutes()};
                 if (routeData.geometry) return {geometry: routeData.geometry, route: null};
                 if (routeData.route) return {geometry: null, route: [routeData.route]};
@@ -65,73 +63,33 @@ export default class RouteVisualiser extends Component {
             .then(stateUpdate => this.setState(stateUpdate))
     }
 
-
-    getZipFromLatLon(geocoder, eventData, callback)
+    setZip(zip, myobj)
     {
-        geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
-            {
-                if (status == 'OK')
-                {
-                    if (results[0])
-                    {
-                        // console.log(results[0]);
-                        // console.log(results[0].address_components);
-                        for (let i = 0; i < results[0].address_components.length; i++)
-                        {
-                            if (results[0].address_components[i].types[0] == "postal_code")
-                            {
-                                let zip = results[0].address_components[i].short_name;
-                                console.log(zip);
-                                callback(zip);
-                                // this.setState({selectedZip: zip});
-                                // this.refs.preferencesList.updateZipPref(zip);
-                            }
-
-                        }
-                    }
-                }
-            });
+        myobj.refs.preferencesList.updateZipPref(zip);
     }
 
-    setZip(zip)
-    {
-        console.log(zip);
-
-        // this.setState({selectedZip: zip});
-        this.refs.preferencesList.updateZipPref(zip);
-    }
-
-    handleMapClick(eventData) {
+    handleMapClick(callback, eventData) {
         /* eslint-disable no-undef */
-        console.log(eventData);
         const geocoder = new google.maps.Geocoder;
         /* eslint-enable no-undef */
-        // this.getZipFromLatLon(geocoder, eventData, this.setZip);
         const zipret = geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
             {
                 if (status == 'OK')
                 {
                     if (results[0])
                     {
-                        // console.log(results[0]);
-                        // console.log(results[0].address_components);
                         for (let i = 0; i < results[0].address_components.length; i++)
                         {
                             if (results[0].address_components[i].types[0] == "postal_code")
                             {
                                 let zip = results[0].address_components[i].short_name;
-                                console.log(zip);
-                                // this.setZip(zip);
-                                return zip;
-                                // this.setState({selectedZip: zip});
-                                // this.refs.preferencesList.updateZipPref(zip);
+                                callback.setZip(zip, callback);
                             }
 
                         }
                     }
                 }
             });
-        console.log(zipret);
     }
 
     render() {
@@ -173,6 +131,7 @@ export default class RouteVisualiser extends Component {
                                         auth={this.props.auth}
                                         route={this.state.route}
                                         handleClick={this.handleMapClick}
+                                        parent={this}
                                         geometry={this.state.geometry}/>
                                 </div>
                             </div>
