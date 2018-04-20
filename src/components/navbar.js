@@ -52,6 +52,10 @@ export default class Navbar extends Component {
         alert('(╯°□°)╯︵ ┻━┻ ');
     }
 
+    doLogin() {
+    	alert("Want to login??  In progress");
+    }
+
     render() {
         const navbarMenuClass = this.state.burgerMenuActive ? 'navbar-menu is-active' : 'navbar-menu';
         return (
@@ -98,6 +102,12 @@ export default class Navbar extends Component {
                         <div className="navbar-end">
                             <div className="navbar-item">
                                 <div className="field is-grouped">
+	                                <p className="control">
+                                        <a className="button is-info" onClick={this.doLogin}>
+                                            <span className="icon"><Icon icon="exclamation-circle"/></span>
+                                            <span>Login</span>
+                                        </a>
+                                    </p>
                                     <p className="control">
                                         <a className="button is-info" onClick={this.tableFlip}>
                                             <span className="icon"><Icon icon="exclamation-circle"/></span>

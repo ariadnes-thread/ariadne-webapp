@@ -20,7 +20,9 @@ const defaultPreferences = {"startZip":["write in!", "text"],
                             "elevation": ["20", "range"],
                             "distance": ["30", "range"],
                             "cofeeshops": ["2", "range"],
-                            "time": ["60", "range"],};
+                            "time": ["60", "range"],
+                            "origin": ["Origin PoI", "text"],
+                            "destination": ["Destination PoI", "text"]};
 
 export default class PreferencesList extends Component {
 
@@ -50,8 +52,8 @@ export default class PreferencesList extends Component {
                     pointsOfInterest,
                     preferences: {
                         ...this.state.preferences,
-                        // origin: pointsOfInterest[0],
-                        // destination: pointsOfInterest[1],
+                        origin: [0, "text"],
+                        destination: [0, "text"],
                     },
                 });
             })
@@ -65,7 +67,7 @@ export default class PreferencesList extends Component {
     handleChange(fieldName, fieldType, event) {
         // console.log(fieldName);
         // console.log(fieldType);
-        // console.log(event);
+        console.log(event);
         let value = event.target.value;
         // if (['origin', 'destination'].includes(fieldName)) {
         //     value = this.state.pointsOfInterest[value];
@@ -109,10 +111,22 @@ export default class PreferencesList extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log(this.state);
-
+        
         return Promise.resolve()
-            .then(() => this.props.auth.api.planningModule.planRoute({constraints: this.state.preferences}))
+            .then(() => {
+                let retpref = {};
+
+                Object.keys(this.state.preferences).map((preference) => {
+                    if (preference == "origin" || preference == "destination")
+                        retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
+                    else
+                        retpref[preference] = this.state.preferences[preference][0];
+                });
+                return retpref;
+
+            }).then((retpref) => {
+                return this.props.auth.api.planningModule.planRoute({constraints: retpref});
+            })
 
             // The format of the route returned from the API is different from what we use locally, see:
             // https://api.ariadnes-thread.me/#api-v1_Planning-planning_route
@@ -120,6 +134,7 @@ export default class PreferencesList extends Component {
             .then(geometry => this.props.visualizeRoute({geometry}))
             .catch(error => {
                 console.error(error);
+                console.error("error from submitting preferences");
                 // TODO: Replace with user-friendly warning/modal
                 alert(error.message);
             });
@@ -152,7 +167,7 @@ export default class PreferencesList extends Component {
                             <div className="field">
                                 <div className="control is-expanded has-icons-left">
                                     <div className="select">
-                                        <select onChange={this.handleChange.bind(this, 'origin')}>
+                                        <select onChange={this.handleChange.bind(this, 'origin', 'select')}>
                                             {this.renderPointsOfInterestSelect()}
                                         </select>
                                     </div>
@@ -169,7 +184,7 @@ export default class PreferencesList extends Component {
                             <div className="field">
                                 <div className="control is-expanded has-icons-left">
                                     <div className="select">
-                                        <select onChange={this.handleChange.bind(this, 'destination')}>
+                                        <select onChange={this.handleChange.bind(this, 'destination', 'select')}>
                                             {this.renderPointsOfInterestSelect()}
                                         </select>
                                     </div>
@@ -190,11 +205,7 @@ export default class PreferencesList extends Component {
                                 : <button onClick={this.handleSelectZip.bind(this,idx)}>Select on Map</button>} 
                              <input 
                                 type={this.state.preferences[preference][1]}
-                                defaultValue={
-                                    this.state.preferences[preference][1]!="text"
-                                    ? defaultPreferences[preference][0]
-                                    : this.state.preferences[preference][0]
-                                } 
+                                
                                 value={
                                     this.state.preferences[preference][0]
                                 } 
