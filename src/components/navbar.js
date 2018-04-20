@@ -8,6 +8,7 @@ import Icon from '@fortawesome/react-fontawesome';
 import {NavLink} from 'react-router-dom';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import LoginPanel from './login-panel';
 
 import Auth from '../util/auth';
 
@@ -50,10 +51,6 @@ export default class Navbar extends Component {
     tableFlip() {
         this.buttonClick();
         alert('(╯°□°)╯︵ ┻━┻ ');
-    }
-
-    doLogin() {
-    	alert("Want to login??  In progress");
     }
 
     render() {
@@ -103,10 +100,11 @@ export default class Navbar extends Component {
                             <div className="navbar-item">
                                 <div className="field is-grouped">
 	                                <p className="control">
-                                        <a className="button is-info" onClick={this.doLogin}>
+                                        <NavLink className="button is-info" activeClassName="is-active"
+                                                 to="/login">
                                             <span className="icon"><Icon icon="exclamation-circle"/></span>
                                             <span>Login</span>
-                                        </a>
+                                        </NavLink>
                                     </p>
                                     <p className="control">
                                         <a className="button is-info" onClick={this.tableFlip}>

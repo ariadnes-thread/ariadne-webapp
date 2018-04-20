@@ -1,5 +1,6 @@
 /**
  * @author Timur Kuzhagaliyev <tim.kuzh@gmail.com>
+ * @author Mary Giambrone
  * @copyright 2018
  * @license GPL-3.0
  */
@@ -12,6 +13,7 @@ import {Switch, Route, Redirect} from 'react-router-dom';
 
 import RouteVisualiser from './route-visualiser';
 import DebugPanel from './debug-panel';
+import LoginPanel from './login-panel';
 import Auth from '../util/auth';
 import Navbar from './navbar';
 
@@ -30,6 +32,7 @@ export default class App extends Component {
                 <Navbar auth={this.props.auth}/>
                 <Switch>
                     <Route path="/debug" component={(props) => <DebugPanel {...props} auth={this.props.auth}/>}/>
+                    <Route path="/login" component={(props) => <LoginPanel {...props} auth={this.props.auth}/>}/>
                     <Route exact path="/" component={(props) => <RouteVisualiser {...props} auth={this.props.auth}/>}/>
                     <Route><Redirect to="/"/></Route>
                 </Switch>

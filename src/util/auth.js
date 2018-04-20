@@ -48,6 +48,7 @@ export default class Auth {
     consumeAccessTokenData(tokenData) {
         this.accessToken = tokenData.accessToken;
         this.userData = tokenData.userData;
+        return tokenData;
     }
 
     getGoogleApiUrl() {

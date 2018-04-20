@@ -52,7 +52,6 @@ const MapComponent = withScriptjs(withGoogleMap(props => {
     if (!props.geometry) {
         return <GoogleMap 
             ref={(map) => {
-                 console.log(map);
                  if(map && props.bounds) {
                     map.fitBounds(props.bounds);
                     console.log(props.bounds);
