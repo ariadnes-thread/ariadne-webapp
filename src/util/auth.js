@@ -20,20 +20,57 @@ export default class Auth {
     }
 
     init() {
+        console.log(localStorage);
         // TODO: Do auth initialization here - extract auth data from localStorage, redirect, etc.
         return Promise.resolve()
-            .then(() => this.api.clearAllDataLoaderCache())
+            .then(() => {
+                if (!this.isAuthenticated())
+                {
+                    console.log("Missing authentication data!  (Automatically logging in for debugging purposes)");
+                    // return this.authenticateStaff({email: 'test@test.com', password: 'qwerty123456'});
+                }
+                else
+                {
+                    console.log("Has authentication data! :)");
+                    // return {accessToken: localStorage.accessToken, userData: [localStorage.userData]};
+                }
+            });
+            // .then((res) => {
+            //     console.log(res);
+            //     if (res) {
+            //     localStorage.setItem('accessToken', res.accessToken);
+            //     localStorage.setItem('userData', res.userData);
+            // }
+            // })
+            // .then(() => {
+            //     console.log(this.isAuthenticated());
+            // });
+            //.then(() => this.api.clearAllDataLoaderCache())
 
             // For now, we just instantly authorize the user with some fake data.
             // TODO: Replace this with attempting authenticate user from `localStorage`.
-            .then(() => this.authenticateStaff({username: 'any username works', password: 'same for password'}));
+            //.then(() => this.authenticateStaff({email: 'test@test.com', password: 'qwerty123456'}));
+    }
+
+    /*
+    * Checks if accessToken and userData are present (has an authenticated user logged in).
+    */
+    isAuthenticated() {
+        return !(localStorage.getItem('accessToken') === null || localStorage.getItem('userData') === null)
+    }
+
+    /*
+    * Clears the local storage (accessToken and userData) when the user logs out.
+    */
+    handleLogout() {
+        localStorage.clear();
     }
 
     /**
      * Authenticates a staff member using the API. Returns a promise that resolves if authentication is successful.
      *
      * @param {object} data
-     * @param {string} data.username
+     * @param {string} data.email
      * @param {string} data.password
      */
     authenticateStaff(data) {

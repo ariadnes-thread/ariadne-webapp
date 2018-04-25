@@ -109,7 +109,7 @@ export default class RoutesList extends Component {
     }
 
     render() {
-        if (this.state.selected == -1) {
+        if (this.state.selected === -1) {
         return (
             <div className="ariadne-scrollable routes-list">
                 <div className="ariadne-scroll-card">

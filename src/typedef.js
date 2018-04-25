@@ -16,6 +16,7 @@
  * @property {string} userId
  * @property {string} firstName
  * @property {string} lastName
+ * @property {string} email
  */
 
 /**

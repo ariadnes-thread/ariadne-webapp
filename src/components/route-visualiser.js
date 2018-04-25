@@ -13,6 +13,8 @@ import MapWithRoutes from './map-with-routes';
 import PreferencesList from './preferences-list';
 import RoutesList from './routes-list';
 import Auth from '../util/auth';
+import swal from 'sweetalert2'
+
 
 // Generate JSON for the example route and make formatting prettier
 const EXAMPLE_ROUTE = {
@@ -50,6 +52,50 @@ export default class RouteVisualiser extends Component {
 
         this.visualizeRoute = this.visualizeRoute.bind(this);
         this.selectedZip = 0;
+
+        if (this.props.auth.isAuthenticated())
+        {
+            swal({
+              title: 'Welcome!!',
+              text: 'Create a new route, or revisit an old route (and rate it!)',
+              type: 'success',
+              showCancelButton: true,
+              confirmButtonText: 'New Route',
+              cancelButtonText: 'Saved Route',
+              allowOutsideClick: false,
+              allowEscapeKey: false
+            }).then((result) => {
+                if (result.value)
+                {
+                    swal({
+                        title: '1. Choose your Location',
+                        type: 'question',
+                        text: 'Navigate on the map to the area you want to find routes in',
+                        allowOutsideClick: false,
+                        allowEscapeKey: false
+                    }).then((res) => {
+                        window.location = '/preferences';
+                        console.log(res);
+                    });
+                }
+                else if (result.dismiss === swal.DismissReason.cancel)
+                {
+                    window.location = '/login';
+                    swal("TODO: Redirect the user to their saved routes page");
+                }
+            }
+            );
+        }
+        else {
+            swal({
+              title: 'Error!',
+              text: 'Please log in:',
+              type: 'error',
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              confirmButtonText: 'Go to Log In page'
+            }).then(() => window.location='/login');
+        }
     }
 
 
@@ -70,17 +116,17 @@ export default class RouteVisualiser extends Component {
 
     handleMapClick(callback, eventData) {
         /* eslint-disable no-undef */
-        const geocoder = new google.maps.Geocoder;
+        const geocoder = new google.maps.Geocoder();
         /* eslint-enable no-undef */
-        const zipret = geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
+        geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
             {
-                if (status == 'OK')
+                if (status === 'OK')
                 {
                     if (results[0])
                     {
                         for (let i = 0; i < results[0].address_components.length; i++)
                         {
-                            if (results[0].address_components[i].types[0] == "postal_code")
+                            if (results[0].address_components[i].types[0] === "postal_code")
                             {
                                 let zip = results[0].address_components[i].short_name;
                                 callback.setZip(zip, callback);

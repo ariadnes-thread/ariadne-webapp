@@ -59,8 +59,12 @@ export default class PreferencesList extends Component {
             })
             .catch(error => {
                 console.error(error);
+                console.error(JSON.stringify(error));
                 // TODO: Replace this with a nice modal popup
-                alert('Error occurred while fetching points of interest. Check console.');
+                // If not logged in, there will be a different error that prevents anything from happening.
+                if (this.props.auth.isAuthenticated())
+                    console.log('Error occurred while fetching points of interest. Check console.');
+//                    alert('Error occurred while fetching points of interest. Check console.');
             });
     }
 
@@ -87,21 +91,21 @@ export default class PreferencesList extends Component {
     }
 
     updateZipPref(zip) {
-        if (this.state.selectedInput == 0)
+        if (this.state.selectedInput === 0)
         {        
             this.setState({
                 preferences: {
                     ...this.state.preferences,
-                    ["startZip"]: [zip, "text"],
+                    "startZip": [zip, "text"],
                 },
             });
         }
-        else if (this.state.selectedInput == 1)
+        else if (this.state.selectedInput === 1)
         {
             this.setState({
                 preferences: {
                     ...this.state.preferences,
-                    ["endZip"]: [zip, "text"],
+                    "endZip": [zip, "text"],
                 },
             });
         }
@@ -117,7 +121,7 @@ export default class PreferencesList extends Component {
                 let retpref = {};
 
                 Object.keys(this.state.preferences).map((preference) => {
-                    if (preference == "origin" || preference == "destination")
+                    if (preference === "origin" || preference === "destination")
                         retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
                     else
                         retpref[preference] = this.state.preferences[preference][0];
@@ -200,7 +204,7 @@ export default class PreferencesList extends Component {
                         this.state ? Object.keys(this.state.preferences).map((preference, idx) => {
                             return (<div key={'preference-input'+idx}>
                              {preference}:
-                             {this.state.preferences[preference][1]!="text"
+                             {this.state.preferences[preference][1]!=="text"
                                 ? this.state.preferences[preference][0]
                                 : <button onClick={this.handleSelectZip.bind(this,idx)}>Select on Map</button>} 
                              <input 

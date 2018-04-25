@@ -139,10 +139,23 @@ export default class MapWithRoutes extends Component {
         if (props.route) this.fetchDirectionBasedOnRoute(props.route);
     }
 
+
+
     fetchDirectionBasedOnRoute(coordArray) {
         // Need to disable `no-undef` check, otherwise ESLint complains about `google` being
         // undefined while it is actually provided by `react-google-maps` through `withGoogleMap`.
         /* eslint-disable no-undef */
+        directionsCallback = function (result, status) {
+                    if (status === google.maps.DirectionsStatus.OK) {
+                        this.setState({
+                            bounds: bounds,
+                            directions: this.state.directions.concat([result])//result, // TO DO: Make this display all the routes at once
+                        });
+                    } else {
+                        alert('Error'); // TODO: Replace this with nicer warning
+                        console.error(`error fetching directions ${result}`);
+                    }
+                };
 
         let bounds = new google.maps.LatLngBounds();
          this.setState(
@@ -184,17 +197,7 @@ export default class MapWithRoutes extends Component {
                 waypoints,
                 optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.WALKING,
-            }, (result, status) => {
-                if (status === google.maps.DirectionsStatus.OK) {
-                    this.setState({
-                        bounds: bounds,
-                        directions: this.state.directions.concat([result])//result, // TO DO: Make this display all the routes at once
-                    });
-                } else {
-                    alert('Error'); // TODO: Replace this with nicer warning
-                    console.error(`error fetching directions ${result}`);
-                }
-            });
+            }, directionsCallback());
         }
         /* eslint-enable no-undef */
     }

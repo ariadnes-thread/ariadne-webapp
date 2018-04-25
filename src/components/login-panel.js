@@ -7,8 +7,8 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
-
-import MapWithRoutes from './map-with-routes';
+// import swal from 'sweetalert2'
+// import MapWithRoutes from './map-with-routes';
 import Auth from '../util/auth';
 
 
@@ -22,12 +22,19 @@ export default class LoginPanel extends Component {
         super(props);
 
         this.state = {
-            username:"",
+            email:"",
             password:""
         };
+        console.log("On entry to login panel, are we authenticated? " + this.props.auth.isAuthenticated());
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        // swal({
+        //   title: 'Error!',
+        //   text: 'Do you want to continue',
+        //   type: 'error',
+        //   confirmButtonText: 'Cool'
+        // });
     }
 
     handleChange(event) {
@@ -41,13 +48,23 @@ export default class LoginPanel extends Component {
             .then(() => {
                 console.log(this.state);
                 return this.props.auth.authenticateStaff(this.state);
-            }).then((res) => {console.log(res);})
+            }).then((res) => {
+                console.log(res);
+                localStorage.setItem('accessToken', res.accessToken);
+                localStorage.setItem('userData', res.userData);
+            }).then(() => {
+                window.location = '/route';
+            }
+            )
             .catch(error => {
+                console.error(JSON.stringify(error, null, 2));
                 console.error(error);
                 // TODO: Replace with user-friendly warning/modal
                 alert('Error occurred during form submission. Check console.');
             });
     }
+
+
 
     render() {
         return (
@@ -59,9 +76,9 @@ export default class LoginPanel extends Component {
                                     <p>Login below.</p>
                                     <hr/>
                                     <form onSubmit={this.handleSubmit}>
-                                        Username: <input type="text" name="username" onChange={this.handleChange}/>
+                                        Email: <input type="email" name="email" onChange={this.handleChange}/>
                                         <br/>
-                                        Password: <input type="text" name="password" onChange={this.handleChange}/>
+                                        Password: <input type="password" name="password" onChange={this.handleChange}/>
                                         <hr/>
                                         <button className="button is-info">Login</button>
                                     </form>
