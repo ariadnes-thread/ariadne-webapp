@@ -145,7 +145,7 @@ export default class MapWithRoutes extends Component {
         // Need to disable `no-undef` check, otherwise ESLint complains about `google` being
         // undefined while it is actually provided by `react-google-maps` through `withGoogleMap`.
         /* eslint-disable no-undef */
-        directionsCallback = function (result, status) {
+        directionsCallback =  (result, status) => {
                     if (status === google.maps.DirectionsStatus.OK) {
                         this.setState({
                             bounds: bounds,
@@ -197,7 +197,7 @@ export default class MapWithRoutes extends Component {
                 waypoints,
                 optimizeWaypoints: true,
                 travelMode: google.maps.TravelMode.WALKING,
-            }, directionsCallback());
+            }, directionsCallback);
         }
         /* eslint-enable no-undef */
     }
