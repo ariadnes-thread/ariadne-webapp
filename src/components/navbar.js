@@ -152,6 +152,15 @@ export default class Navbar extends Component {
                                             <span>Debug</span>
                                         </NavLink>
                                     </p>
+                                    <p className="control">
+                                        <NavLink className="button is-info" activeClassName="is-active"
+                                                 to="/saved" onClick={this.buttonClick}>
+                                        <span className="icon">
+                                            <Icon icon="magic"/>
+                                        </span>
+                                            <span>Saved Routes</span>
+                                        </NavLink>
+                                    </p>
                                 </div>
                             </div>
                         </div>

@@ -53,7 +53,7 @@ export default class RouteVisualiser extends Component {
         this.visualizeRoute = this.visualizeRoute.bind(this);
         this.selectedZip = 0;
 
-        if (this.props.auth.isAuthenticated())
+        if (this.props.auth.isAuthenticated() && (this.state.route === null))
         {
             swal({
               title: 'Welcome!!',
@@ -63,14 +63,14 @@ export default class RouteVisualiser extends Component {
               confirmButtonText: 'New Route',
               cancelButtonText: 'Saved Route',
               allowOutsideClick: false,
-              allowEscapeKey: false
+              // allowEscapeKey: false
             }).then((result) => {
                 if (result.value)
                 {
                     swal({
-                        title: '1. Choose your Location',
+                        title: 'Tell us your preferences!',
                         type: 'question',
-                        text: 'Navigate on the map to the area you want to find routes in',
+                        text: 'Start by telling us about your ideal route:',
                         allowOutsideClick: false,
                         allowEscapeKey: false
                     }).then((res) => {
@@ -80,8 +80,8 @@ export default class RouteVisualiser extends Component {
                 }
                 else if (result.dismiss === swal.DismissReason.cancel)
                 {
-                    window.location = '/login';
-                    swal("TODO: Redirect the user to their saved routes page");
+                    window.location = '/saved';
+                    // swal("TODO: Redirect the user to their saved routes page");
                 }
             }
             );
@@ -146,25 +146,16 @@ export default class RouteVisualiser extends Component {
                         <div className="column is-one-third has-text-left">
                             <div className="card">
                                 <div className="card-content card-ariadne-lists">
-                                    <div className="preferences-list">
-                                    <p>Choose your route preferences:</p>
-                                    <br/>
-                                    <PreferencesList
-                                        auth={this.props.auth}
-                                        ref="preferencesList"
-                                        visualizeRoute={this.visualizeRoute}
-                                        selectedPoint={this.state.selectedZip}
-                                        />
-                                    </div>
-                                    <hr/>
+                                    TO DO: Edit detailed preferences
                                     <div className="container-routes-list">
-                                    <p>Results List:</p>
-                                    <br/>
-                                    <RoutesList 
-                                        auth={this.props.auth} 
-                                        ref="routesList" 
-                                        visualizeRoute={this.visualizeRoute}
-                                    />
+                                    <hr/>
+                                        <p>Results List:</p>
+                                        <br/>
+                                        <RoutesList 
+                                            auth={this.props.auth} 
+                                            ref="routesList" 
+                                            visualizeRoute={this.visualizeRoute}
+                                        />
                                     </div>
                                 </div>
 

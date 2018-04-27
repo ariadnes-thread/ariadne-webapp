@@ -133,7 +133,7 @@ export default class PreferencesSelection extends Component {
 
     componentDidMount() {
         Promise.resolve()
-            .then(() => this.props.auth.api.planningModule.fetchPointsOfInterest())
+            // .then(() => this.props.auth.api.planningModule.fetchPointsOfInterest())
             .then(pointsOfInterest => {
                 this.setState({
                     pointsOfInterest,
@@ -201,27 +201,31 @@ export default class PreferencesSelection extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        console.log("submitting preferencecs");
         
         return Promise.resolve()
             .then(() => {
-                let retpref = {};
+                return this.state;
+                // let retpref = {};
 
-                Object.keys(this.state).map((preference) => {
-                    // if (preference === "origin" || preference === "destination")
-                    //     retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
-                    // else
-                        retpref[preference] = this.state.preferences[preference][0];
-                });
-                return retpref;
+                // Object.keys(this.state).map((preference) => {
+                //     // if (preference === "origin" || preference === "destination")
+                //     //     retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
+                //     // else
+                //         retpref[preference] = this.state[preference];
+                // });
+                // return retpref;
 
             }).then((retpref) => {
-                return this.props.auth.api.planningModule.planRoute({constraints: retpref});
+                console.log("redirecting");
+                window.location = '/route';
+                // return this.props.auth.api.planningModule.planRoute({constraints: retpref});
             })
 
             // The format of the route returned from the API is different from what we use locally, see:
             // https://api.ariadnes-thread.me/#api-v1_Planning-planning_route
-            .then(routeData => routeData.route)
-            .then(geometry => this.props.visualizeRoute({geometry}))
+            // .then(routeData => routeData.route)
+            // .then(geometry => this.props.visualizeRoute({geometry}))
             .catch(error => {
                 console.error(error);
                 console.error("error from submitting preferences");
@@ -314,7 +318,7 @@ export default class PreferencesSelection extends Component {
                 <div className="container">
                     <div className="columns is-centered">
                         <div className="column has-text-centered">
-                        <form>
+                        <form onSubmit={this.handleSubmit}>
                             <div className="card">
                                 <div className="card-content">
                                     Select all of your preferences here!
@@ -382,7 +386,7 @@ export default class PreferencesSelection extends Component {
                                                 <input type="checkbox" 
                                                     name="length" 
                                                     value="distance" 
-                                                    required="true" 
+                                                    required={!this.state.time[0]}
                                                     onChange={this.onCheckboxChange.bind(this)}
                                                 defaultChecked/>
                                                 Distance (miles):<br/>
@@ -391,7 +395,7 @@ export default class PreferencesSelection extends Component {
                                                     name="length" 
                                                     value="time" 
                                                     onChange={this.onCheckboxChange.bind(this)}
-                                                required="true"/>
+                                                required={!this.state.distance[0]}/>
                                                 Time (minutes):<br/>
                                             </div>
                                         </div>

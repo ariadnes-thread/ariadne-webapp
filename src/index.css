@@ -66,10 +66,10 @@ html {
 
 
 .container-routes-list {
-	max-height: 40%;
+	/*max-height: 40%;*/
 	/*max-height: 50%;*/
 	box-sizing: border-box;
-	height: 40%;
+	/*height: 40%;*/
 	/*max-height: 200px;/*200px;*/
 }
 
