@@ -9,6 +9,7 @@
     "@fortawesome/react-fontawesome": "0.0.18",
     "bluebird": "^3.5.1",
     "bulma": "^0.6.2",
+    "joi": "^13.2.0",
     "prop-types": "^15.6.1",
     "react": "^16.3.1",
     "react-dom": "^16.3.1",
