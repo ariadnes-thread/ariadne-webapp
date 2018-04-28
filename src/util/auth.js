@@ -28,14 +28,14 @@ export default class Auth {
                 {
                     console.log("Missing authentication data!  (Automatically logging in for debugging purposes)");
                     // return this.authenticateStaff({email: 'test@test.com', password: 'qwerty123456'});
-                    return {accessToken: localStorage.accessToken, userData: [localStorage.userData]};
+                    return {accessToken: localStorage.accessToken, userData: localStorage.userData};
                 }
                 else
                 {
                     console.log("Has authentication data! :)");
-                    return {accessToken: localStorage.accessToken, userData: [localStorage.userData]};
+                    return {accessToken: localStorage.accessToken, userData: localStorage.userData};
                 }
-            });
+            }).then(tokenData => this.consumeAccessTokenData(tokenData));
             // .then((res) => {
             //     console.log(res);
             //     if (res) {
@@ -65,6 +65,7 @@ export default class Auth {
     */
     handleLogout() {
         localStorage.clear();
+        this.api.clearAllDataLoaderCache();
     }
 
     /**
