@@ -50,9 +50,9 @@ const geometryToComponentWithLatLng = function(geometry) {
 const MapComponent = withScriptjs(withGoogleMap(props => {
     // No geometry, try to render the route using directions.
     if (!props.geometry) {
-        return <GoogleMap 
+        return <GoogleMap
             ref={(map) => {
-                 if(map && props.bounds) {
+                if(map && props.bounds) {
                     map.fitBounds(props.bounds);
                     console.log(props.bounds);
                     console.log(props.bounds.getCenter().lat() + ", " + props.bounds.getCenter().lng());
@@ -60,13 +60,13 @@ const MapComponent = withScriptjs(withGoogleMap(props => {
                 }}}
             center={props.bounds ? props.bounds.getCenter() : props.defaultCenter}
             onClick={(eventData) =>{props.clickHandle(props.callbackClick, eventData);}}
-            defaultZoom={props.defaultZoom} 
+            defaultZoom={props.defaultZoom}
             defaultCenter={props.defaultCenter}
         >
             {props.directions && props.directions.map((direction, idx) => {
                 return (
                     <div key={'direction-input'+idx}>
-                                    <DirectionsRenderer directions={direction}/>
+                        <DirectionsRenderer directions={direction}/>
                     </div>
                 );
             })}
@@ -146,22 +146,22 @@ export default class MapWithRoutes extends Component {
         // undefined while it is actually provided by `react-google-maps` through `withGoogleMap`.
         /* eslint-disable no-undef */
         const directionsCallback =  (result, status) => {
-                    if (status === google.maps.DirectionsStatus.OK) {
-                        this.setState({
-                            bounds: bounds,
-                            directions: this.state.directions.concat([result])//result, // TO DO: Make this display all the routes at once
-                        });
-                    } else {
-                        alert('Error'); // TODO: Replace this with nicer warning
-                        console.error(`error fetching directions ${result}`);
-                    }
-                };
+            if (status === google.maps.DirectionsStatus.OK) {
+                this.setState({
+                    bounds: bounds,
+                    directions: this.state.directions.concat([result])//result, // TO DO: Make this display all the routes at once
+                });
+            } else {
+                alert('Error'); // TODO: Replace this with nicer warning
+                console.error(`error fetching directions ${result}`);
+            }
+        };
 
         let bounds = new google.maps.LatLngBounds();
-         this.setState(
-            {directions: [],             
-            bounds: bounds
-         });
+        this.setState(
+            {directions: [],
+                bounds: bounds
+            });
 
         const arrayClone = coordArray.slice(0);
         for (let n = 0; n < arrayClone.length; n++)

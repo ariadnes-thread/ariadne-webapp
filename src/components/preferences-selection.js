@@ -26,24 +26,6 @@ import {Switch, Route, Redirect} from 'react-router-dom';
 import Auth from '../util/auth';
 
 
-const defaultState = {
-    overallZoom: 16,
-    overallCenter: {lat: 34.138932, lng: -118.125339},
-    BikeOrRun: "bike",
-    LoopOrP2P: "loop",
-    distance: [true, 0, 10],
-    time: [false, 0, 60],
-    start: "location",
-    end: "location",
-    startLoc: {lat: 34.138932, lng: -118.125339},
-    endLoc: {lat: 34.138932, lng: -118.125339},
-    elevation: [true, 0, 1000],
-    setting: "urban",
-    node: [],
-    edge: []
-};
-
-
 const MapComponentLocationRadius = compose(
     lifecycle({
         componentWillMount() {
@@ -175,7 +157,7 @@ export default class PreferencesSelection extends Component {
     constructor(props) {
         super(props);
 
-        this.state = defaultState;
+        this.state = this.props.preferencesState.state;
 
         // this.state = {preferences: defaultPreferences,
         //                 pointsOfInterest: null,
@@ -186,7 +168,6 @@ export default class PreferencesSelection extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
 
         console.log(this.state);
-
     }
 
     componentDidMount() {
@@ -244,20 +225,11 @@ export default class PreferencesSelection extends Component {
 
         return Promise.resolve()
             .then(() => {
-                return this.state;
-                // let retpref = {};
-
-                // Object.keys(this.state).map((preference) => {
-                //     // if (preference === "origin" || preference === "destination")
-                //     //     retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
-                //     // else
-                //         retpref[preference] = this.state[preference];
-                // });
-                // return retpref;
-
-            }).then((retpref) => {
+                this.props.preferencesState.setPrefs({...this.state, prefSubmitted: true});
+            }).then(() => {
                 console.log("redirecting");
-                this.props.history.push('/route');
+                console.log(this.props.preferencesState.getPrefs());
+                this.props.history.push('/');
                 // window.location = '/route';
                 // return this.props.auth.api.planningModule.planRoute({constraints: retpref});
             })
@@ -347,11 +319,6 @@ export default class PreferencesSelection extends Component {
             }
         });
     }
-
-    // onBoundsChangedStartEnd(mapInfo, parent, startOrEnd) {
-    //
-    // }
-
 
     onRadioChange(event) {
         this.setState({
@@ -665,7 +632,6 @@ export default class PreferencesSelection extends Component {
                             </form>
                         </div>
                     </div>
-                    d
                 </div>
             </div>
         );

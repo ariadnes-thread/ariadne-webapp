@@ -65,19 +65,21 @@ export default class Navbar extends Component {
         if (this.props.auth.isAuthenticated())
         {
             swal({
-                  title: 'Log Out',
-                  text: 'Do you want to continue?',
-                  type: 'question',
-                  showCancelButton: true,
-                  confirmButtonText: 'Yes, Logout',
-        
-                }).then((result) => {
-                    console.log("Logging out...");
-                    this.props.auth.handleLogout();
-                });
+                title: 'Log Out',
+                text: 'Do you want to continue?',
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Logout',
+
+            }).then((result) => {
+                console.log("Logging out...");
+                this.props.auth.handleLogout();
+            });
         }
         else {
-            window.location = '/login';
+            this.props.history.push('/login');
+
+            // window.location = '/login';
 //             swal({
 //                   title: 'Log In',
 //                   text: 'Enter your email and password',
@@ -104,7 +106,7 @@ export default class Navbar extends Component {
 //                         // resolve([html.email.val()]);
 //                     })
 //                   }
-        
+
 //                 }).then((result) => {
 //                     console.log(result);
 //                     // this.props.auth.handleLogout();
@@ -173,7 +175,7 @@ export default class Navbar extends Component {
                                         <a className="button is-info" onClick={this.loginButtonAction}>
                                             <span className="icon"><Icon icon="exclamation-circle"/></span>
                                             <span>{[this.props.auth.isAuthenticated()]
-                                                ? "Log In" 
+                                                ? "Log In"
                                                 : "Log Out"}</span>
                                         </a>
                                     </p>

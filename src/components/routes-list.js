@@ -10,35 +10,35 @@ import PropTypes from 'prop-types';
 import Auth from '../util/auth';
 
 const EXAMPLE_ROUTE_JSON_WITH_INFO = [
-{
-    "name": "Avery to Catalina", 
-    "route": [
-    [34.14093, -118.129366],
-    [34.140947, -118.12801],
-    [34.140388, -118.128002],
-    [34.139434, -118.122862]
-    ],
-    "elevation": "1500"
-},
-{
-    "name": "Avery to Colorado", 
-    "route": [
-    [34.139434, -118.122862],
-    [34.141804, -118.121323],
-    [34.144651, -118.121418],
-    [34.145987, -118.117835]
-    ],
-    "elevation": "2700"
-},
-{
-    "name": "Avery to Gym", 
-    "route": [
-    [34.140478, -118.122876],
-    [34.134290, -118.125798]
-    ],
-    "elevation": "100"
-}
-  ];
+    {
+        "name": "Avery to Catalina",
+        "route": [
+            [34.14093, -118.129366],
+            [34.140947, -118.12801],
+            [34.140388, -118.128002],
+            [34.139434, -118.122862]
+        ],
+        "elevation": "1500"
+    },
+    {
+        "name": "Avery to Colorado",
+        "route": [
+            [34.139434, -118.122862],
+            [34.141804, -118.121323],
+            [34.144651, -118.121418],
+            [34.145987, -118.117835]
+        ],
+        "elevation": "2700"
+    },
+    {
+        "name": "Avery to Gym",
+        "route": [
+            [34.140478, -118.122876],
+            [34.134290, -118.125798]
+        ],
+        "elevation": "100"
+    }
+];
 export default class RoutesList extends Component {
 
     static propTypes = {
@@ -110,41 +110,41 @@ export default class RoutesList extends Component {
 
     render() {
         if (this.state.selected === -1) {
-        return (
-            <div className="ariadne-scrollable routes-list">
-                <div className="ariadne-scroll-card">
-                {this.renderRouteList()}
+            return (
+                <div className="ariadne-scrollable routes-list">
+                    <div className="ariadne-scroll-card">
+                        {this.renderRouteList()}
+                    </div>
                 </div>
-            </div>
-        );
-    }
-    else
+            );
+        }
+        else
         {
             return (
                 <div className="routes-list">
                     <p> {this.state.routes[this.state.selected].name}: </p>
                     <div className="ariadne-scrollable card-routes-list">
-                    <div className="ariadne-scroll-card">
-                    <p> Elevation Gain: {this.state.routes[this.state.selected].elevation} ft</p>
-                    <p> This will be a concise description of the route. </p>
-                    <p> Number of waypoints: {this.state.routes[this.state.selected].route.length}</p>
-                    <p> More description of the route. </p>
-                    <p> More description of the route. (Testing scroll functionality) </p>
-                    <p> More description of the route. </p>
-                    <p> More description of the route. </p>
-                    <p> More description of the route. (Testing scroll functionality) </p>
-                    <p> More description of the route. (Testing scroll functionality) </p>
-                    <br/>
-                    </div>
+                        <div className="ariadne-scroll-card">
+                            <p> Elevation Gain: {this.state.routes[this.state.selected].elevation} ft</p>
+                            <p> This will be a concise description of the route. </p>
+                            <p> Number of waypoints: {this.state.routes[this.state.selected].route.length}</p>
+                            <p> More description of the route. </p>
+                            <p> More description of the route. (Testing scroll functionality) </p>
+                            <p> More description of the route. </p>
+                            <p> More description of the route. </p>
+                            <p> More description of the route. (Testing scroll functionality) </p>
+                            <p> More description of the route. (Testing scroll functionality) </p>
+                            <br/>
+                        </div>
                     </div>
                     <div className="ariadne-button-no-scroll">
-                    <button className="button is-info" onClick={this.handleChange.bind(this, -1)}> 
-                    Back to Results List 
-                    </button>
+                        <button className="button is-info" onClick={this.handleChange.bind(this, -1)}>
+                            Back to Results List
+                        </button>
                     </div>
 
                 </div>
-            ); 
+            );
         }
     }
 }
