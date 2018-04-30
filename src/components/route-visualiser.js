@@ -74,13 +74,17 @@ export default class RouteVisualiser extends Component {
                         allowOutsideClick: false,
                         allowEscapeKey: false
                     }).then((res) => {
-                        window.location = '/preferences';
-                        console.log(res);
+                        // TODO: change to React Router instead of window.location
+                        this.props.history.push('/preferences');
+                        // window.location = '/preferences';
+                        // console.log(res);
                     });
                 }
                 else if (result.dismiss === swal.DismissReason.cancel)
                 {
-                    window.location = '/saved';
+                    this.props.history.push('/saved');
+
+                    //window.location = '/saved';
                     // swal("TODO: Redirect the user to their saved routes page");
                 }
             }
@@ -94,7 +98,10 @@ export default class RouteVisualiser extends Component {
               allowOutsideClick: false,
               allowEscapeKey: false,
               confirmButtonText: 'Go to Log In page'
-            }).then(() => window.location='/login');
+            }).then(() =>
+                this.props.history.push('/login')
+                //window.location='/login'
+            );
         }
     }
 

@@ -53,7 +53,8 @@ export default class SavedRoutes extends Component {
                 localStorage.setItem('accessToken', res.accessToken);
                 localStorage.setItem('userData', res.userData);
             }).then(() => {
-                window.location = '/route';
+                this.props.history.push('/route');
+                // window.location = '/route';
             }
             )
             .catch(error => {

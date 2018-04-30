@@ -85,6 +85,19 @@ export default class App extends Component {
     //     }
     // }
 
+
+// instead of passing methods back and forth, create a new class thats called preferencesstate and just pass that instance around
+// so that it is the same in preferencesselection and routevisualizer
+// the routes can just be internal to the vis, upon redoing stuff make sure to delete old routes
+ 
+    getPrefs() {
+
+    }
+
+    setPrefs() {
+
+    }
+
     render() {
         return (
             <div className="App">
