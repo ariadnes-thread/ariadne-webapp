@@ -26,9 +26,9 @@ export default class Auth {
             .then(() => {
                 if (!this.isAuthenticated())
                 {
+                    // TODO: For now, just automatically initializing
                     console.log("Missing authentication data!  (Automatically logging in for debugging purposes)");
-                    // return this.authenticateStaff({email: 'test@test.com', password: 'qwerty123456'});
-                    return {accessToken: localStorage.accessToken, userData: localStorage.userData};
+                    return this.doLogin({email: 'test@test.com', password: 'qwerty123456'});
                 }
                 else
                 {
@@ -36,21 +36,7 @@ export default class Auth {
                     return {accessToken: localStorage.accessToken, userData: localStorage.userData};
                 }
             }).then(tokenData => this.consumeAccessTokenData(tokenData));
-            // .then((res) => {
-            //     console.log(res);
-            //     if (res) {
-            //     localStorage.setItem('accessToken', res.accessToken);
-            //     localStorage.setItem('userData', res.userData);
-            // }
-            // })
-            // .then(() => {
-            //     console.log(this.isAuthenticated());
-            // });
-            //.then(() => this.api.clearAllDataLoaderCache())
-
-            // For now, we just instantly authorize the user with some fake data.
-            // TODO: Replace this with attempting authenticate user from `localStorage`.
-            //.then(() => this.authenticateStaff({email: 'test@test.com', password: 'qwerty123456'}));
+        //.then(() => this.api.clearAllDataLoaderCache())
     }
 
     /*
@@ -60,6 +46,23 @@ export default class Auth {
         return !(localStorage.getItem('accessToken') === null || localStorage.getItem('userData') === null)
     }
 
+    doLogin(loginObj) {
+        Promise.resolve()
+            .then(() => {
+                return this.authenticateStaff(loginObj);
+            }).then((res) => {
+                console.log(res);
+                localStorage.setItem('accessToken', res.accessToken);
+                localStorage.setItem('userData', res.userData);
+            }
+        )
+            .catch(error => {
+                console.error(JSON.stringify(error, null, 2));
+                console.error(error);
+                // TODO: Replace with user-friendly warning/modal
+                alert('Error occurred during form submission. Check console.');
+            });
+    }
     /*
     * Clears the local storage (accessToken and userData) when the user logs out.
     */

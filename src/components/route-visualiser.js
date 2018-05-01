@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 
 import MapWithRoutes from './map-with-routes';
-import PreferencesList from './preferences-list';
 import RoutesList from './routes-list';
 import Auth from '../util/auth';
 import swal from 'sweetalert2'
@@ -47,55 +46,55 @@ export default class RouteVisualiser extends Component {
         this.state = {
             jsonInput: EXAMPLE_ROUTE_JSON,
             route: null,
-            geometry: null,
-            userPrefsState: this.props.preferencesState
+            geometry: null//,
         };
 
         this.visualizeRoute = this.visualizeRoute.bind(this);
         this.selectedZip = 0;
 
         console.log(this.state);
+        console.log(this.props);
         console.log("hello");
+        console.log(this.props.auth.isAuthenticated(), !this.props.preferencesState, this.props.preferencesState && !this.props.preferencesState.getPrefs().prefSubmitted);
+        console.log(this.props.auth.api.planningModule.planRoute({constraints: this.props.preferencesState.getPrefs()}));
 
-        if (this.props.auth.isAuthenticated() && (!this.props.userPrefs || !this.props.userPrefsState.getPrefs().prefSubmitted))
+
+        if (this.props.auth.isAuthenticated())
         {
-            swal({
-                title: 'Welcome!!',
-                text: 'Create a new route, or revisit an old route (and rate it!)',
-                type: 'success',
-                showCancelButton: true,
-                confirmButtonText: 'New Route',
-                cancelButtonText: 'Saved Route',
-                allowOutsideClick: false,
-                // allowEscapeKey: false
-            }).then((result) => {
-                    if (result.value)
-                    {
-                        swal({
-                            title: 'Tell us your preferences!',
-                            type: 'question',
-                            showCancelButton: true,
-                            text: 'Start by telling us about your ideal route:',
-                            confirmButtonText: 'Detailed Preferences',
-                            cancelButtonText: 'Route in a Sentence',
-                            allowOutsideClick: false,
-                            allowEscapeKey: false
-                        }).then((res) => {
-                            if (res.value)
-                                this.props.history.push('/preferences');
-                            else if (res.dismiss === swal.DismissReason.cancel)
-                                this.props.history.push('/preferences-sentence');
-                        });
+            if ((!this.props.preferencesState || !this.props.preferencesState.getPrefs().prefSubmitted)) {
+                swal({
+                    title: 'Welcome!!',
+                    text: 'Create a new route, or revisit an old route (and rate it!)',
+                    type: 'success',
+                    showCancelButton: true,
+                    confirmButtonText: 'New Route',
+                    cancelButtonText: 'Saved Route',
+                    allowOutsideClick: false,
+                    // allowEscapeKey: false
+                }).then((result) => {
+                        if (result.value) {
+                            swal({
+                                title: 'Tell us your preferences!',
+                                type: 'question',
+                                showCancelButton: true,
+                                text: 'Start by telling us about your ideal route:',
+                                confirmButtonText: 'Detailed Preferences',
+                                cancelButtonText: 'Route in a Sentence',
+                                allowOutsideClick: false,
+                                allowEscapeKey: false
+                            }).then((res) => {
+                                if (res.value)
+                                    this.props.history.push('/preferences');
+                                else if (res.dismiss === swal.DismissReason.cancel)
+                                    this.props.history.push('/preferences-sentence');
+                            });
+                        }
+                        else if (result.dismiss === swal.DismissReason.cancel) {
+                            this.props.history.push('/saved');
+                        }
                     }
-                    else if (result.dismiss === swal.DismissReason.cancel)
-                    {
-                        this.props.history.push('/saved');
-
-                        //window.location = '/saved';
-                        // swal("TODO: Redirect the user to their saved routes page");
-                    }
-                }
-            );
+                );
+            }
         }
         else {
             swal({
@@ -105,10 +104,7 @@ export default class RouteVisualiser extends Component {
                 allowOutsideClick: false,
                 allowEscapeKey: false,
                 confirmButtonText: 'Go to Log In page'
-            }).then(() =>
-                    this.props.history.push('/login')
-                //window.location='/login'
-            );
+            }).then(() =>  this.props.history.push('/login'));
         }
     }
 

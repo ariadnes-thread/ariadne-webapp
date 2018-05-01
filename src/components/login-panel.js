@@ -7,8 +7,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
-// import swal from 'sweetalert2'
-// import MapWithRoutes from './map-with-routes';
 import Auth from '../util/auth';
 
 
@@ -29,12 +27,6 @@ export default class LoginPanel extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        // swal({
-        //   title: 'Error!',
-        //   text: 'Do you want to continue',
-        //   type: 'error',
-        //   confirmButtonText: 'Cool'
-        // });
     }
 
     handleChange(event) {
@@ -47,16 +39,11 @@ export default class LoginPanel extends Component {
         Promise.resolve()
             .then(() => {
                 console.log(this.state);
-                return this.props.auth.authenticateStaff(this.state);
-            }).then((res) => {
-                console.log(res);
-                localStorage.setItem('accessToken', res.accessToken);
-                localStorage.setItem('userData', res.userData);
+                return this.props.auth.doLogin(this.state);
             }).then(() => {
                 this.props.history.push('/route');
-                //window.location = '/route';
             }
-            )
+        )
             .catch(error => {
                 console.error(JSON.stringify(error, null, 2));
                 console.error(error);
@@ -72,21 +59,21 @@ export default class LoginPanel extends Component {
             <section className="section ariadne-section-uniform-padding">
                 <div className="container">
                     <div className="columns is-centered">
-                            <div className="card">
-                                <div className="card-content has-text-centered">
-                                    <p>Login below.</p>
+                        <div className="card">
+                            <div className="card-content has-text-centered">
+                                <p>Login below.</p>
+                                <hr/>
+                                <form onSubmit={this.handleSubmit}>
+                                    Email: <input type="email" name="email" onChange={this.handleChange}/>
+                                    <br/>
+                                    Password: <input type="password" name="password" onChange={this.handleChange}/>
                                     <hr/>
-                                    <form onSubmit={this.handleSubmit}>
-                                        Email: <input type="email" name="email" onChange={this.handleChange}/>
-                                        <br/>
-                                        Password: <input type="password" name="password" onChange={this.handleChange}/>
-                                        <hr/>
-                                        <button className="button is-info">Login</button>
-                                    </form>
-                                </div>
+                                    <button className="button is-info">Login</button>
+                                </form>
                             </div>
                         </div>
                     </div>
+                </div>
             </section>
         );
     }

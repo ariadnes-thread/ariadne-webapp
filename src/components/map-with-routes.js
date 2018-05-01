@@ -17,6 +17,7 @@ import Auth from '../util/auth';
 const geometryToComponentWithLatLng = function(geometry) {
     const typeFromThis = Array.isArray(geometry);
     const type = typeFromThis ? this.type : geometry.type;
+
     /** @type {object[]} */
     let coordinates = typeFromThis ? geometry : geometry.coordinates;
 
@@ -74,6 +75,25 @@ const MapComponent = withScriptjs(withGoogleMap(props => {
     }
     console.log('Rendering geometry', props.geometry);
     // Geometry is set, draw relevant component on the map (without consulting Google Maps API).
+    if (props.geometry.string === "MultiLineString")
+    {
+        const components = [];
+        for (let i = 0; i < props.geometry.coordinates.length; i++) {
+            const newGeom = {
+                type: 'LineString',
+                coordinates: props.geometry.coordinates[i],
+            };
+            const {ElementClass, ChildElementClass, ...geometry} = geometryToComponentWithLatLng(newGeom)
+            components.push(<ElementClass key={i} {...geometry}>
+                {ChildElementClass ? <ChildElementClass {...{}} /> : null}
+            </ElementClass>);
+        }
+        console.log(components);
+        return (
+            <GoogleMap defaultZoom={props.defaultZoom} defaultCenter={props.defaultCenter}>
+                {components}
+            </GoogleMap>);
+    }
     const {ElementClass, ChildElementClass, ...geometry} = geometryToComponentWithLatLng(props.geometry);
     return (
         <GoogleMap defaultZoom={props.defaultZoom} defaultCenter={props.defaultCenter}>

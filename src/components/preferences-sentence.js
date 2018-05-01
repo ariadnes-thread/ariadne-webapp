@@ -5,43 +5,12 @@
  * @license GPL-3.0
  */
 
-import Icon from '@fortawesome/react-fontawesome';
-import {
-    withScriptjs,
-    withGoogleMap,
-    Polyline,
-    Polygon,
-    InfoWindow,
-    Marker,
-    GoogleMap,
-    DirectionsRenderer
-} from 'react-google-maps';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
-import {compose, lifecycle} from 'recompose';
-import {Switch, Route, Redirect} from 'react-router-dom';
 
 
 import Auth from '../util/auth';
-
-
-const defaultState = {
-    overallZoom: 16,
-    overallCenter: {lat: 34.138932, lng: -118.125339},
-    BikeOrRun: "bike",
-    LoopOrP2P: "loop",
-    distance: [true, 0, 10],
-    time: [false, 0, 60],
-    start: "location",
-    end: "location",
-    startLoc: {lat: 34.138932, lng: -118.125339},
-    endLoc: {lat: 34.138932, lng: -118.125339},
-    elevation: [true, 0, 1000],
-    setting: "urban",
-    node: [],
-    edge: []
-};
 
 
 export default class PreferencesSentence extends Component {
@@ -53,13 +22,7 @@ export default class PreferencesSentence extends Component {
     constructor(props) {
         super(props);
 
-        this.state = defaultState;
-
-        // this.state = {preferences: defaultPreferences,
-        //                 pointsOfInterest: null,
-        //                 selectedInput: -1};
-
-        // TO DO: drag and drop ordering of preferences
+        this.state = this.props.preferencesState.getPrefs();
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -67,83 +30,19 @@ export default class PreferencesSentence extends Component {
 
     }
 
-    componentDidMount() {
-        Promise.resolve()
-        // .then(() => this.props.auth.api.planningModule.fetchPointsOfInterest())
-            .then(pointsOfInterest => {
-                this.setState({
-                    pointsOfInterest,
-                    preferences: {
-                        ...this.state.preferences,
-                        origin: [0, "text"],
-                        destination: [0, "text"],
-                    },
-                });
-            })
-            .catch(error => {
-                console.error(error);
-                console.error(JSON.stringify(error));
-                // TODO: Replace this with a nice modal popup
-                // If not logged in, there will be a different error that prevents anything from happening.
-                // if (this.props.auth.isAuthenticated())
-                //  alert('Error occurred while fetching points of interest. Check console.');
-            });
-    }
-
-    handleSelectZip(index, event) {
-        event.preventDefault();
-        this.setState({selectedInput: index});
-    }
-
-    updateZipPref(zip) {
-        if (this.state.selectedInput === 0) {
-            this.setState({
-                preferences: {
-                    ...this.state.preferences,
-                    "startZip": [zip, "text"],
-                },
-            });
-        }
-        else if (this.state.selectedInput === 1) {
-            this.setState({
-                preferences: {
-                    ...this.state.preferences,
-                    "endZip": [zip, "text"],
-                },
-            });
-        }
-
-    }
-
-
     handleSubmit(event) {
         event.preventDefault();
-        console.log("submitting preferencecs");
+        console.log("submitting preferences");
 
-        return Promise.resolve()
-            .then(() => {
-                return this.state;
-                // let retpref = {};
-
-                // Object.keys(this.state).map((preference) => {
-                //     // if (preference === "origin" || preference === "destination")
-                //     //     retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
-                //     // else
-                //         retpref[preference] = this.state[preference];
-                // });
-                // return retpref;
-
-            }).then((retpref) => {
-                console.log("redirecting");
-                this.props.history.push('/route');
-                // window.location = '/route';
-                // return this.props.auth.api.planningModule.planRoute({constraints: retpref});
-            })
-
-            // The format of the route returned from the API is different from what we use locally, see:
-            // https://api.ariadnes-thread.me/#api-v1_Planning-planning_route
-            // .then(routeData => routeData.route)
-            // .then(geometry => this.props.visualizeRoute({geometry}))
+        return Promise.resolve().then(() => {
+            this.props.preferencesState.setPrefs({...this.state, prefSubmitted: true});
+        }).then(() => {
+            this.props.history.push('/');
+        })
+        // The format of the route returned from the API is different from what we use locally, see:
+        // https://api.ariadnes-thread.me/#api-v1_Planning-planning_route
+        // .then(routeData => routeData.route)
+        // .then(geometry => this.props.visualizeRoute({geometry}))
             .catch(error => {
                 console.error(error);
                 console.error("error from submitting preferences");

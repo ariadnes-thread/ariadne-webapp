@@ -9,19 +9,12 @@ import Icon from '@fortawesome/react-fontawesome';
 import {
     withScriptjs,
     withGoogleMap,
-    Polyline,
-    Polygon,
-    InfoWindow,
-    Marker,
     GoogleMap,
-    DirectionsRenderer
 } from 'react-google-maps';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 import {compose, lifecycle} from 'recompose';
-import {Switch, Route, Redirect} from 'react-router-dom';
-
 
 import Auth from '../util/auth';
 
@@ -41,13 +34,8 @@ const MapComponentLocationRadius = compose(
                     refs.map = ref;
                 },
                 onBoundsChanged: () => {
-                    // this.setState({
-                    //   bounds: refs.map.getBounds(),
-                    //   center: refs.map.getCenter(),
-                    // })
-                    let sample = {center: refs.map.getCenter(), bounds: refs.map.getBounds()};
-                    console.log(sample);
-                    this.props.boundsChange(sample, this.props.parent, this.props.whichMap);
+                    let mapData = {center: refs.map.getCenter(), bounds: refs.map.getBounds()};
+                    this.props.boundsChange(mapData, this.props.parent, this.props.whichMap);
                 },
                 onSearchBoxMounted: ref => {
                     refs.searchBox = ref;
@@ -85,68 +73,12 @@ const MapComponentLocationRadius = compose(
 )(props =>
     <GoogleMap
         ref={props.onMapMounted}
-        // ref={(locationRadiusMap) => {
-        //     // console.log(locationRadiusMap);
-        //     // console.log(locationRadiusMap.getBounds());
-        //     return locationRadiusMap;
-        // }}
-        // ref={(map) => {
-        //      if(map && props.bounds) {
-        //         map.fitBounds(props.bounds);
-        //         console.log(props.bounds);
-        //         console.log(props.bounds.getCenter().lat() + ", " + props.bounds.getCenter().lng());
-        //         map.panTo(props.bounds.getCenter());
-        //     }}}
-        // center={props.bounds ? props.bounds.getCenter() : props.defaultCenter}
         onClick={(eventData) =>{(props.clickHandle) ? props.clickHandle(props.parent, eventData, props.whichMap) : props.onBoundsChanged()}}
         defaultZoom={props.defaultZoom}
         defaultCenter={props.defaultCenter}
         onBoundsChanged={props.onBoundsChanged}
-
-        // {() => {
-        //     console.log(this);
-        //     console.log(props);
-        //     // console.log(locationRadiusMap);
-        // // console.log(this.refs);
-        // // console.log(this.refs.locationRadiusMap);
-        // // console.log(this);
-        // props.boundsChange}}//{(event)=> {console.log(event);console.log(map.getBounds());}}
     >
     </GoogleMap>);
-
-const MapComponentStartEnd = withScriptjs(withGoogleMap(props => {
-    return <GoogleMap
-        ref={(locationStartEnd) => {
-            // console.log(locationRadiusMap);
-            // console.log(locationRadiusMap.getBounds());
-            return locationStartEnd;
-        }}
-        // ref={(map) => {
-        //      if(map && props.bounds) {
-        //         map.fitBounds(props.bounds);
-        //         console.log(props.bounds);
-        //         console.log(props.bounds.getCenter().lat() + ", " + props.bounds.getCenter().lng());
-        //         map.panTo(props.bounds.getCenter());
-        //     }}}
-        // center={props.bounds ? props.bounds.getCenter() : props.defaultCenter}
-        // onClick={(eventData) =>{props.clickHandle(props.callbackClick, eventData);}}
-        defaultZoom={props.defaultZoom}
-        defaultCenter={props.defaultCenter}
-        onBoundsChanged=
-            {console.log(props)}//this.props.boundsChange.bind(this, props.parent)}
-
-        // {() => {
-        //     console.log(this);
-        //     console.log(props);
-        //     // console.log(locationRadiusMap);
-        // // console.log(this.refs);
-        // // console.log(this.refs.locationRadiusMap);
-        // // console.log(this);
-        // props.boundsChange}}//{(event)=> {console.log(event);console.log(map.getBounds());}}
-    >
-    </GoogleMap>;
-
-}));
 
 export default class PreferencesSelection extends Component {
 
@@ -157,81 +89,23 @@ export default class PreferencesSelection extends Component {
     constructor(props) {
         super(props);
 
-        this.state = this.props.preferencesState.state;
-
-        // this.state = {preferences: defaultPreferences,
-        //                 pointsOfInterest: null,
-        //                 selectedInput: -1};
-
-        // TO DO: drag and drop ordering of preferences
+        this.state = this.props.preferencesState.getPrefs();
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
         console.log(this.state);
     }
 
-    componentDidMount() {
-        Promise.resolve()
-        // .then(() => this.props.auth.api.planningModule.fetchPointsOfInterest())
-            .then(pointsOfInterest => {
-                this.setState({
-                    pointsOfInterest,
-                    preferences: {
-                        ...this.state.preferences,
-                        origin: [0, "text"],
-                        destination: [0, "text"],
-                    },
-                });
-            })
-            .catch(error => {
-                console.error(error);
-                console.error(JSON.stringify(error));
-                // TODO: Replace this with a nice modal popup
-                // If not logged in, there will be a different error that prevents anything from happening.
-                // if (this.props.auth.isAuthenticated())
-                //  alert('Error occurred while fetching points of interest. Check console.');
-            });
-    }
-
-    handleSelectZip(index, event) {
-        event.preventDefault();
-        this.setState({selectedInput: index});
-    }
-
-    updateZipPref(zip) {
-        if (this.state.selectedInput === 0) {
-            this.setState({
-                preferences: {
-                    ...this.state.preferences,
-                    "startZip": [zip, "text"],
-                },
-            });
-        }
-        else if (this.state.selectedInput === 1) {
-            this.setState({
-                preferences: {
-                    ...this.state.preferences,
-                    "endZip": [zip, "text"],
-                },
-            });
-        }
-
-    }
-
-
     handleSubmit(event) {
         event.preventDefault();
         console.log("submitting preferencecs");
+        console.log({...this.state, prefSubmitted: true});
 
         return Promise.resolve()
             .then(() => {
                 this.props.preferencesState.setPrefs({...this.state, prefSubmitted: true});
             }).then(() => {
-                console.log("redirecting");
-                console.log(this.props.preferencesState.getPrefs());
                 this.props.history.push('/');
-                // window.location = '/route';
-                // return this.props.auth.api.planningModule.planRoute({constraints: retpref});
             })
 
             // The format of the route returned from the API is different from what we use locally, see:
@@ -245,21 +119,6 @@ export default class PreferencesSelection extends Component {
                 alert(error.message);
             });
     }
-
-    // renderPointsOfInterestSelect() {
-    //     const pointsOfInterest = this.state.pointsOfInterest;
-    //     if (!pointsOfInterest) {
-    //         // TODO: Add an indicator for failed loading
-    //         return <option disabled>Loading...</option>;
-    //     }
-    //
-    //     const optionsComponents = new Array(pointsOfInterest.length);
-    //     for (let i = 0; i < pointsOfInterest.length; i++) {
-    //         const point = pointsOfInterest[i];
-    //         optionsComponents[i] = <option key={`poi-${i}`} value={i}>{point.name}</option>;
-    //     }
-    //     return optionsComponents;
-    // }
 
     onBoundsChangedLocationRadius(mapInfo, parent, whichMap) {
         if (whichMap === "overall") {
@@ -296,42 +155,43 @@ export default class PreferencesSelection extends Component {
             })
         }
 
-        const geocoder = new google.maps.Geocoder();
-        /* eslint-enable no-undef */
-        geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
-        {
-            if (status === 'OK')
-            {
-                if (results[0])
-                {
-                    for (let i = 0; i < results[0].address_components.length; i++)
-                    {
-                        console.log(results[0].address_components[i]);
-                        if (results[0].address_components[i].types[0] === "postal_code")
-                        {
-                            let zip = results[0].address_components[i].short_name;
-                            console.log("ZIP", zip);
-                            // callback.setZip(zip, callback);
-                        }
-
-                    }
-                }
-            }
-        });
+        // const geocoder = new google.maps.Geocoder();
+        // /* eslint-enable no-undef */
+        // geocoder.geocode({'location' : {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}}, function(results, status)
+        // {
+        //     if (status === 'OK')
+        //     {
+        //         if (results[0])
+        //         {
+        //             for (let i = 0; i < results[0].address_components.length; i++)
+        //             {
+        //                 console.log(results[0].address_components[i]);
+        //                 if (results[0].address_components[i].types[0] === "postal_code")
+        //                 {
+        //                     let zip = results[0].address_components[i].short_name;
+        //                     console.log("ZIP", zip);
+        //                     // callback.setZip(zip, callback);
+        //                 }
+        //
+        //             }
+        //         }
+        //     }
+        // });
     }
 
     onRadioChange(event) {
         this.setState({
             ...this.state,
-            [event.target.name]: event.target.value
-        })
+            [event.target.name]: this.props.preferencesState[event.target.name][event.target.value]
+        });
     }
 
     onCheckboxChange(event) {
         this.setState({
             ...this.state,
-            [event.target.value]: [event.target.checked, this.state[event.target.value][1], this.state[event.target.value][2]]
-        })
+            [event.target.value]: {...this.state[event.target.value],
+                "userEnabled": event.target.checked}
+        });
     }
 
     onCheckboxListChange(event) {
@@ -355,22 +215,25 @@ export default class PreferencesSelection extends Component {
 
     onTextChange(event) {
         const prop_name = event.target.name.split("_");
-        if (prop_name[1] === "min") {
-            this.setState({
-                ...this.state,
-                [prop_name[0]]: [this.state[prop_name[0]][0], event.target.value, this.state[prop_name[0]][2]]
-            })
-        }
-        else if (prop_name[1] === "max") {
-            this.setState({
-                ...this.state,
-                [prop_name[0]]: [this.state[prop_name[0]][0], this.state[prop_name[0]][1], event.target.value]
-            })
-        }
+        this.setState({
+            ...this.state,
+            [prop_name[0]]: {...this.state[prop_name[0]],
+                [prop_name[1]]: event.target.value}
+        });
+    }
+
+    onSelectChange(event) {
+        console.log(event.target);
+        console.log(event.target.name);
+        console.log(event.target.value);
+        this.setState({
+            ...this.state,
+            [event.target.name]: event.target.value
+        });
     }
 
     renderStartEndSelect() {
-        const options = ["Park", "Bus Stop", "Monument", "Mall", "Restaurant"];
+        const options = Object.keys(this.props.preferencesState.nodeType); //["Park", "Bus Stop", "Monument", "Mall", "Restaurant"];
         const optionsComponents = new Array(options.length);
         for (let i = 0; i < options.length; i++) {
             const opt = options[i];
@@ -418,14 +281,14 @@ export default class PreferencesSelection extends Component {
                                         <div className="columns is-centered">
                                             <div className="column">
                                                 <input type="radio"
-                                                       name="BikeOrRun"
+                                                       name="routeMode"
                                                        value="bike"
                                                        onChange={this.onRadioChange.bind(this)}
                                                        defaultChecked/><br/>Biking
                                             </div>
                                             <div className="column">
                                                 <input type="radio"
-                                                       name="BikeOrRun"
+                                                       name="routeMode"
                                                        onChange={this.onRadioChange.bind(this)}
                                                        value="run"/><br/>Running
                                             </div>
@@ -435,16 +298,16 @@ export default class PreferencesSelection extends Component {
                                         <div className="columns is-centered">
                                             <div className="column">
                                                 <input type="radio"
-                                                       name="LoopOrP2P"
+                                                       name="routeType"
                                                        value="loop"
                                                        onChange={this.onRadioChange.bind(this)}
                                                        defaultChecked/><br/>Loop
                                             </div>
                                             <div className="column">
                                                 <input type="radio"
-                                                       name="LoopOrP2P"
+                                                       name="routeType"
                                                        onChange={this.onRadioChange.bind(this)}
-                                                       value="p2p"/><br/>Point-To-Point
+                                                       value="pointToPoint"/><br/>Point-To-Point
                                             </div>
                                         </div>
                                         <p>Length Constraints:</p>
@@ -455,7 +318,7 @@ export default class PreferencesSelection extends Component {
                                                     <input type="checkbox"
                                                            name="length"
                                                            value="distance"
-                                                           required={!this.state.time[0]}
+                                                           required={!this.state.time.userEnabled}
                                                            onChange={this.onCheckboxChange.bind(this)}
                                                            defaultChecked/>
                                                     Distance (miles):<br/>
@@ -464,7 +327,7 @@ export default class PreferencesSelection extends Component {
                                                         name="length"
                                                         value="time"
                                                         onChange={this.onCheckboxChange.bind(this)}
-                                                        required={!this.state.distance[0]}/>
+                                                        required={!this.state.distance.userEnabled}/>
                                                     Time (minutes):<br/>
                                                 </div>
                                             </div>
@@ -473,24 +336,24 @@ export default class PreferencesSelection extends Component {
                                                     <input
                                                         type="text"
                                                         name="distance_min"
-                                                        defaultValue={this.state["distance"][1]}
+                                                        defaultValue={this.state.distance.min}
                                                         onChange={this.onTextChange.bind(this)}/>
                                                     to
                                                     <input
                                                         type="text"
                                                         name="distance_max"
-                                                        defaultValue={this.state["distance"][2]}
+                                                        defaultValue={this.state.distance.max}
                                                         onChange={this.onTextChange.bind(this)}/><br/>
                                                     <input
                                                         type="text"
                                                         name="time_min"
-                                                        defaultValue={this.state["time"][1]}
+                                                        defaultValue={this.state.time.min}
                                                         onChange={this.onTextChange.bind(this)}/>
                                                     to
                                                     <input
                                                         type="text"
                                                         name="time_max"
-                                                        defaultValue={this.state["time"][2]}
+                                                        defaultValue={this.state.time.max}
                                                         onChange={this.onTextChange.bind(this)}/><br/>
                                                 </div>
                                             </div>
@@ -502,16 +365,20 @@ export default class PreferencesSelection extends Component {
                                                     <div className="column">
                                                         <input
                                                             type="radio"
-                                                            name="startPoints"
+                                                            name="start"
                                                             value="specific"
+                                                            onChange={this.onRadioChange.bind(this)}
                                                             defaultChecked/><br/>Specific Location(s)
                                                     </div>
                                                     <div className="column">
                                                         <input
                                                             type="radio"
-                                                            name="startPoints"
+                                                            name="start"
+                                                            onChange={this.onRadioChange.bind(this)}
                                                             value="type"/><br/>Type of Location in an area
-                                                        <br/><select> {this.renderStartEndSelect()}</select>
+                                                        <br/>
+                                                        <select name="startType" onChange={this.onSelectChange.bind(this)}>
+                                                            {this.renderStartEndSelect()}</select>
                                                     </div>
                                                 </div>
                                                 <MapComponentLocationRadius
@@ -532,15 +399,18 @@ export default class PreferencesSelection extends Component {
                                                 <div className="columns is-centered">
                                                     <div className="column">
                                                         <input type="radio"
-                                                               name="endPoints"
+                                                               name="end"
                                                                value="specific"
+                                                               onChange={this.onRadioChange.bind(this)}
                                                                defaultChecked/><br/>Specific Location(s)
                                                     </div>
                                                     <div className="column">
                                                         <input type="radio"
-                                                               name="endPoints"
+                                                               name="end"
+                                                               onChange={this.onRadioChange.bind(this)}
                                                                value="type"/><br/>Type of Location in an area
-                                                        <br/><select> {this.renderStartEndSelect()}</select>
+                                                        <br/><select  name="endType" onChange={this.onSelectChange.bind(this)}>
+                                                        {this.renderStartEndSelect()}</select>
                                                     </div>
                                                 </div>
                                                 <MapComponentLocationRadius
@@ -565,17 +435,16 @@ export default class PreferencesSelection extends Component {
                                         <input type="checkbox"
                                                name="elevation"
                                                value="elevation"
-                                               required="true"
                                                onChange={this.onCheckboxChange.bind(this)}
                                                defaultChecked/>
                                         Elevation Gain (ft):
                                         <input type="text"
-                                               defaultValue={this.state["elevation"][1]}
+                                               defaultValue={this.state.elevation.min}
                                                name="elevation_min"
                                                onChange={this.onTextChange.bind(this)}
                                         />
                                         to <input type="text"
-                                                  defaultValue={this.state["elevation"][2]}
+                                                  defaultValue={this.state.elevation.max}
                                                   name="elevation_max"
                                                   onChange={this.onTextChange.bind(this)}/>
                                         <br/><br/>
@@ -599,27 +468,23 @@ export default class PreferencesSelection extends Component {
                                         <br/><p>I would like to visit:</p>
                                         <div className="columns is-centered">
                                             <div className="column is-one-quarter has-text-left">
-                                                <input type="checkbox" name="node" value="park"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Parks<br/>
-                                                <input type="checkbox" name="node" value="coffee"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Coffeeshops<br/>
-                                                <input type="checkbox" name="node" value="landmark"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Landmarks<br/>
-                                                <input type="checkbox" name="node" value="restaurant"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Restaurants<br/>
+                                                {Object.keys(this.props.preferencesState.nodeType).map((name, idx) =>
+                                                    <div className={"node"+idx}>
+                                                        <input type="checkbox" name="node" value={name}
+                                                               onChange={this.onCheckboxListChange.bind(this)}/> {name} <br/>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <p>I would like to travel on:</p>
                                         <div className="columns is-centered">
                                             <div className="column is-one-quarter has-text-left">
-                                                <input type="checkbox" name="edge" value="bikepath"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Bike Paths<br/>
-                                                <input type="checkbox" name="edge" value="green"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Green
-                                                Space<br/>
-                                                <input type="checkbox" name="edge" value="paved"
-                                                       onChange={this.onCheckboxListChange.bind(this)}/> Paved
-                                                Roads<br/>
+                                                {Object.keys(this.props.preferencesState.edgeType).map((name, idx) =>
+                                                    <div className={"edge"+idx}>
+                                                        <input type="checkbox" name="edge" value={name}
+                                                               onChange={this.onCheckboxListChange.bind(this)}/> {name} <br/>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

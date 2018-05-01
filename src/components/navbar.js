@@ -51,9 +51,6 @@ export default class Navbar extends Component {
         this.setState({burgerMenuActive: false});
     }
 
-    handleLoginSubmit() {
-        console.log("Made it");
-    }
 
     handleChange(event) {
         console.log("Made it to handle change");
@@ -78,41 +75,7 @@ export default class Navbar extends Component {
         }
         else {
             this.props.history.push('/login');
-
-            // window.location = '/login';
-//             swal({
-//                   title: 'Log In',
-//                   text: 'Enter your email and password',
-//                   type: 'question',
-//                   html: 
-// '<form onSubmit={[this.handleLoginSubmit]}>Email: <input type="text" name="email" onChange={this.handleChange}/><br/>Password: <input type="text" name="password" onChange={this.handleChange}/><hr/><button className="button is-info">Login</button></form>',
-//                   // 'Email: <input id="email" type="text" name="email" onChange={[this.handleChange]}/>'+
-//                   //           '<br/>'+
-//                   //           'Password: <input id="password" type="text" name="password" onChange={this.handleChange}/>',
-//                   showCancelButton: true,
-//                   confirmButtonText: 'Login',
-//                   // formFields: [
-//                   // {id: 'email', placeholder: 'Email'},
-//                   // {id: 'password', placeholder: 'Password'}
-//                   // ],
-//                   // function(isConfirm) {
-//                   //   console.log("HI THERE");
-//                   //   console.log(this.swalForm);
-//                   // }
-//                   preConfirm: function(resolve) {
-//                     return new Promise(function (resolve)
-//                     {
-//                         console.log(this);
-//                         // resolve([html.email.val()]);
-//                     })
-//                   }
-
-//                 }).then((result) => {
-//                     console.log(result);
-//                     // this.props.auth.handleLogout();
-//                 });
         }
-        // alert('(╯°□°)╯︵ ┻━┻ ');
     }
 
     render() {
@@ -175,8 +138,8 @@ export default class Navbar extends Component {
                                         <a className="button is-info" onClick={this.loginButtonAction}>
                                             <span className="icon"><Icon icon="exclamation-circle"/></span>
                                             <span>{[this.props.auth.isAuthenticated()]
-                                                ? "Log In"
-                                                : "Log Out"}</span>
+                                                ? "Log Out"
+                                                : "Log In"}</span>
                                         </a>
                                     </p>
                                 </div>
