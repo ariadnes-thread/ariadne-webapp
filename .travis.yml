@@ -1,0 +1,21 @@
+dist: trusty
+language: node_js
+node_js:
+- node
+before_install:
+- openssl aes-256-cbc -K $encrypted_003e9c04f1dc_key -iv $encrypted_003e9c04f1dc_iv
+  -in id_rsa.enc -out id_rsa -d
+install:
+- npm ci
+script:
+- npm test
+- npm run build
+deploy:
+  provider: script
+  script: bash .travis/deploy.sh
+  on:
+    branch: master
+notifications:
+  email: false
+  slack:
+    secure: nVTAjBXqfvHPauTcWPk01OKMFeV02FLvsj0jvU0DsaXX3wAujycEpGgLZwSbC6thLmKfag9OH75EYbQ6u15MntDnG/gO1ZqtMKWjfBsbzCBaQ9ODIXvs2vOi6taOnfg6vtym5yYseG1BCoxAl28nNEm6i5JE8m/KOjbxriD6IUCjO7rHrn8OR7tCfmuuRZGr6I0k9VQGttqOUMBSoqIIZ5oojpW7tFa7u+tzYl0Va3DyobzVDLrOTWXDrTzmupHltex8eHvrvUd+x2RWsq0cHb2Eij7FRfhh9zuN8of64Q9K27J86m3JfjD5Ep0eg1S1fu3KTthaX+irELuR53nFEkgAjxb0851sgZL8uWMxy1G6x9nZlNhp1VBddy/th1qN57LM2zPsVzoWz8Mc1xGUw4IB38BiCMaxp7HTlW50LqqjEJDvXs/RsYX7llcHLnAKD3nLUxYfUewuqABgPxdktu17QpsAM9zZLqyJKoSZPrz9i/ZyKCLoJm7nViBj9+CYh7wZhCFseI7RYGP3d9zMF2U3Kkf2/IMARbEcPnoR8cYeRigS2vke9L5f6Sj/5zrp8oyIz81DWF8TeOO5JZ7bBCLsM+Lg3+sVGR4oJfUqvmoES687Y9Cek5nY1oQy23qUCfkWGnnYyyGXuXZcHEjSrBIMVr6ltSpVUtj1tCp9GwE=
