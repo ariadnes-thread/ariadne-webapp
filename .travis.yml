@@ -3,8 +3,8 @@ language: node_js
 node_js:
 - node
 before_install:
-- openssl aes-256-cbc -K $encrypted_003e9c04f1dc_key -iv $encrypted_003e9c04f1dc_iv
-  -in id_rsa.enc -out id_rsa -d
+- openssl aes-256-cbc -K $encrypted_7979af002a67_key -iv $encrypted_7979af002a67_iv
+  -in .travis/id_rsa.enc -out .travis/id_rsa -d
 install:
 - npm ci
 script:
