@@ -7,6 +7,6 @@ import Auth from '../util/auth';
 it('renders without crashing', () => {
   const div = document.createElement('div');
   const auth = new Auth(rawConfig);
-  ReactDOM.render(<App auth={auth}/>, div);
+  ReactDOM.render(<BrowserRouter basename={rawConfig.baseUri}><App auth={auth}/></BrowserRouter>, div);
   ReactDOM.unmountComponentAtNode(div);
 });
