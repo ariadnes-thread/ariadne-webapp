@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './app';
-import rawConfig from './config.json';
+import rawConfig from '../config.json';
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
