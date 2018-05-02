@@ -321,7 +321,32 @@ export default class PreferencesSelection extends Component {
                                                            required={!this.state.time.userEnabled}
                                                            onChange={this.onCheckboxChange.bind(this)}
                                                            defaultChecked/>
-                                                    Distance (miles):<br/>
+                                                    Distance (miles):
+                                                </div>
+                                            </div>
+                                            <div className="column is-one-third has-text-left">
+                                                <div className="column has-text-left">
+                                                    <div className="field is-horizontal">
+                                                        <input
+                                                            type="text"
+                                                            name="time_min"
+                                                            className="input"
+                                                            defaultValue={this.state.time.min}
+                                                            onChange={this.onTextChange.bind(this)}/>
+                                                        <label className="is-normal"> to </label>
+                                                        <input
+                                                            type="text"
+                                                            name="time_max"
+                                                            className="input"
+                                                            defaultValue={this.state.time.max}
+                                                            onChange={this.onTextChange.bind(this)}/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="columns is-centered">
+                                            <div className="column is-one-quarter has-text-right">
+                                                <div className="column has-text-left">
                                                     <input
                                                         type="checkbox"
                                                         name="length"
@@ -333,28 +358,21 @@ export default class PreferencesSelection extends Component {
                                             </div>
                                             <div className="column is-one-third has-text-left">
                                                 <div className="column has-text-left">
-                                                    <input
-                                                        type="text"
-                                                        name="distance_min"
-                                                        defaultValue={this.state.distance.min}
-                                                        onChange={this.onTextChange.bind(this)}/>
-                                                    to
-                                                    <input
-                                                        type="text"
-                                                        name="distance_max"
-                                                        defaultValue={this.state.distance.max}
-                                                        onChange={this.onTextChange.bind(this)}/><br/>
-                                                    <input
-                                                        type="text"
-                                                        name="time_min"
-                                                        defaultValue={this.state.time.min}
-                                                        onChange={this.onTextChange.bind(this)}/>
-                                                    to
-                                                    <input
-                                                        type="text"
-                                                        name="time_max"
-                                                        defaultValue={this.state.time.max}
-                                                        onChange={this.onTextChange.bind(this)}/><br/>
+                                                    <div className="field is-horizontal">
+                                                        <input
+                                                            type="text"
+                                                            name="time_min"
+                                                            className="input"
+                                                            defaultValue={this.state.time.min}
+                                                            onChange={this.onTextChange.bind(this)}/>
+                                                        <label className="is-normal"> to </label>
+                                                        <input
+                                                            type="text"
+                                                            name="time_max"
+                                                            className="input"
+                                                            defaultValue={this.state.time.max}
+                                                            onChange={this.onTextChange.bind(this)}/>
+                                                    </div><br/>
                                                 </div>
                                             </div>
                                         </div>
@@ -432,21 +450,26 @@ export default class PreferencesSelection extends Component {
                                 <div className="card">
                                     <div className="card-content">
                                         <p><b>3. Route Preferences</b></p>
-                                        <input type="checkbox"
-                                               name="elevation"
-                                               value="elevation"
-                                               onChange={this.onCheckboxChange.bind(this)}
-                                               defaultChecked/>
-                                        Elevation Gain (ft):
-                                        <input type="text"
-                                               defaultValue={this.state.elevation.min}
-                                               name="elevation_min"
-                                               onChange={this.onTextChange.bind(this)}
-                                        />
-                                        to <input type="text"
-                                                  defaultValue={this.state.elevation.max}
-                                                  name="elevation_max"
-                                                  onChange={this.onTextChange.bind(this)}/>
+                                        <div className="field is-horizontal">
+
+                                            <input type="checkbox"
+                                                   name="elevation"
+                                                   value="elevation"
+                                                   onChange={this.onCheckboxChange.bind(this)}
+                                                   defaultChecked/>
+                                            <label className="label"> Elevation Gain (ft): </label>
+                                            <input type="text"
+                                                   defaultValue={this.state.elevation.min}
+                                                   name="elevation_min"
+                                                   className="input field-body"
+                                                   onChange={this.onTextChange.bind(this)}
+                                            />
+                                            to <input type="text"
+                                                      defaultValue={this.state.elevation.max}
+                                                      name="elevation_max"
+                                                      className="input field-body"
+                                                      onChange={this.onTextChange.bind(this)}/>
+                                        </div>
                                         <br/><br/>
                                         Setting:
                                         <input

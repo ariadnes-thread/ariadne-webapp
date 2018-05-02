@@ -16,6 +16,10 @@ import Auth from '../util/auth';
 
 export default class Navbar extends Component {
 
+    static contextTypes = {
+        router: PropTypes.object.isRequired
+    };
+
     static propTypes = {
         auth: PropTypes.instanceOf(Auth).isRequired,
     };
@@ -74,7 +78,7 @@ export default class Navbar extends Component {
             });
         }
         else {
-            this.props.history.push('/login');
+            this.context.router.history.push('/login');
         }
     }
 

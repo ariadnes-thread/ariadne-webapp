@@ -39,6 +39,7 @@ export default class PreferencesSentence extends Component {
         }).then(() => {
             this.props.history.push('/');
         })
+
         // The format of the route returned from the API is different from what we use locally, see:
         // https://api.ariadnes-thread.me/#api-v1_Planning-planning_route
         // .then(routeData => routeData.route)
@@ -82,64 +83,141 @@ export default class PreferencesSentence extends Component {
                                 </div>
                                 <div className="card">
                                     <div className="card-content">
-                                        <p><b>Travel Type</b></p>
-                                        <p>Biking or Running?</p>
                                         <div className="column is-centered">
-                                            <input type="radio"
-                                                   name="BikeOrRun"
-                                                   value="bike"
-                                                   onChange={this.onRadioChange.bind(this)}
-                                                   defaultChecked/>Biking<br/>
-                                            <input type="radio"
-                                                   name="BikeOrRun"
-                                                   onChange={this.onRadioChange.bind(this)}
-                                                   value="run"/>Running<br/>
-                                            <input type="radio"
-                                                   name="BikeOrRun"
-                                                   onChange={this.onRadioChange.bind(this)}
-                                                   value="walk"/>Walking<br/>
+                                            <div className="field">
+                                                <div className="control -is-centered">
+                                                    <label className="label">
+                                                        Travel Type
+                                                    </label>
+                                                    <label className="radio">
+                                                        <input type="radio"
+                                                               className="radio"
+                                                               name="routeMode"
+                                                               value="bike"
+                                                               onChange={this.onRadioChange.bind(this)}
+                                                               defaultChecked/>
+                                                        Biking
+                                                    </label><br/>
+                                                    <label className="radio">
+                                                        <input type="radio"
+                                                               className="radio"
+                                                               name="routeMode"
+                                                               onChange={this.onRadioChange.bind(this)}
+                                                               value="run"/>
+                                                        Running
+                                                    </label><br/>
+                                                    <label className="radio">
+                                                        <input type="radio"
+                                                               className="radio"
+                                                               name="routeMode"
+                                                               onChange={this.onRadioChange.bind(this)}
+                                                               value="walk"/>
+                                                        Walking
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="column is-centered">
-                                            Start at
-                                            <input
-                                                type="text"
-                                                name="startLoc"
-                                                defaultValue={"34.1410, -118.1295"}
-                                                onChange={this.onTextChange.bind(this)}/>
-                                            , total length
-                                            <input
-                                                type="text"
-                                                name="length"
-                                                defaultValue={"20 mi"}
-                                                onChange={this.onTextChange.bind(this)}/>
-                                            , end at
-                                            <input
-                                                type="text"
-                                                name="endLoc"
-                                                defaultValue={"coffee shop in 91125"}
-                                                onChange={this.onTextChange.bind(this)}/>
+                                        <div className="field">
 
+                                            <div className="column is-centered">
+                                                <div className="field">
+                                                    <div className="control field is-grouped is-grouped-multiline">
+                                                        <label className="label is-normal">
+                                                            Start at
+                                                        </label>
+                                                        <div className="field-body">
+                                                            <input
+                                                                required="true"
+                                                                className="input"
+                                                                type="text"
+                                                                name="startLoc"
+                                                                placeholder={"34.1410, -118.1295 or 1200 E. California Blvd or 91125"}
+                                                                onChange={this.onTextChange.bind(this)}/>
+                                                        </div>
+                                                        <label className="label is-normal">
+                                                            , total length
+                                                        </label>
+                                                        <div className="field has-addons">
+                                                            <div className="control">
+                                                                <input
+                                                                    required="true"
+                                                                    className="input"
+                                                                    type="text"
+                                                                    name="length"
+                                                                    placeholder="5"
+                                                                    onChange={this.onTextChange.bind(this)}/>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="control select">
+                                                            <select
+                                                                name="unit"
+                                                                defaultValue="mi"
+                                                                // onChange={this.onTextChange.bind(this)}
+                                                            >
+                                                                <option value="m"> meters</option>
+                                                                <option value="ft"> ft</option>
+                                                                <option value="mi"> miles</option>
+                                                                <option value="km"> kilometers</option>
+                                                            </select>
+                                                        </div>
+                                                        <label className="label is-normal">
+                                                            ,
+                                                        </label>
+                                                    </div>
+                                                    <div className="control field is-grouped is-grouped-multiline">
+                                                        <label className="label is-normal">
+                                                            end at
+                                                        </label>
+                                                        <div className="field-body">
+
+                                                            <input
+                                                                required="true"
+                                                                type="text"
+                                                                className="input"
+                                                                name="endLoc"
+                                                                placeholder="coffee shop in 91125"
+                                                                onChange={this.onTextChange.bind(this)}/>
+                                                        </div>
+                                                        <label className="label is-normal">
+                                                            .
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="column is-centered">
-                                            (Optional) Visit
-                                            <input
-                                                type="text"
-                                                name="pois"
-                                                defaultValue={"some parks"}
-                                                onChange={this.onTextChange.bind(this)}/>
-                                            on the way, prefer
-                                            <input
-                                                type="text"
-                                                name="pathtype"
-                                                defaultValue={"green"}
-                                                onChange={this.onTextChange.bind(this)}/>
-                                            paths.
+                                        <div className="field is-grouped is-grouped-multiline">
+                                            <label className="label is-normal">
+                                                (Optional) Visit
+                                            </label>
+                                            <div className="field-body">
+                                                <input
+                                                    type="text"
+                                                    className="input"
+                                                    name="pointsOfInterest"
+                                                    placeholder="some parks"
+                                                    onChange={this.onTextChange.bind(this)}/>
+                                            </div>
+                                            <label className="label is-normal">
+                                                on the way, prefer
+                                            </label>
+                                            <div className="field-body">
+                                                <input
+                                                    type="text"
+                                                    className="input"
+                                                    name="pathtype"
+                                                    placeholder="green"
+                                                    onChange={this.onTextChange.bind(this)}/>
+                                            </div>
+                                            <label className="label is-normal">
+                                                paths.
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="card">
                                     <div className="card-content">
-                                        <button className="button">Find my route!</button>
+                                        <button className="button is-primary">Find my route!</button>
                                     </div>
                                 </div>
                             </form>

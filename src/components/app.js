@@ -87,7 +87,7 @@ export default class App extends Component {
         return (
             <div className="App">
                 <script src={this.props.auth.getGoogleApiUrl()}/>
-                <Navbar auth={this.props.auth}/>
+                <Navbar auth={this.props.auth} />
                 <Switch>
                     <Route path="/debug" component={(props) => <DebugPanel {...props} auth={this.props.auth}/>}/>
                     <Route path="/login" component={(props) => <LoginPanel {...props} auth={this.props.auth}/>}/>
