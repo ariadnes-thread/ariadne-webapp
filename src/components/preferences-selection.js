@@ -5,7 +5,7 @@
  * @license GPL-3.0
  */
 
-import Icon from '@fortawesome/react-fontawesome';
+// import Icon from '@fortawesome/react-fontawesome';
 import {
     withScriptjs,
     withGoogleMap,
