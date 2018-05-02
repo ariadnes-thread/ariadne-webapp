@@ -5,6 +5,7 @@ node_js:
 before_install:
 - openssl aes-256-cbc -K $encrypted_7979af002a67_key -iv $encrypted_7979af002a67_iv
   -in .travis/id_rsa.enc -out .travis/id_rsa -d
+- npm i -g npm@^5.8 # Required for `npm ci` to work
 install:
 - npm ci
 script:
