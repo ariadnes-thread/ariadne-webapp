@@ -13,6 +13,8 @@ install:
 script:
 #- npm test # TODO: Re-enable tests
 - npm run build
+before_deploy: # or anywhere before the secret ssh host is needed
+  - ssh-keyscan -t $TRAVIS_SSH_KEY_TYPES -H $SSH_HOST 2>&1 | tee -a $HOME/.ssh/known_hosts
 deploy:
   skip_cleanup: true
   provider: script
