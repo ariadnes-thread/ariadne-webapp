@@ -14,6 +14,7 @@ script:
 #- npm test # TODO: Re-enable tests
 - npm run build
 deploy:
+  skip_cleanup: true
   provider: script
   script: bash .travis/deploy.sh
   on:
