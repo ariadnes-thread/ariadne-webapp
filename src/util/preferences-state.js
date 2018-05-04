@@ -20,12 +20,12 @@ export default class PreferencesState {
             overallCenter: {lat: 34.138932, lng: -118.125339},
             routeMode: this.routeMode.bike,
             routeType: this.routeType.loop,
-            distance: {userEnabled: true, min: 0, max: 10},
+            desiredLength: {userEnabled: true, min: 0, max: 10},
             time: {userEnabled: false, min: 0, max: 60},
             start: this.start.specific,
             end: this.end.specific,
-            startLoc: {lat: 34.138932, lng: -118.125339},
-            endLoc: {lat: 34.138932, lng: -118.125339},
+            origin: {lat: 34.138932, lng: -118.125339},
+            destination: {lat: 34.138932, lng: -118.125339},
             startType: this.nodeType.bus,
             endType: this.nodeType.park,
             elevation: {userEnabled: true, min: 0, max: 1000},
@@ -44,4 +44,19 @@ export default class PreferencesState {
         console.log('new state is', newState);
         this.preferences = newState;
     }
+
+    getPrefsFormattedForApi() {
+        return {
+            desiredLength: 5000.0,
+            origin: {
+                longitude: this.preferences.origin.lng,
+                latitude: this.preferences.origin.lat,
+            },
+            destination: {
+                longitude: this.preferences.destination.lng,
+                latitude: this.preferences.destination.lat,
+            },
+        }
+    }
+
 }

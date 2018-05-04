@@ -129,6 +129,7 @@ export default class PreferencesList extends Component {
                 return retpref;
 
             }).then((retpref) => {
+                console.log('HEEEREEE!');
                 return this.props.auth.api.planningModule.planRoute({constraints: retpref});
             })
 

@@ -105,7 +105,7 @@ export default class PreferencesSelection extends Component {
             .then(() => {
                 this.props.preferencesState.setPrefs({...this.state, prefSubmitted: true});
             }).then(() => {
-                this.props.history.push('/');
+                this.props.history.push('/view-route');
             })
 
             // The format of the route returned from the API is different from what we use locally, see:
@@ -131,13 +131,13 @@ export default class PreferencesSelection extends Component {
         else if (whichMap === "start") {
             parent.setState({...this.state,
                 startLocBounds: mapInfo.bounds,
-                startLoc: {lat: mapInfo.center.lat(), lng: mapInfo.center.lng()}
+                origin: {lat: mapInfo.center.lat(), lng: mapInfo.center.lng()}
             })
         }
         else if (whichMap === "end") {
             parent.setState({...this.state,
                 endLocBounds: mapInfo.bounds,
-                endLoc: {lat: mapInfo.center.lat(), lng: mapInfo.center.lng()}
+                destination: {lat: mapInfo.center.lat(), lng: mapInfo.center.lng()}
             })
         }
     }
@@ -146,12 +146,12 @@ export default class PreferencesSelection extends Component {
         /* eslint-disable no-undef */
         if (whichMap === "start") {
             parent.setState({...this.state,
-                startLoc: {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}
+                origin: {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}
             })
         }
         else if (whichMap === "end") {
             parent.setState({...this.state,
-                endLoc: {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}
+                destination: {lat: eventData.latLng.lat(), lng: eventData.latLng.lng()}
             })
         }
 
@@ -352,7 +352,7 @@ export default class PreferencesSelection extends Component {
                                                         name="length"
                                                         value="time"
                                                         onChange={this.onCheckboxChange.bind(this)}
-                                                        required={!this.state.distance.userEnabled}/>
+                                                        required={!this.state.desiredLength.userEnabled}/>
                                                     Time (minutes):<br/>
                                                 </div>
                                             </div>

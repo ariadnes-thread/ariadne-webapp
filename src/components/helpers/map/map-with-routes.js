@@ -10,7 +10,7 @@ import {withScriptjs, withGoogleMap, Polyline, Polygon, InfoWindow, Marker, Goog
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import Auth from '../util/auth';
+import Auth from '../../../util/auth';
 
 // Function for converting geometry into relevant `react-google-maps` components, see:
 // https://farrrr.github.io/react-google-maps/#geojson
@@ -115,7 +115,7 @@ export default class MapWithRoutes extends Component {
     };
 
     static defaultProps = {
-        route: [],
+        route: null,
         defaultZoom: 16,
         defaultCenter: {lat: 34.138932, lng: -118.125339},
     };

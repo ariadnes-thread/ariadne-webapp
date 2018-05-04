@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
-import Auth from '../util/auth';
+import Auth from '../../util/auth';
 import Icon from '@fortawesome/react-fontawesome';
 // import 'font-awesome/css/font-awesome.min.css';
 

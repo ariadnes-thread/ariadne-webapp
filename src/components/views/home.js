@@ -4,12 +4,13 @@
  * @license GPL-3.0
  */
 
+import {Link} from 'react-router-dom';
 import Icon from '@fortawesome/react-fontawesome';
-import IconButton from './helpers/icon-button';
+import IconButton from '../helpers/icon-button';
 import React, {Component} from 'react';
-import Card from './helpers/card';
+import Card from '../helpers/card';
 
-export default class MyComponent extends Component {
+export default class Home extends Component {
     render() {
         return (
             <div>
@@ -57,29 +58,29 @@ export default class MyComponent extends Component {
                                 <nav className="level">
                                     <div className="level-item level-left">
                                         <p className="title">
-                                            <span className="tag is-warning is-rounded is-large">1</span>
+                                            <span className="tag is-warning is-rounded is-large">Step 1</span>
                                             &nbsp;&nbsp;<span>What do you want to explore?</span>
                                         </p>
                                     </div>
-                                    <p className="level-item level-right">
+                                    <div className="level-item level-right">
                                         <div className="field">
                                             <div className="control">
                                                 <input className="input is-large is-info" type="text"
                                                        placeholder="City, postcode, address"/>
                                             </div>
                                         </div>
-                                    </p>
+                                    </div>
                                 </nav>
                                 <hr/>
 
                                 <nav className="level">
                                     <div className="level-item level-left">
                                         <p className="title">
-                                            <span className="tag is-warning is-rounded is-large">2</span>
+                                            <span className="tag is-warning is-rounded is-large">Step 2</span>
                                             &nbsp;&nbsp;<span>What do you want to do?</span>
                                         </p>
                                     </div>
-                                    <p className="level-item level-right">
+                                    <div className="level-item level-right">
                                         <div className="buttons has-addons">
                                             <IconButton icon="male" size="large" type="info" active>
                                                 Walk
@@ -87,20 +88,21 @@ export default class MyComponent extends Component {
                                             <IconButton icon="child" size="large">Run</IconButton>
                                             <IconButton icon="bicycle" size="large">&nbsp;Cycle</IconButton>
                                         </div>
-                                    </p>
+                                    </div>
                                 </nav>
                                 <hr/>
 
                                 <nav className="level">
                                     <div className="level-item level-left">
                                         <p className="title">
-                                            <span className="tag is-warning is-rounded is-large">3</span>
+                                            <span className="tag is-warning is-rounded is-large">Step 3</span>
                                             &nbsp;&nbsp;<span>Are you ready?</span>
                                         </p>
                                     </div>
                                     <p className="level-item level-right">
-                                        <IconButton icon="arrow-right" size="large" type="success">&nbsp;Generate
-                                            customizable route</IconButton>
+                                        <Link to="/plan-route">
+                                            <IconButton icon="arrow-right" size="large" type="success">&nbsp;Start planning</IconButton>
+                                        </Link>
                                     </p>
                                 </nav>
                             </Card>

@@ -9,7 +9,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 
-import MapWithRoutes from './map-with-routes';
+import MapWithRoutes from './helpers/map/map-with-routes';
 import RoutesList from './routes-list';
 import Auth from '../util/auth';
 import swal from 'sweetalert2'
@@ -51,12 +51,6 @@ export default class RouteVisualiser extends Component {
 
         this.visualizeRoute = this.visualizeRoute.bind(this);
         this.selectedZip = 0;
-
-        console.log(this.state);
-        console.log(this.props);
-        console.log("hello");
-        console.log(this.props.auth.isAuthenticated(), !this.props.preferencesState, this.props.preferencesState && !this.props.preferencesState.getPrefs().prefSubmitted);
-        console.log(this.props.auth.api.planningModule.planRoute({constraints: this.props.preferencesState.getPrefs()}));
 
 
         if (this.props.auth.isAuthenticated())

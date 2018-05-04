@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './app';
-import rawConfig from '../config.json';
-import Auth from '../util/auth';
+import App from '../app';
+import rawConfig from '../../config.json';
+import Auth from '../../util/auth';
 import {BrowserRouter} from 'react-router-dom';
 
 

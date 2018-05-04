@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 // import LoginPanel from './login-panel';
 import swal from 'sweetalert2'
 
-import Auth from '../util/auth';
+import Auth from '../../util/auth';
 
 export default class Navbar extends Component {
 
@@ -114,20 +114,29 @@ export default class Navbar extends Component {
                                     </p>
                                     <p className="control">
                                         <NavLink className="button is-info" activeClassName="is-active"
-                                                 to="/debug" onClick={this.buttonClick}>
+                                                 to="/plan-route" onClick={this.buttonClick}>
                                         <span className="icon">
-                                            <Icon icon="magic"/>
+                                            <Icon icon="code-branch"/>
                                         </span>
-                                            <span>Debug</span>
+                                            <span>Plan a route</span>
                                         </NavLink>
                                     </p>
                                     <p className="control">
                                         <NavLink className="button is-info" activeClassName="is-active"
                                                  to="/saved" onClick={this.buttonClick}>
                                         <span className="icon">
-                                            <Icon icon="magic"/>
+                                            <Icon icon="star"/>
                                         </span>
                                             <span>Saved Routes</span>
+                                        </NavLink>
+                                    </p>
+                                    <p className="control">
+                                        <NavLink className="button is-info" activeClassName="is-active"
+                                                 to="/debug" onClick={this.buttonClick}>
+                                        <span className="icon">
+                                            <Icon icon="magic"/>
+                                        </span>
+                                            <span>Debug</span>
                                         </NavLink>
                                     </p>
                                 </div>
@@ -140,7 +149,7 @@ export default class Navbar extends Component {
                                     <p className="control">
 
                                         <a className="button is-info" onClick={this.loginButtonAction}>
-                                            <span className="icon"><Icon icon="exclamation-circle"/></span>
+                                            <span className="icon"><Icon icon="sign-out-alt"/></span>
                                             <span>{[this.props.auth.isAuthenticated()]
                                                 ? "Logout"
                                                 : "Sign in"}</span>
