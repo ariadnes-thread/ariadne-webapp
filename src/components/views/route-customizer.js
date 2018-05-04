@@ -20,19 +20,27 @@ export default class RouteCustomizer extends Component {
     constructor(props) {
         super(props);
 
-        this.api = this.props.auth.api;
+        this.state = {
+            geometry: null,
+        };
 
+        this.api = this.props.auth.api;
         this.generateRoute = this.generateRoute.bind(this);
     }
 
     generateRoute(prefState) {
         Promise.resolve()
             .then(() => this.api.planningModule.planRoute({constraints: prefState.getPrefsFormattedForApi()}))
-            .then(route => console.log(route))
+            .then(routeData => this.visualizeRoute(routeData))
+
+            // TODO: Parse API Error
             .catch(error => console.log('Whoops!'));
     }
 
-    visualizeRoute(prefState) {
+    visualizeRoute(routeData) {
+        this.setState({
+            geometry: routeData.route,
+        })
     }
 
     render() {
@@ -45,7 +53,7 @@ export default class RouteCustomizer extends Component {
                     <div className="column">
                         <div className="card">
                             <div className="card-content is-paddingless">
-                                <MapWithRoutes auth={this.props.auth}/>
+                                <MapWithRoutes auth={this.props.auth} geometry={this.state.geometry}/>
                             </div>
                         </div>
                     </div>
