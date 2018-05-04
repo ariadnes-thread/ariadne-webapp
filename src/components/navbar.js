@@ -142,8 +142,8 @@ export default class Navbar extends Component {
                                         <a className="button is-info" onClick={this.loginButtonAction}>
                                             <span className="icon"><Icon icon="exclamation-circle"/></span>
                                             <span>{[this.props.auth.isAuthenticated()]
-                                                ? "Log Out"
-                                                : "Log In"}</span>
+                                                ? "Logout"
+                                                : "Sign in"}</span>
                                         </a>
                                     </p>
                                 </div>

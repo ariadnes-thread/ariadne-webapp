@@ -1,11 +1,18 @@
-import {BrowserRouter} from 'react-router-dom';
+/**
+ * @author Timur Kuzhagaliyev
+ * @copyright 2018
+ * @license GPL-3.0
+ */
+
 import ReactDOM from 'react-dom';
 import Promise from 'bluebird';
-import 'bulma/css/bulma.css';
 import React from 'react';
 
+import 'bulma/css/bulma.css';
+import 'bulma-extensions/dist/bulma-extensions.min.css'
+
 // TODO: Uncomment once development is complete, scroll down for more info.
-// import registerServiceWorker from './registerServiceWorker';
+// import registerServiceWorker from './util/registerServiceWorker';
 import StartupError from './components/startup-error';
 import rawConfig from './config.json';
 import App from './components/app';
@@ -24,8 +31,7 @@ Promise.resolve()
     .then(() => auth.init())
 
     // Initialization successful, render the actual application
-    .then(() => componentToRender =
-        <BrowserRouter basename={rawConfig.baseUri}><App auth={auth}/></BrowserRouter>)
+    .then(() => componentToRender = <App auth={auth}/>)
 
     // Initialization failed, render an error message
     .catch(error => {

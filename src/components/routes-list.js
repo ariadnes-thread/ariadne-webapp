@@ -137,7 +137,7 @@ export default class RoutesList extends Component {
                             <br/>
                         </div>
                     </div>
-                    <div className="ariadne-button-no-scroll">
+                    <div>
                         <button className="button is-info" onClick={this.handleChange.bind(this, -1)}>
                             Back to Results List
                         </button>
