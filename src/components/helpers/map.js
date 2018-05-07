@@ -4,9 +4,10 @@
  * @license GPL-3.0
  */
 
-import {Map as LeafletMap, TileLayer, Marker, Popup, GeoJSON} from 'react-leaflet';
+import {Map as LeafletMap, TileLayer, Marker, GeoJSON} from 'react-leaflet';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import _ from 'lodash';
 
 import Auth from '../../util/auth';
 
@@ -15,6 +16,7 @@ const blueRouteStyle = {
     color: '#5587c6',
     outline: '#2b297a',
 };
+
 const purpleRouteStyle = {
     name: 'purple',
     color: '#d581c2',
@@ -39,23 +41,56 @@ export default class Map extends Component {
             lat: 34.139,
             lng: -118.125,
             zoom: 14,
-        };
 
-        this.routeStyle = blueRouteStyle;
+            routeStyle: blueRouteStyle,
+            geoJsonObjects: [],
+            routeLatLngCoordinates: null,
+        };
 
         this.handleClick = this.handleClick.bind(this);
     }
 
+    componentDidMount() {
+        this.leafletElement = this.refs.map.leafletElement;
+    }
+
     componentWillReceiveProps(nextProps) {
-        if (this.props.geoJsonObjects !== nextProps.geoJsonObjects) {
-           if (this.routeStyle.name === blueRouteStyle.name) {
-                this.routeStyle = purpleRouteStyle;
-           } else {
-                this.routeStyle = blueRouteStyle;
-           }
+        if (this.props.geoJsonObjects !== nextProps.geoJsonObjects)
+            this.prepareForNewRoute(nextProps.geoJsonObjects);
+    }
+
+    prepareForNewRoute(geoJsonObjects) {
+        const newState = {
+            geoJsonObjects,
+            routeLatLngCoordinates: null,
+            start: null,
+            finish: null,
+        };
+
+        if (this.state.routeStyle.name === blueRouteStyle.name) {
+            newState.routeStyle = purpleRouteStyle;
+        } else {
+            newState.routeStyle = blueRouteStyle;
         }
 
-        this.forceUpdate();
+        if (geoJsonObjects.length > 0 && geoJsonObjects[0]) {
+            const routeGeoJson = geoJsonObjects[0];
+            const coordinates = _.flatten(routeGeoJson.coordinates);
+
+            const coordinateCount = Math.round(coordinates.length / 2.0);
+            const latLngCoordinates = new Array(coordinateCount);
+            for (let i = 0; i < coordinateCount; i++) {
+                const lng = coordinates[i * 2];
+                const lat = coordinates[i * 2 + 1];
+                latLngCoordinates[i] = [lat, lng];
+            }
+            this.leafletElement.fitBounds(latLngCoordinates);
+            newState.routeLatLngCoordinates = latLngCoordinates;
+            newState.start = latLngCoordinates[0];
+            newState.finish = latLngCoordinates[coordinateCount - 1];
+        }
+
+        this.setState(newState);
     }
 
     handleClick(event) {
@@ -79,43 +114,27 @@ export default class Map extends Component {
         };
     }
 
-    renderSvgFilterMarkup() {
-        return (
-            <svg xmlns="w3.org/2000/svg" version="1.1">
-                <defs>
-                    <filter id="dropshadow" height="130%">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
-                        <feOffset dx="2" dy="2" result="offsetblur"/>
-                        <feMerge></feMerge>
-                        <feMergeNode in="SourceGraphic"/>
-                    </filter>
-                </defs>
-            </svg>
-        );
-    }
-
     renderGeoJson() {
-        const count = this.props.geoJsonObjects.length;
+        const geoJsonObjects = this.state.geoJsonObjects;
+        const count = geoJsonObjects.length;
         const components = new Array(count * 4);
         for (let i = 0; i < count; i++) {
-            const data = this.props.geoJsonObjects[i];
+            const data = geoJsonObjects[i];
             const pathStyle = {
-                color: this.routeStyle.color,
+                color: this.state.routeStyle.color,
                 weight: 4,
             };
             const outlineStyle = {
-                color: this.routeStyle.outline,
+                color: this.state.routeStyle.outline,
                 weight: 7,
             };
 
             const key = `${i}-${Math.random()}`;
-            components[i * 4] = <GeoJSON className="ariadne-route-svg-shadow"
-                                         key={`${key}-o`}
-                                         data={data} style={outlineStyle}/>;
-            components[i * 4 + 1] = <GeoJSON key={`${key}-p`}
-                                             data={data} style={pathStyle}/>;
+            components[i * 4] =
+                <GeoJSON className="ariadne-route-svg-shadow" key={`${key}-o`} data={data} style={outlineStyle}/>;
+            components[i * 4 + 1] = <GeoJSON key={`${key}-p`} data={data} style={pathStyle}/>;
 
-            const points = this.getStartAndFinish(data.coordinates); 
+            const points = this.getStartAndFinish(data.coordinates);
             components[i * 4 + 2] = <Marker key={`${key}-s`} position={points.start}/>;
             components[i * 4 + 3] = <Marker key={`${key}-f`} position={points.finish}/>;
         }

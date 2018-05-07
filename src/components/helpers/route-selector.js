@@ -48,7 +48,7 @@ export default class RouteSelector extends Component {
                     <h1 className="title is-size-4">Here's a route we prepared for you:</h1>
                     <div className="columns">
                         <div className="column">
-                            <table className="table">
+                            <table className="table is-fullwidth">
                                 <tbody>
                                 <tr>
                                     <td>Length:</td>
