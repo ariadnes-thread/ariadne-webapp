@@ -30,7 +30,8 @@ html, body {
 }
 
 .ariadne-preference-info {
-    margin: 0 0 -4px -7px;
+    margin: 0 0 -7px -7px;
+    position: relative;
     color: #ccc;
 }
 

@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {PreferenceSchema} from '../../../util/preferences-state';
+import {PreferenceSchema, TransportType} from '../../../util/preferences-state';
 import PreferenceField from './preference-field';
 import IconButton from '../icon-button';
 
@@ -15,6 +15,7 @@ export default class TransportTypeField extends Component {
 
     static propTypes = {
         updatePreference: PropTypes.func.isRequired,
+        initialValue: PropTypes.any.isRequired,
     };
 
     constructor(props) {
@@ -22,24 +23,54 @@ export default class TransportTypeField extends Component {
 
         this.fieldData = PreferenceSchema.transportType;
         this.fieldName = this.fieldData.name;
+
+        const initialValue = this.props.initialValue ? this.props.initialValue : TransportType.Walk;
+        this.state = {
+            transportType: initialValue,
+        };
+
         this.toggle = this.toggle.bind(this);
     }
 
     toggle(enabled) {
-        const value = 123;
-        if (enabled) this.props.updatePreference(this.fieldName, value);
+        if (enabled) this.props.updatePreference(this.fieldName, this.state.transportType);
         else this.props.updatePreference(this.fieldName, null);
+    }
+
+    setOption(value) {
+        this.props.updatePreference(this.fieldName, value);
+        this.setState({
+            transportType: value,
+        });
+    }
+
+    renderOptions() {
+        this.options = [
+            {name: 'Walk', icon: 'male', value: TransportType.Walk},
+            {name: 'Run', icon: 'child', value: TransportType.Run},
+            {name: 'Cycle', icon: 'bicycle', value: TransportType.Bike},
+        ];
+
+        const components = new Array(this.options.length);
+        for (let i = 0; i < this.options.length; i++) {
+            const option = this.options[i];
+            let type = null;
+            if (option.value === this.state.transportType) type = 'info';
+
+            components[i] = <IconButton key={i}
+                                        icon={option.icon}
+                                        size="medium"
+                                        type={type}
+                                        onClick={() => this.setOption(option.value)}>{option.name}</IconButton>;
+        }
+        return components;
     }
 
     render() {
         return (
             <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
                 <div className="buttons has-addons is-right">
-                    <IconButton icon="male" size="medium" type="info" active>
-                        Walk
-                    </IconButton>
-                    <IconButton icon="child" size="medium">Run</IconButton>
-                    <IconButton icon="bicycle" size="medium">&nbsp;Cycle</IconButton>
+                    {this.renderOptions()}
                 </div>
             </PreferenceField>
         );

@@ -48,7 +48,7 @@ export default class PreferenceField extends Component {
                                    type="checkbox" id={this.label} checked={this.state.enabled}/>
                             <label htmlFor={this.label}>{this.fieldData.displayName}</label>
                             {this.fieldData.description &&
-                            <span className="ariadne-preference-info tooltip is-tooltip-right"
+                            <span className="ariadne-preference-info tooltip is-tooltip-right is-tooltip-multiline"
                                   data-tooltip={this.fieldData.description}>
                                 <Icon icon="question-circle"/>
                             </span>}

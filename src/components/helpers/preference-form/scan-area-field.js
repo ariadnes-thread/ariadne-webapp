@@ -34,9 +34,8 @@ export default class ScanAreaField extends Component {
         return (
             <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
                 <div className="select is-medium">
-                    <select>
+                    <select disabled>
                         <option>Currently visible map</option>
-                        <option>Radius</option>
                     </select>
                 </div>
             </PreferenceField>

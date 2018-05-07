@@ -26,7 +26,7 @@ export default class IconButton extends Component {
         const iconClass = `icon ${sizeClass}`;
 
         return (
-            <span className={buttonClass}>
+            <span className={buttonClass} onClick={this.props.onClick}>
                 <Icon className={iconClass} icon={this.props.icon}/>
                 <span>{this.props.children}</span>
             </span>
