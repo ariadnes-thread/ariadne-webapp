@@ -6,10 +6,10 @@
 
 import _ from 'lodash';
 
-import TransportTypeField from '../components/helpers/preference-form/transport-type-field';
-import ScanAreaField from '../components/helpers/preference-form/scan-area-field';
-import LengthField from '../components/helpers/preference-form/length-field';
-import RouteTypeField from '../components/helpers/preference-form/route-type-field';
+import TransportTypeField from '../components/helpers/preference-fields/transport-type-field';
+import ScanAreaField from '../components/helpers/preference-fields/scan-area-field';
+import LengthField from '../components/helpers/preference-fields/length-field';
+import RouteTypeField from '../components/helpers/preference-fields/route-type-field';
 
 /** @enum {string} */
 export const TransportType = {
@@ -79,6 +79,10 @@ export default class PreferencesState {
         });
     }
 
+    get(name) {
+        return this.preferences[name];
+    }
+
     set(name, value) {
         this.preferences[name] = value;
     }
@@ -87,12 +91,12 @@ export default class PreferencesState {
         return {
             desiredLength: this.preferences.length,
             origin: {
-                longitude: this.preferences.origin.lng,
-                latitude: this.preferences.origin.lat,
+                longitude: -118.132412,
+                latitude: 34.149638,
             },
             destination: {
-                longitude: this.preferences.destination.lng,
-                latitude: this.preferences.destination.lat,
+                longitude: -118.071555,
+                latitude: 34.113537,
             },
         };
     }

@@ -21,10 +21,10 @@ export default class LoginPanel extends Component {
         super(props);
 
         this.state = {
-            email:"",
-            password:""
+            email: '',
+            password: '',
         };
-        console.log("On entry to login panel, are we authenticated? " + this.props.auth.isAuthenticated());
+        console.log(`On entry to login panel, are we authenticated? ${this.props.auth.isAuthenticated()}`);
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -32,7 +32,7 @@ export default class LoginPanel extends Component {
 
     handleChange(event) {
         event.preventDefault();
-        this.setState({[event.target.name] : event.target.value});
+        this.setState({[event.target.name]: event.target.value});
     }
 
     handleSubmit(event) {
@@ -53,7 +53,6 @@ export default class LoginPanel extends Component {
                 alert('Error occurred during form submission. Check console.');
             });
     }
-
 
 
     render() {

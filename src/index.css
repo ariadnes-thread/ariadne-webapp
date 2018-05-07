@@ -11,6 +11,20 @@ html, body {
     height: 100%;
 }
 
+.root, .ariadne-app {
+    height: calc(100vh - 3.25rem);
+}
+
+.leaflet-container-wrapper {
+    flex-direction: column;
+    display: flex;
+}
+
+.leaflet-container {
+    min-height: 400px;
+    flex: 1;
+}
+
 /**
 =============== Generic utility classes
  */

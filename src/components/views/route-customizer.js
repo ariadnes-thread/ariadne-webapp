@@ -8,8 +8,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 import PreferenceEditor from '../helpers/preference-editor';
-import MapWithRoutes from '../helpers/map/map-with-routes';
 import Auth from '../../util/auth';
+import Map from '../helpers/map';
 
 export default class RouteCustomizer extends Component {
 
@@ -21,7 +21,7 @@ export default class RouteCustomizer extends Component {
         super(props);
 
         this.state = {
-            geometry: null,
+            geoJsonObjects: [],
         };
 
         this.api = this.props.auth.api;
@@ -30,11 +30,11 @@ export default class RouteCustomizer extends Component {
     }
 
     submitPreferences(prefState) {
-        console.log(prefState.preferences);
+        console.log(prefState.getPrefsFormattedForApi());
+        this.generateRoute(prefState);
     }
 
     generateRoute(prefState) {
-        console.log(prefState.preferences);
         Promise.resolve()
             .then(() => this.api.planningModule.planRoute({constraints: prefState.getPrefsFormattedForApi()}))
             .then(routeData => this.visualizeRoute(routeData))
@@ -45,25 +45,26 @@ export default class RouteCustomizer extends Component {
 
     visualizeRoute(routeData) {
         this.setState({
-            geometry: routeData.route,
+            geoJsonObjects: [routeData.route],
         });
     }
 
     render() {
         return (
-            <section className="section ariadne-section-uniform-padding">
-                <div className="columns is-centered is-multiline">
+            <section className="section ariadne-section-uniform-padding" style={{height: '100%'}}>
+                <div className="columns is-centered is-multiline" style={{height: '100%'}}>
                     <div className="column is-one-third-desktop is-12-tablet is-12-mobile">
                         <PreferenceEditor submitPreferences={this.submitPreferences}/>
                     </div>
-                    <div className="column is-two-thirds-desktop is-12-tablet is-12-mobile">
-                        <div className="card">
-                            <div className="card-content is-paddingless">
-                                <MapWithRoutes auth={this.props.auth} geometry={this.state.geometry}/>
+
+                    <div className="column is-two-thirds-desktop is-12-tablet is-12-mobile" style={{height: '100%'}}>
+                        <div className="card" style={{height: '100%'}}>
+                            <div className="card-content is-paddingless leaflet-container-wrapper"
+                                 style={{height: '100%'}}>
+                                <Map auth={this.props.auth} geoJsonObjects={this.state.geoJsonObjects} />
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
         );

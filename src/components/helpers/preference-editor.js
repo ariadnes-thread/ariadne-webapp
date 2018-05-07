@@ -56,7 +56,9 @@ export default class PreferenceEditor extends Component {
 
             const preferenceData = PreferenceSchema[preferenceName];
             const FormComponent = preferenceData.formComponent;
-            components.push(<FormComponent updatePreference={this.updatePreference} key={i++}/>);
+            const initialValue = this.prefState.get(preferenceName);
+            components.push(<FormComponent updatePreference={this.updatePreference}
+                                           initialValue={initialValue} key={i++}/>);
             components.push(<div key={i++} className="ariadne-divider"/>);
         }
         return components;

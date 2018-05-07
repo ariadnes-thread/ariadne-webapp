@@ -24,7 +24,7 @@ export default class TransportTypeField extends Component {
         this.fieldData = PreferenceSchema.transportType;
         this.fieldName = this.fieldData.name;
 
-        const initialValue = this.props.initialValue ? this.props.initialValue : TransportType.Walk;
+        const initialValue = this.props.initialValue ? this.props.initialValue : PreferenceSchema.transportType.defaultValue;
         this.state = {
             transportType: initialValue,
         };

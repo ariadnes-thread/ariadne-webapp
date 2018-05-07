@@ -14,6 +14,7 @@ export default class LengthField extends Component {
 
     static propTypes = {
         updatePreference: PropTypes.func.isRequired,
+        initialValue: PropTypes.any.isRequired,
     };
 
     constructor(props) {
@@ -21,21 +22,36 @@ export default class LengthField extends Component {
 
         this.fieldData = PreferenceSchema.length;
         this.fieldName = this.fieldData.name;
+
+        const initialValue = this.props.initialValue ? this.props.initialValue : PreferenceSchema.length.defaultValue;
+        this.state = {
+            length: initialValue,
+        };
+
         this.toggle = this.toggle.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
     toggle(enabled) {
-        const value = 123;
-        if (enabled) this.props.updatePreference(this.fieldName, value);
+        if (enabled) this.props.updatePreference(this.fieldName, this.state.length);
         else this.props.updatePreference(this.fieldName, null);
+    }
+
+    handleChange(event) {
+       const value = event.target.value;
+       this.props.updatePreference(this.fieldName, value);
+       this.setState({length: value});
     }
 
     render() {
         return (
             <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
-                <input className="slider is-disabled is-fullwidth" step="1" min="0" max="100"
-                       value="50"
+                <input className="slider has-output" step="100" min="100" max="10000"
+                       value={this.state.length}
+                       onChange={this.handleChange}
+                       id="routeLengthSlider"
                        type="range"/>
+                <output htmlFor="routeLengthSlider">{this.state.length}</output>
             </PreferenceField>
         );
     }
