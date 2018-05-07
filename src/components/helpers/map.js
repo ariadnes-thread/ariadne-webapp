@@ -7,9 +7,19 @@
 import {Map as LeafletMap, TileLayer, Marker, Popup, GeoJSON} from 'react-leaflet';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import tinycolor from 'tinycolor2';
 
 import Auth from '../../util/auth';
+
+const blueRouteStyle = {
+    name: 'blue',
+    color: '#5587c6',
+    outline: '#2b297a',
+};
+const purpleRouteStyle = {
+    name: 'purple',
+    color: '#d581c2',
+    outline: '#612050',
+};
 
 export default class Map extends Component {
 
@@ -31,15 +41,42 @@ export default class Map extends Component {
             zoom: 14,
         };
 
+        this.routeStyle = blueRouteStyle;
+
         this.handleClick = this.handleClick.bind(this);
     }
 
-    componentWillReceiveProps() {
+    componentWillReceiveProps(nextProps) {
+        if (this.props.geoJsonObjects !== nextProps.geoJsonObjects) {
+           if (this.routeStyle.name === blueRouteStyle.name) {
+                this.routeStyle = purpleRouteStyle;
+           } else {
+                this.routeStyle = blueRouteStyle;
+           }
+        }
+
         this.forceUpdate();
     }
 
     handleClick(event) {
         if (this.props.onMapClick) this.props.onMapClick(event);
+    }
+
+    getStartAndFinish(coordinates) {
+        // Goes down nested arrays to find the first or last leaf array
+        const descendToLeafArray = (value, first) => {
+            const index = first ? 0 : value.length - 1;
+            const nextValue = value[index];
+            if (nextValue instanceof Array)
+                return descendToLeafArray(nextValue, first);
+
+            return value.slice(0);
+        };
+
+        return {
+            start: descendToLeafArray(coordinates, true).reverse(),
+            finish: descendToLeafArray(coordinates, false).reverse(),
+        };
     }
 
     renderSvgFilterMarkup() {
@@ -59,23 +96,28 @@ export default class Map extends Component {
 
     renderGeoJson() {
         const count = this.props.geoJsonObjects.length;
-        const components = new Array(count * 2);
+        const components = new Array(count * 4);
         for (let i = 0; i < count; i++) {
             const data = this.props.geoJsonObjects[i];
             const pathStyle = {
-                color: '#5587c6',
+                color: this.routeStyle.color,
                 weight: 4,
             };
             const outlineStyle = {
-                color: '#2b297a',
+                color: this.routeStyle.outline,
                 weight: 7,
             };
 
-            components[i * 2] = <GeoJSON className="ariadne-route-svg-shadow"
-                                         key={`${i}-${Math.random()}`}
+            const key = `${i}-${Math.random()}`;
+            components[i * 4] = <GeoJSON className="ariadne-route-svg-shadow"
+                                         key={`${key}-o`}
                                          data={data} style={outlineStyle}/>;
-            components[i * 2 + 1] = <GeoJSON key={`${i}-${Math.random()}`}
+            components[i * 4 + 1] = <GeoJSON key={`${key}-p`}
                                              data={data} style={pathStyle}/>;
+
+            const points = this.getStartAndFinish(data.coordinates); 
+            components[i * 4 + 2] = <Marker key={`${key}-s`} position={points.start}/>;
+            components[i * 4 + 3] = <Marker key={`${key}-f`} position={points.finish}/>;
         }
         return components;
     }
@@ -89,11 +131,6 @@ export default class Map extends Component {
                     url={`https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=${this.props.auth.config.mapboxAccessToken}`}
                 />
                 {this.renderGeoJson()}
-                <Marker position={position}>
-                    <Popup>
-                        <span>A pretty CSS3 popup. <br/> Easily customizable.</span>
-                    </Popup>
-                </Marker>
             </LeafletMap>
         );
     }
