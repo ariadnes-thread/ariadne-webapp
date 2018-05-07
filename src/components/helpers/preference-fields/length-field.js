@@ -51,7 +51,7 @@ export default class LengthField extends Component {
                        onChange={this.handleChange}
                        id="routeLengthSlider"
                        type="range"/>
-                <output htmlFor="routeLengthSlider">{this.state.length}</output>
+                <span style={{display: 'inline-block', width: '3rem'}}>{this.state.length}</span>
             </PreferenceField>
         );
     }

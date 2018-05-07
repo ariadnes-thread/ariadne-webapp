@@ -47,7 +47,7 @@ export const PreferenceSchema = {
         displayName: 'Scan area',
         description: 'Scan area defines the region of the map which our route planner will consider when generating' +
         ' your route.',
-        enabledByDefault: true,
+        enabledByDefault: false,
         defaultValue: ScanArea.CurrentlyVisibleMap,
         formComponent: ScanAreaField,
     },
@@ -55,7 +55,7 @@ export const PreferenceSchema = {
         name: 'length',
         displayName: 'Length',
         description: null,
-        enabledByDefault: false,
+        enabledByDefault: true,
         defaultValue: 5000.0,
         formComponent: LengthField,
     },

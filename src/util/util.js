@@ -8,7 +8,7 @@ class Util {
 
     /**
      * @param {object} data
-     * @param {Error} data.object Error object that will be parsed for human readable output
+     * @param {*} data.object Error object that will be parsed for human readable output
      * @param {string} [data.message] Optional message to give some context to the error
      */
     static logError(data) {

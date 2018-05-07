@@ -6,6 +6,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import {TweenMax} from 'gsap';
 
 import PreferencesState, {PreferenceSchema} from '../../util/preferences-state';
 import Util from '../../util/util';
@@ -23,9 +24,27 @@ export default class PreferenceEditor extends Component {
 
         if (this.props.initialPrefState) this.prefState = this.props.initialPrefState;
         else this.prefState = new PreferencesState();
+        this.state = {
+            submitting: false,
+        };
 
+        this.containerRef = React.createRef();
         this.updatePreference = this.updatePreference.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentWillEnter(callback) {
+        TweenMax.fromTo(this.containerRef.current, 0.3,
+            {x: -200, opacity: 0, position: 'absolute'},
+            {x: 0, opacity: 1, position: 'relative', onComplete: callback}
+        );
+    }
+
+    componentWillLeave(callback) {
+        TweenMax.fromTo(this.containerRef.current, 0.3,
+            {x: 0, opacity: 1, top: 0, position: 'absolute'},
+            {x: -200, opacity: 0, onComplete: callback}
+        );
     }
 
     resetPreferences() {
@@ -44,8 +63,16 @@ export default class PreferenceEditor extends Component {
     handleSubmit(event) {
         event.preventDefault();
         // TODO: Replace with actual data
-        if (this.props.submitPreferences) this.props.submitPreferences(this.prefState);
-        else Util.logWarn(`No 'submitPreferences()' function has been supplied, doing nothing on form submit.`);
+        if (this.props.submitPreferences) {
+            Promise.resolve()
+                .then(() => this.setState({submitting: true}))
+                .then(() => this.props.submitPreferences(this.prefState))
+                .finally(() => this.setState({submitting: false}))
+                .catch(error => alert(error.message));
+        }
+        else {
+            Util.logWarn(`No 'submitPreferences()' function has been supplied, doing nothing on form submit.`);
+        }
     }
 
     renderFields() {
@@ -65,8 +92,11 @@ export default class PreferenceEditor extends Component {
     }
 
     render() {
+        let generateButtonClass = 'button is-large is-fullwidth is-success';
+        if (this.state.submitting) generateButtonClass += ' is-loading';
+
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form ref={this.containerRef} onSubmit={this.handleSubmit} style={{minWidth: '100%'}}>
                 <Card>
                     <p>You're almost there! Tell us about your preferences to help us find a perfect route
                         for you. If you care about a particular route feature, turn it on and specify a
@@ -75,7 +105,7 @@ export default class PreferenceEditor extends Component {
                 <Card>
                     {this.renderFields()}
 
-                    <button className="button is-large is-fullwidth is-success">Generate route</button>
+                    <button ref="genRoute" className={generateButtonClass}>Generate route</button>
                 </Card>
             </form>
         );

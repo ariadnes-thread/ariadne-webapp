@@ -7,6 +7,7 @@
 import {Map as LeafletMap, TileLayer, Marker, Popup, GeoJSON} from 'react-leaflet';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import tinycolor from 'tinycolor2';
 
 import Auth from '../../util/auth';
 
@@ -33,22 +34,26 @@ export default class Map extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
+    componentWillReceiveProps() {
+        this.forceUpdate();
+    }
+
     handleClick(event) {
         if (this.props.onMapClick) this.props.onMapClick(event);
     }
 
     renderGeoJson() {
         const count = this.props.geoJsonObjects.length;
-        const style = {
-            color: '#006400',
-            weight: 10,
-            opacity: 0.75,
-        };
-
         const components = new Array(count);
         for (let i = 0; i < count; i++) {
             const data = this.props.geoJsonObjects[i];
-            components[i] = <GeoJSON key={i} data={data} style={style}/>;
+            const style = {
+                color: `#${tinycolor.random().toHex()}`,
+                weight: 10,
+                opacity: 0.75,
+            };
+
+            components[i] = <GeoJSON key={`${i}-${Math.random()}`} data={data} style={style}/>;
         }
         return components;
     }

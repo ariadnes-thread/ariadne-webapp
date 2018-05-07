@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 // import Promise from 'bluebird';
 // import swal from 'sweetalert2'
 // import MapWithRoutes from './map-with-routes';
-import Auth from '../util/auth';
+import Auth from '../../util/auth';
 
 
 export default class SavedRoutes extends Component {
