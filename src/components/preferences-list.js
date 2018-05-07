@@ -13,16 +13,18 @@ import Promise from 'bluebird';
 import Auth from '../util/auth';
 
 
-const defaultPreferences = {"startZip":["write in!", "text"],
-                            "endZip":["write in!", "text"],
-                            "search radius": ["1", "range"],
-                            "greenery": ["50", "range"],
-                            "elevation": ["20", "range"],
-                            "distance": ["30", "range"],
-                            "cofeeshops": ["2", "range"],
-                            "time": ["60", "range"],
-                            "origin": ["Origin PoI", "text"],
-                            "destination": ["Destination PoI", "text"]};
+const defaultPreferences = {
+    'startZip': ['write in!', 'text'],
+    'endZip': ['write in!', 'text'],
+    'search radius': ['1', 'range'],
+    'greenery': ['50', 'range'],
+    'elevation': ['20', 'range'],
+    'distance': ['30', 'range'],
+    'cofeeshops': ['2', 'range'],
+    'time': ['60', 'range'],
+    'origin': ['Origin PoI', 'text'],
+    'destination': ['Destination PoI', 'text']
+};
 
 export default class PreferencesList extends Component {
 
@@ -34,9 +36,11 @@ export default class PreferencesList extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {preferences: defaultPreferences,
-                        pointsOfInterest: null,
-                        selectedInput: -1};
+        this.state = {
+            preferences: defaultPreferences,
+            pointsOfInterest: null,
+            selectedInput: -1
+        };
 
         // TO DO: drag and drop ordering of preferences
 
@@ -52,8 +56,8 @@ export default class PreferencesList extends Component {
                     pointsOfInterest,
                     preferences: {
                         ...this.state.preferences,
-                        origin: [0, "text"],
-                        destination: [0, "text"],
+                        origin: [0, 'text'],
+                        destination: [0, 'text'],
                     },
                 });
             })
@@ -91,21 +95,19 @@ export default class PreferencesList extends Component {
     }
 
     updateZipPref(zip) {
-        if (this.state.selectedInput === 0)
-        {        
+        if (this.state.selectedInput === 0) {
             this.setState({
                 preferences: {
                     ...this.state.preferences,
-                    "startZip": [zip, "text"],
+                    'startZip': [zip, 'text'],
                 },
             });
         }
-        else if (this.state.selectedInput === 1)
-        {
+        else if (this.state.selectedInput === 1) {
             this.setState({
                 preferences: {
                     ...this.state.preferences,
-                    "endZip": [zip, "text"],
+                    'endZip': [zip, 'text'],
                 },
             });
         }
@@ -115,13 +117,13 @@ export default class PreferencesList extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        
+
         return Promise.resolve()
             .then(() => {
                 let retpref = {};
 
                 Object.keys(this.state.preferences).map((preference) => {
-                    if (preference === "origin" || preference === "destination")
+                    if (preference === 'origin' || preference === 'destination')
                         retpref[preference] = this.state.pointsOfInterest[this.state.preferences[preference][0]];
                     else
                         retpref[preference] = this.state.preferences[preference][0];
@@ -139,7 +141,7 @@ export default class PreferencesList extends Component {
             .then(geometry => this.props.visualizeRoute({geometry}))
             .catch(error => {
                 console.error(error);
-                console.error("error from submitting preferences");
+                console.error('error from submitting preferences');
                 // TODO: Replace with user-friendly warning/modal
                 alert(error.message);
             });
@@ -198,29 +200,30 @@ export default class PreferencesList extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="ariadne-scrollable card-preferences-list">
-                    <div className="ariadne-scroll-card">
+                    <div className="card-preferences-list">
+                        <div className="ariadne-scroll-card">
 
-                    {
-                        this.state ? Object.keys(this.state.preferences).map((preference, idx) => {
-                            return (<div key={'preference-input'+idx}>
-                             {preference}:
-                             {this.state.preferences[preference][1]!=="text"
-                                ? this.state.preferences[preference][0]
-                                : <button onClick={this.handleSelectZip.bind(this,idx)}>Select on Map</button>} 
-                             <input 
-                                type={this.state.preferences[preference][1]}
-                                
-                                value={
-                                    this.state.preferences[preference][0]
-                                } 
-                                onChange={this.handleChange.bind(this, preference, this.state.preferences[preference][1])}
-                             />
-                            </div>);
-                        })
-                        : "Missing State"
-                    }
-                    </div>
+                            {
+                                this.state ? Object.keys(this.state.preferences).map((preference, idx) => {
+                                        return (<div key={'preference-input' + idx}>
+                                            {preference}:
+                                            {this.state.preferences[preference][1] !== 'text'
+                                                ? this.state.preferences[preference][0]
+                                                : <button onClick={this.handleSelectZip.bind(this, idx)}>Select on
+                                                    Map</button>}
+                                            <input
+                                                type={this.state.preferences[preference][1]}
+
+                                                value={
+                                                    this.state.preferences[preference][0]
+                                                }
+                                                onChange={this.handleChange.bind(this, preference, this.state.preferences[preference][1])}
+                                            />
+                                        </div>);
+                                    })
+                                    : 'Missing State'
+                            }
+                        </div>
                     </div>
                     <br/>
                     <button className="button is-info">Update routes list</button>

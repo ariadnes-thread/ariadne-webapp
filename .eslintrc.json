@@ -1,0 +1,38 @@
+{
+  "extends": "react-app",
+  "rules": {
+    "eol-last": 1,
+    "no-var": "error",
+    "linebreak-style": [
+      "error",
+      "unix"
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "allowTemplateLiterals": true
+      }
+    ],
+    "no-console": "error",
+    "semi": [
+      "error",
+      "always"
+    ],
+    "comma-dangle": [
+      "error",
+      "always-multiline"
+    ],
+    "prefer-template": "error",
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "keyword-spacing": [
+      "error",
+      {
+        "after": true
+      }
+    ]
+  }
+}

@@ -111,7 +111,7 @@ export default class RoutesList extends Component {
     render() {
         if (this.state.selected === -1) {
             return (
-                <div className="ariadne-scrollable routes-list">
+                <div className="routes-list">
                     <div className="ariadne-scroll-card">
                         {this.renderRouteList()}
                     </div>
@@ -123,7 +123,7 @@ export default class RoutesList extends Component {
             return (
                 <div className="routes-list">
                     <p> {this.state.routes[this.state.selected].name}: </p>
-                    <div className="ariadne-scrollable card-routes-list">
+                    <div className="card-routes-list">
                         <div className="ariadne-scroll-card">
                             <p> Elevation Gain: {this.state.routes[this.state.selected].elevation} ft</p>
                             <p> This will be a concise description of the route. </p>

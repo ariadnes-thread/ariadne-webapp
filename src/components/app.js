@@ -11,7 +11,6 @@ import fontawesome from '@fortawesome/fontawesome';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import PreferencesSelection from './preferences-selection';
 import PreferencesState from '../util/preferences-state';
 import RouteVisualiser from './route-visualiser';
 import RouteCustomizer from './views/route-customizer';

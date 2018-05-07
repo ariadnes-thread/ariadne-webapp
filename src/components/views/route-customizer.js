@@ -25,10 +25,16 @@ export default class RouteCustomizer extends Component {
         };
 
         this.api = this.props.auth.api;
+        this.submitPreferences = this.submitPreferences.bind(this);
         this.generateRoute = this.generateRoute.bind(this);
     }
 
+    submitPreferences(prefState) {
+        console.log(prefState.preferences);
+    }
+
     generateRoute(prefState) {
+        console.log(prefState.preferences);
         Promise.resolve()
             .then(() => this.api.planningModule.planRoute({constraints: prefState.getPrefsFormattedForApi()}))
             .then(routeData => this.visualizeRoute(routeData))
@@ -40,17 +46,17 @@ export default class RouteCustomizer extends Component {
     visualizeRoute(routeData) {
         this.setState({
             geometry: routeData.route,
-        })
+        });
     }
 
     render() {
         return (
             <section className="section ariadne-section-uniform-padding">
-                <div className="columns is-centered">
-                    <div className="column is-one-third">
-                        <PreferenceEditor generateRoute={this.generateRoute}/>
+                <div className="columns is-centered is-multiline">
+                    <div className="column is-one-third-desktop is-12-tablet is-12-mobile">
+                        <PreferenceEditor submitPreferences={this.submitPreferences}/>
                     </div>
-                    <div className="column">
+                    <div className="column is-two-thirds-desktop is-12-tablet is-12-mobile">
                         <div className="card">
                             <div className="card-content is-paddingless">
                                 <MapWithRoutes auth={this.props.auth} geometry={this.state.geometry}/>

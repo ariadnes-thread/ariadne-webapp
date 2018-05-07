@@ -4,50 +4,88 @@
  * @license GPL-3.0
  */
 
+import _ from 'lodash';
+
+import TransportTypeField from '../components/helpers/preference-form/transport-type-field';
+import ScanAreaField from '../components/helpers/preference-form/scan-area-field';
+import LengthField from '../components/helpers/preference-form/length-field';
+import RouteTypeField from '../components/helpers/preference-form/route-type-field';
+
+/** @enum {string} */
+export const TransportType = {
+    Bike: 'bike',
+    Walk: 'walk',
+    Run: 'run',
+};
+
+/** @enum {string} */
+export const ScanArea = {
+    CurrentlyVisibleMap: 'visible-map',
+    Custom: 'custom',
+};
+
+/** @enum {string} */
+export const RouteType = {
+    PointToPoint: 'point-to-point',
+    Loop: 'loop',
+};
+
+/**
+ * This schema defines all preferences and any relevant meta data.
+ */
+export const PreferenceSchema = {
+    transportType: {
+        name: 'transportType',
+        displayName: 'Activity',
+        description: null,
+        enabledByDefault: true,
+        defaultValue: TransportType.Walk,
+        formComponent: TransportTypeField,
+    },
+    scanArea: {
+        name: 'scanArea',
+        displayName: 'Scan area',
+        description: 'Scan area defines the region of the map which our route planner will consider when generating' +
+        ' your route.',
+        enabledByDefault: true,
+        defaultValue: ScanArea.CurrentlyVisibleMap,
+        formComponent: ScanAreaField,
+    },
+    length: {
+        name: 'length',
+        displayName: 'Length',
+        description: null,
+        enabledByDefault: false,
+        defaultValue: 5000.0,
+        formComponent: LengthField,
+    },
+    routeType: {
+        name: 'routeType',
+        displayName: 'Route type',
+        description: null,
+        enabledByDefault: true,
+        defaultValue: RouteType.PointToPoint,
+        formComponent: RouteTypeField,
+    },
+};
+
 export default class PreferencesState {
 
     constructor() {
+        this.preferences = {};
 
-        this.routeMode = {'bike': 1, 'run': 2, 'walk': 3};
-        this.routeType = {'loop': 1, 'pointToPoint': 2, 'walk': 3};
-        this.setting = {'urban': 1, 'rural': 2, 'suburban': 3};
-        this.edgeType = {'bikePath': 1, 'green': 2, 'paved': 3};
-        this.nodeType = {'park': 1, 'bus': 2, 'coffee': 3, 'landmark': 4, 'restaurant': 5, 'mall': 6};
-        this.start = {'specific': 1, 'type': 2};
-        this.end = {'specific': 1, 'type': 2};
-        this.preferences = {
-            overallZoom: 16,
-            overallCenter: {lat: 34.138932, lng: -118.125339},
-            routeMode: this.routeMode.bike,
-            routeType: this.routeType.loop,
-            desiredLength: {userEnabled: true, min: 0, max: 10},
-            time: {userEnabled: false, min: 0, max: 60},
-            start: this.start.specific,
-            end: this.end.specific,
-            origin: {lat: 34.138932, lng: -118.125339},
-            destination: {lat: 34.138932, lng: -118.125339},
-            startType: this.nodeType.bus,
-            endType: this.nodeType.park,
-            elevation: {userEnabled: true, min: 0, max: 1000},
-            setting: this.setting.urban,
-            node: [],
-            edge: []
-        };
+        _.forIn(PreferenceSchema, (value, key) => {
+            this.preferences[key] = value.defaultValue;
+        });
     }
 
-    getPrefs() {
-        return this.preferences;
-    }
-
-    setPrefs(newState) {
-        console.log('In App.js, calling PreferencesState.setPrefs');
-        console.log('new state is', newState);
-        this.preferences = newState;
+    set(name, value) {
+        this.preferences[name] = value;
     }
 
     getPrefsFormattedForApi() {
         return {
-            desiredLength: 5000.0,
+            desiredLength: this.preferences.length,
             origin: {
                 longitude: this.preferences.origin.lng,
                 latitude: this.preferences.origin.lat,
@@ -56,7 +94,7 @@ export default class PreferencesState {
                 longitude: this.preferences.destination.lng,
                 latitude: this.preferences.destination.lat,
             },
-        }
+        };
     }
 
 }

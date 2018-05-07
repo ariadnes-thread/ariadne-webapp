@@ -4,31 +4,62 @@
  * @license GPL-3.0
  */
 
-import Icon from '@fortawesome/react-fontawesome';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import PreferencesState from '../../util/preferences-state';
-import IconButton from './icon-button';
+import PreferencesState, {PreferenceSchema} from '../../util/preferences-state';
+import Util from '../../util/util';
 import Card from './card';
 
 export default class PreferenceEditor extends Component {
 
     static propTypes = {
-        generateRoute: PropTypes.func,
+        submitPreferences: PropTypes.func, // Optional, but nothing will happen on submit if this is not provided
+        initialPrefState: PropTypes.instanceOf(PreferencesState), // Optional, used if parent extracted from localStorage
     };
-
 
     constructor(props) {
         super(props);
 
+        if (this.props.initialPrefState) this.prefState = this.props.initialPrefState;
+        else this.prefState = new PreferencesState();
+
+        this.updatePreference = this.updatePreference.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    resetPreferences() {
+        this.prefState = new PreferencesState();
+        this.forceUpdate();
+    }
+
+    /**
+     * @param {string} preferenceName
+     * @param {*} value This could be a string, an object, a latlong, or anything else depending on the preference.
+     */
+    updatePreference(preferenceName, value) {
+        this.prefState.set(preferenceName, value);
     }
 
     handleSubmit(event) {
         event.preventDefault();
         // TODO: Replace with actual data
-        if (this.props.generateRoute) this.props.generateRoute(new PreferencesState());
+        if (this.props.submitPreferences) this.props.submitPreferences(this.prefState);
+        else Util.logWarn(`No 'submitPreferences()' function has been supplied, doing nothing on form submit.`);
+    }
+
+    renderFields() {
+        let i = 0;
+        const components = [];
+        for (const preferenceName in PreferenceSchema) {
+            if (!PreferenceSchema.hasOwnProperty(preferenceName)) continue;
+
+            const preferenceData = PreferenceSchema[preferenceName];
+            const FormComponent = preferenceData.formComponent;
+            components.push(<FormComponent updatePreference={this.updatePreference} key={i++}/>);
+            components.push(<div key={i++} className="ariadne-divider"/>);
+        }
+        return components;
     }
 
     render() {
@@ -40,115 +71,7 @@ export default class PreferenceEditor extends Component {
                         value. Click "Generate route" once you're done!</p>
                 </Card>
                 <Card>
-
-                    <div className="columns is-vcentered">
-                        <div className="column is-narrow">
-                            <div className="field">
-                                <input className="is-checkradio is-medium" id="routeTypeCb"
-                                       type="checkbox" name="routeTypeCb" checked="checked"/>
-                                <label htmlFor="routeTypeCb">Route type</label>
-                            </div>
-                        </div>
-                        <div className="column has-text-right">
-                            <div className="buttons has-addons is-right">
-                                <IconButton icon="male" size="medium" type="info" active>
-                                    Walk
-                                </IconButton>
-                                <IconButton icon="child" size="medium">Run</IconButton>
-                                <IconButton icon="bicycle" size="medium">&nbsp;Cycle</IconButton>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ariadne-compact-divider"/>
-
-                    <div className="columns is-vcentered">
-                        <div className="column is-narrow">
-                            <div className="field">
-                                <input className="is-checkradio is-medium" id="scanAreaCb"
-                                       type="checkbox" name="scanAreaCb" checked="checked"/>
-                                <label htmlFor="scanAreaCb">Scan area</label>
-                                <Icon style={{margin: '0 0 -4px -7px', color: '#ccc'}} icon="question-circle"/>
-                            </div>
-                        </div>
-                        <div className="column has-text-right">
-                            <div className="select is-medium">
-                                <select>
-                                    <option>Currently visible map</option>
-                                    <option>Radius</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ariadne-compact-divider"/>
-
-                    <div className="columns is-vcentered">
-                        <div className="column is-narrow">
-                            <div className="field">
-                                <input className="is-checkradio is-medium" id="lengthCb"
-                                       type="checkbox" name="lengthCb"/>
-                                <label htmlFor="lengthCb">Length</label>
-                            </div>
-                        </div>
-                        <div className="column has-text-right">
-                            <input className="slider is-disabled is-fullwidth" step="1" min="0" max="100"
-                                   value="50"
-                                   type="range"/>
-                        </div>
-                    </div>
-
-                    <div className="ariadne-compact-divider"/>
-
-                    <div className="columns is-vcentered">
-                        <div className="column is-narrow">
-                            <div className="field">
-                                <input className="is-checkradio is-medium" id="startFinishCb"
-                                       type="checkbox" name="startFinishCb" checked="checked"/>
-                                <label htmlFor="startFinishCb">Start and finish</label>
-                            </div>
-                        </div>
-                        <div className="column has-text-right">
-                            <div className="select is-medium">
-                                <select>
-                                    <option>Custom</option>
-                                    <option>With options</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="field is-horizontal">
-                        <div className="field-label is-normal">
-                            <label className="label">Start</label>
-                        </div>
-                        <div className="field-body">
-                            <div className="field has-addons">
-                                <div className="control">
-                                    <input className="input" type="text" placeholder="Postcode, address"/>
-                                </div>
-                                <div className="control">
-                                    <a className="button is-info">Pick on the map</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="field is-horizontal">
-                        <div className="field-label is-normal">
-                            <label className="label">Finish</label>
-                        </div>
-                        <div className="field-body">
-                            <div className="field has-addons">
-                                <div className="control">
-                                    <input className="input" type="text" placeholder="Postcode, address"/>
-                                </div>
-                                <div className="control">
-                                    <a className="button is-info">Pick on the map</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="ariadne-divider"/>
+                    {this.renderFields()}
 
                     <button className="button is-large is-fullwidth is-success">Generate route</button>
                 </Card>

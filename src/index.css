@@ -29,14 +29,9 @@ html, body {
     margin: 1rem 0 !important;
 }
 
-.ariadne-compact-divider {
-    border-top: solid 1px #ddd;
-    margin: -0.5rem 0 1rem 0 !important;
-}
-
-.ariadne-scrollable {
-    /*flex-grow: 1;*/
-    /*overflow: scroll;*/
+.ariadne-preference-info {
+    margin: 0 0 -4px -7px;
+    color: #ccc;
 }
 
 .card-ariadne-lists {
