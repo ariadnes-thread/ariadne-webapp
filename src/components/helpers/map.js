@@ -42,18 +42,40 @@ export default class Map extends Component {
         if (this.props.onMapClick) this.props.onMapClick(event);
     }
 
+    renderSvgFilterMarkup() {
+        return (
+            <svg xmlns="w3.org/2000/svg" version="1.1">
+                <defs>
+                    <filter id="dropshadow" height="130%">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                        <feOffset dx="2" dy="2" result="offsetblur"/>
+                        <feMerge></feMerge>
+                        <feMergeNode in="SourceGraphic"/>
+                    </filter>
+                </defs>
+            </svg>
+        );
+    }
+
     renderGeoJson() {
         const count = this.props.geoJsonObjects.length;
-        const components = new Array(count);
+        const components = new Array(count * 2);
         for (let i = 0; i < count; i++) {
             const data = this.props.geoJsonObjects[i];
-            const style = {
-                color: `#${tinycolor.random().toHex()}`,
-                weight: 10,
-                opacity: 0.75,
+            const pathStyle = {
+                color: '#5587c6',
+                weight: 4,
+            };
+            const outlineStyle = {
+                color: '#2b297a',
+                weight: 7,
             };
 
-            components[i] = <GeoJSON key={`${i}-${Math.random()}`} data={data} style={style}/>;
+            components[i * 2] = <GeoJSON className="ariadne-route-svg-shadow"
+                                         key={`${i}-${Math.random()}`}
+                                         data={data} style={outlineStyle}/>;
+            components[i * 2 + 1] = <GeoJSON key={`${i}-${Math.random()}`}
+                                             data={data} style={pathStyle}/>;
         }
         return components;
     }
