@@ -14,6 +14,7 @@ export default class IconButton extends Component {
         icon: propTypes.string.isRequired,
         size: propTypes.string,
         type: propTypes.string,
+        trailingIcon: propTypes.string,
         active: propTypes.bool,
     };
 
@@ -23,12 +24,12 @@ export default class IconButton extends Component {
         const activeClass = this.props.active ? 'is-selected' : '';
 
         const buttonClass = `button ${sizeClass} ${typeClass} ${activeClass}`;
-        const iconClass = `icon ${sizeClass}`;
 
         return (
             <span className={buttonClass} onClick={this.props.onClick}>
-                <Icon className={iconClass} icon={this.props.icon}/>
+                <span className="icon"><Icon icon={this.props.icon}/></span>
                 <span>{this.props.children}</span>
+                {this.props.trailingIcon && <span className="icon"><Icon icon={this.props.trailingIcon}/></span>}
             </span>
         );
     }

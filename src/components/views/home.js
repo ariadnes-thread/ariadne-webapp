@@ -12,6 +12,23 @@ import React, {Component} from 'react';
 import Card from '../helpers/card';
 
 export default class Home extends Component {
+
+    renderDummyCheckboxes() {
+        const checkboxItems = ['Parks', 'Restaurants', 'Bars', 'Coffee shops', 'Shopping malls', 'Gyms'];
+        const components = new Array(checkboxItems.length);
+        for (let i = 0, k = 0; i < checkboxItems.length; i++, k++) {
+            const item = checkboxItems[i];
+            const key = `home-${i}-checkbox`;
+            const label = item.replace(' ', '');
+            components[k] = <div key={key} className="control">
+                <input className="is-checkradio is-medium" id={label} type="checkbox" onChange={() => null}/>
+                <label htmlFor={label}>{item}</label>
+            </div>;
+        }
+
+        return <div className="field is-grouped is-grouped-multiline is-grouped-right">{components}</div>;
+    }
+
     render() {
         return (
             <div>
@@ -58,9 +75,9 @@ export default class Home extends Component {
 
                                 <nav className="level">
                                     <div className="level-item level-left">
-                                        <p className="title">
+                                        <p className="title is-size-4">
                                             <span className="tag is-warning is-rounded is-large">Step 1</span>
-                                            &nbsp;&nbsp;<span>What do you want to explore?</span>
+                                            &nbsp;&nbsp;<span>What neighbourhood do you want to explore?</span>
                                         </p>
                                     </div>
                                     <div className="level-item level-right">
@@ -76,17 +93,15 @@ export default class Home extends Component {
 
                                 <nav className="level">
                                     <div className="level-item level-left">
-                                        <p className="title">
+                                        <p className="title is-size-4">
                                             <span className="tag is-warning is-rounded is-large">Step 2</span>
                                             &nbsp;&nbsp;<span>What do you want to do?</span>
                                         </p>
                                     </div>
                                     <div className="level-item level-right">
                                         <div className="buttons has-addons">
-                                            <IconButton icon="male" size="large" type="info" active>
-                                                Walk
-                                            </IconButton>
-                                            <IconButton icon="child" size="large">Run</IconButton>
+                                            <IconButton icon="male" size="large">Walk</IconButton>
+                                            <IconButton icon="child" size="large" type="info" active>Run</IconButton>
                                             <IconButton icon="bicycle" size="large">&nbsp;Cycle</IconButton>
                                         </div>
                                     </div>
@@ -95,14 +110,51 @@ export default class Home extends Component {
 
                                 <nav className="level">
                                     <div className="level-item level-left">
-                                        <p className="title">
+                                        <p className="title is-size-4">
                                             <span className="tag is-warning is-rounded is-large">Step 3</span>
-                                            &nbsp;&nbsp;<span>Are you ready?</span>
+                                            &nbsp;&nbsp;<span>What route length do you prefer?</span>
+                                        </p>
+                                    </div>
+                                    <div className="level-item level-right">
+                                        <div className="buttons has-addons">
+                                            <IconButton icon="chess-pawn" size="large" type="info"
+                                                        active>Short</IconButton>
+                                            <IconButton icon="chess-rook" size="large">Medium</IconButton>
+                                            <IconButton icon="chess-king" size="large">&nbsp;Long</IconButton>
+                                        </div>
+                                    </div>
+                                </nav>
+                                <hr/>
+
+                                <nav className="level">
+                                    <div className="level-item level-left">
+                                        <p className="title is-size-4">
+                                            <span className="tag is-warning is-rounded is-large">Step 4</span>
+                                            &nbsp;&nbsp;<span>What do you want to see?</span>
+                                        </p>
+                                    </div>
+                                    <div style={{maxWidth: 600}} className="level-item level-right">
+                                        {this.renderDummyCheckboxes()}
+                                    </div>
+                                </nav>
+                                <hr/>
+
+                                <nav className="level">
+                                    <div className="level-item level-left">
+                                        <p className="title is-size-4">
+                                            <span className="tag is-warning is-rounded is-large">
+                                                &nbsp;&nbsp;&nbsp;&nbsp;<Icon
+                                                icon="arrow-right"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            </span>
+                                            &nbsp;&nbsp;<span>Let's begin:</span>
                                         </p>
                                     </div>
                                     <p className="level-item level-right">
                                         <Link to="/plan-route">
-                                            <IconButton icon="arrow-right" size="large" type="success">&nbsp;Start planning</IconButton>
+                                            <IconButton icon="angle-double-right" size="large" iconSize="large"
+                                                        trailingIcon="angle-double-left" type="success">
+                                                &nbsp;Start planning&nbsp;
+                                            </IconButton>
                                         </Link>
                                     </p>
                                 </nav>
