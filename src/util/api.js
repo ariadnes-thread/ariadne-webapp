@@ -76,7 +76,7 @@ export default class Api {
                     .put(this.expandEndpointUrl(uri))
                     .set('Authorization', `Bearer ${this.auth.accessToken}`)
                     .set('Accept', 'application/json')
-                    .type('form')
+                    .type('json')
                     .send(data)
                     .then(response => response.body)
             );
@@ -86,9 +86,9 @@ export default class Api {
         return request
             .post(this.expandEndpointUrl(uri))
             .set('Accept', 'application/json')
-            .type('form')
+            .type('json')
             .send(data)
-            .then(response => response.body)
+            .then(response => response.body);
     }
 
     postWithAuth(uri, data) {
@@ -99,7 +99,7 @@ export default class Api {
                     .post(this.expandEndpointUrl(uri))
                     .set('Authorization', `Bearer ${this.auth.accessToken}`)
                     .set('Accept', 'application/json')
-                    .type('form')
+                    .type('json')
                     .send(data)
                     .then(response => response.body)
             );

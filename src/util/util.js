@@ -31,13 +31,13 @@ export default class Util {
 
     /**
      * @param {object} data
-     * @param {*} data.object Error object that will be parsed for human readable output
+     * @param {*} data.error Error object that will be parsed for human readable output
      * @param {string} [data.message] Optional message to give some context to the error
      */
     static logError(data) {
         /* eslint-disable no-console */
         if (data.message) console.error(data.message);
-        console.error(data.object);
+        console.error(data.error);
         /* eslint-enable no-console */
     }
 

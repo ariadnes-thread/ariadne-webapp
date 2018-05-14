@@ -58,25 +58,26 @@ export default class RouteCustomizer extends Component {
 
         // Separate promise chain
         apiRequestPromise
-            .then(routeData =>
+            .then(routesResponse =>
                 // This syntax is intentional - creating a separate promise chain.
                 Promise.resolve()
-                    .then(() => this.visualizeRoute(routeData))
+                    .then(() => this.visualizeRoutes(routesResponse.routes))
                     .catch(error => Util.logError({
                         error,
-                        message: `Error occurred while calling 'visualizeRoute()' - this was not supposed to happen.`,
+                        message: `Error occurred while calling 'visualizeRoute()'!`,
                     }))
             );
 
-        // Note that we return a promise *without* the last visualizeRoute() part - this is so the
+        // Note that we return a promise *without* the last visualizeRoutes() part - this is so the
         return apiRequestPromise;
     }
 
-    visualizeRoute(routeData) {
+    visualizeRoutes(routes) {
+        const firstRoute = routes[0];
         this.setState({
-            geoJsonObjects: [routeData.route],
+            geoJsonObjects: [JSON.parse(firstRoute.json)],
             displayMode: DisplayMode.RouteSelector,
-            routeData,
+            routeData: firstRoute,
         });
     }
 
