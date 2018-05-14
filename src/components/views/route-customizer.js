@@ -33,10 +33,15 @@ export default class RouteCustomizer extends Component {
             geoJsonObjects: [],
             displayMode: DisplayMode.PreferenceEditor,
             routeData: null,
+            mapClickMessage: null,
         };
         this.api = this.props.auth.api;
+        this.mapClickHandlers = [];
+
         this.submitPreferences = this.submitPreferences.bind(this);
         this.showPreferenceEditor = this.showPreferenceEditor.bind(this);
+        this.routeMapClick = this.routeMapClick.bind(this);
+        this.requestNextMapClick = this.requestNextMapClick.bind(this);
     }
 
     submitPreferences(prefState) {
@@ -68,6 +73,31 @@ export default class RouteCustomizer extends Component {
         });
     }
 
+    /**
+     * @param {object} data
+     * @param {string} [data.message] Text that will be displayed on the map
+     * to tell the user what their next click will do.
+     */
+    requestNextMapClick(data) {
+        this.setState({
+            mapClickMessage: data.message,
+        });
+
+        return Promise.resolve()
+            .then(() => {
+                
+            });
+        alert('Route Customizer reached!');
+    }
+
+    /**
+     * Routes the map click to the right listener. The supplied even object
+     * is the Leaflet map click event.
+     */
+    routeMapClick(event) {
+        console.log(event);
+    }
+
     showPreferenceEditor() {
         this.setState({
             displayMode: DisplayMode.PreferenceEditor,
@@ -82,7 +112,8 @@ export default class RouteCustomizer extends Component {
                         <div style={{position: 'relative', boxSizing: 'border-box'}}>
                             <TransitionGroup>
                                 {this.state.displayMode === DisplayMode.PreferenceEditor &&
-                                <PreferenceEditor submitPreferences={this.submitPreferences}/>}
+                                <PreferenceEditor submitPreferences={this.submitPreferences}
+                                                  requestNextMapClick={this.requestNextMapClick}/>}
 
                                 {this.state.displayMode === DisplayMode.RouteSelector &&
                                 <RouteSelector routeData={this.state.routeData}
@@ -95,7 +126,10 @@ export default class RouteCustomizer extends Component {
                         <div className="card" style={{height: '100%'}}>
                             <div className="card-content is-paddingless leaflet-container-wrapper"
                                  style={{height: '100%'}}>
-                                <Map auth={this.props.auth} geoJsonObjects={this.state.geoJsonObjects}/>
+                                 <Map auth={this.props.auth}
+                                      geoJsonObjects={this.state.geoJsonObjects}
+                                      onMapClick={this.routeMapClick}
+                                      clickMessage={this.state.mapClickMessage}/>
                             </div>
                         </div>
                     </div>

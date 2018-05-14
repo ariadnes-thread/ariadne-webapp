@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import Auth from '../../util/auth';
+import Util from '../../util/util';
 
 const blueRouteStyle = {
     name: 'blue',
@@ -29,6 +30,7 @@ export default class Map extends Component {
         auth: PropTypes.instanceOf(Auth).isRequired,
         onMapClick: PropTypes.func,
         geoJsonObjects: PropTypes.arrayOf(PropTypes.object),
+        clickMessage: PropTypes.string,
     };
 
     static defaultProps = {
@@ -95,6 +97,7 @@ export default class Map extends Component {
 
     handleClick(event) {
         if (this.props.onMapClick) this.props.onMapClick(event);
+        else Util.logWarn(`No 'onMapClick()' function was passed through props, ignoring the map click.`);
     }
 
     getStartAndFinish(coordinates) {

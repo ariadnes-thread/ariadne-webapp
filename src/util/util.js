@@ -19,7 +19,6 @@ class Util {
     }
 
     /**
-     *
      * @param {*} data
      */
     static logWarn(data) {

@@ -7,7 +7,6 @@
 import Icon from '@fortawesome/react-fontawesome';
 import {Link} from 'react-router-dom';
 
-import IconButton from '../helpers/icon-button';
 import React, {Component} from 'react';
 import Card from '../helpers/card';
 

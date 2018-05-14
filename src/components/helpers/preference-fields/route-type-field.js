@@ -10,10 +10,16 @@ import PropTypes from 'prop-types';
 import {PreferenceSchema} from '../../../util/preferences-state';
 import PreferenceField from './preference-field';
 
+const LocationButtonType = {
+    PickOriginOnMap: 'pick-origin-on-map',
+    PickDestinationOnMap: 'pick-destination-on-map',
+};
+
 export default class RouteTypeField extends Component {
 
     static propTypes = {
         updatePreference: PropTypes.func.isRequired,
+        requestNextMapClick: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -22,19 +28,28 @@ export default class RouteTypeField extends Component {
         this.fieldData = PreferenceSchema.routeType;
         this.fieldName = this.fieldData.name;
         this.state = {
+            routeType: this.fieldData.defaultValue,
             enabled: this.fieldData.enabledByDefault,
         };
 
+        // Used to handle the result when `requestNextMapClick()` promise
+        // resolves.
+        this.nextMapClickId = null;
+
         this.toggle = this.toggle.bind(this);
+        this.onLocationButtonClick = this.onLocationButtonClick.bind(this);
     }
 
     toggle(enabled) {
-
-        const value = 123;
-        if (enabled) this.props.updatePreference(this.fieldName, value);
+        if (enabled) this.props.updatePreference(this.fieldName, this.state.routeType);
         else this.props.updatePreference(this.fieldName, null);
 
         this.setState({enabled});
+    }
+
+    onLocationButtonClick(locButtonType, event) {
+        event.preventDefault();
+        this.props.requestNextMapClick();
     }
 
     render() {
@@ -60,7 +75,9 @@ export default class RouteTypeField extends Component {
                                     <input className="input" type="text" placeholder="Postcode, address"/>
                                 </div>
                                 <div className="control">
-                                    <a className="button is-info">Pick on the map</a>
+                                    <button className="button is-info"
+                                            onClick={event => this.onLocationButtonClick(LocationButtonType.PickOriginOnMap, event)}
+                                            >Pick on the map</button>
                                 </div>
                             </div>
                         </div>
@@ -75,7 +92,9 @@ export default class RouteTypeField extends Component {
                                     <input className="input" type="text" placeholder="Postcode, address"/>
                                 </div>
                                 <div className="control">
-                                    <a className="button is-info">Pick on the map</a>
+                                    <button className="button is-info"
+                                            onClick={event => this.onLocationButtonClick(LocationButtonType.PickDestinationOnMap, event)}
+                                            >Pick on the map</button>
                                 </div>
                             </div>
                         </div>

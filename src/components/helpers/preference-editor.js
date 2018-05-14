@@ -6,6 +6,7 @@
 
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
+import Promise from 'bluebird';
 import {TweenMax} from 'gsap';
 
 import PreferencesState, {PreferenceSchema} from '../../util/preferences-state';
@@ -17,6 +18,7 @@ export default class PreferenceEditor extends Component {
     static propTypes = {
         submitPreferences: PropTypes.func, // Optional, but nothing will happen on submit if this is not provided
         initialPrefState: PropTypes.instanceOf(PreferencesState), // Optional, used if parent extracted from localStorage
+        requestNextMapClick: PropTypes.func,
     };
 
     constructor(props) {
@@ -30,6 +32,7 @@ export default class PreferenceEditor extends Component {
 
         this.containerRef = React.createRef();
         this.updatePreference = this.updatePreference.bind(this);
+        this.requestNextMapClickFromParent = this.requestNextMapClickFromParent.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -60,9 +63,20 @@ export default class PreferenceEditor extends Component {
         this.prefState.set(preferenceName, value);
     }
 
+    /**
+     * Check documentation for `requestNextMapClick()` in the parent object for details.
+     */
+    requestNextMapClickFromParent(data) {
+        if (this.props.requestNextMapClick) {
+            return this.props.requestNextMapClick(data);
+        }
+
+        return Promise.reject(new Error(`No 'requestNextMapClick()' prop was passed to PreferenceEditor component.`));
+    }
+
     handleSubmit(event) {
         event.preventDefault();
-        // TODO: Replace with actual data
+        // TODO: Replace `alert()` with a swal2 modal
         if (this.props.submitPreferences) {
             Promise.resolve()
                 .then(() => this.setState({submitting: true}))
@@ -71,7 +85,7 @@ export default class PreferenceEditor extends Component {
                 .catch(error => alert(error.message));
         }
         else {
-            Util.logWarn(`No 'submitPreferences()' function has been supplied, doing nothing on form submit.`);
+            Util.logWarn(`No 'submitPreferences()' function has been supplied through props, doing nothing on form submit.`);
         }
     }
 
@@ -80,11 +94,14 @@ export default class PreferenceEditor extends Component {
         const components = [];
         for (const preferenceName in PreferenceSchema) {
             if (!PreferenceSchema.hasOwnProperty(preferenceName)) continue;
-
             const preferenceData = PreferenceSchema[preferenceName];
+
+            if (preferenceData.hiddenFromEditor) continue;
+
             const FormComponent = preferenceData.formComponent;
             const initialValue = this.prefState.get(preferenceName);
             components.push(<FormComponent updatePreference={this.updatePreference}
+                                           requestNextMapClick={this.requestNextMapClickFromParent}
                                            initialValue={initialValue} key={i++}/>);
             components.push(<div key={i++} className="ariadne-divider"/>);
         }

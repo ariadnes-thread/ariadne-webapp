@@ -15,6 +15,7 @@
       }
     ],
     "no-console": "error",
+    "no-alert": "error",
     "semi": [
       "error",
       "always"
