@@ -4,14 +4,9 @@
  * @license GPL-3.0
  */
 
-import Icon from '@fortawesome/react-fontawesome';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {TweenMax} from 'gsap';
 import Chart from 'chart.js';
-
-import Card from './card';
-import IconButton from './icon-button';
 
 export default class ElevationView extends Component {
 
