@@ -38,9 +38,10 @@ export default class LengthField extends Component {
     }
 
     handleChange(event) {
-       const value = event.target.value;
-       this.props.updatePreference(this.fieldName, value);
-       this.setState({length: value});
+        // Note the `+`: it converts string to int.
+        const value = +event.target.value;
+        this.props.updatePreference(this.fieldName, value);
+        this.setState({length: value});
     }
 
     render() {

@@ -54,6 +54,7 @@ export default class RouteCustomizer extends Component {
 
     generateRoute(prefState) {
         const constraints =  prefState.getPrefsFormattedForApi();
+        Util.logDebug('Submitting constraints to API for route planning:', constraints);
         const apiRequestPromise = Promise.resolve()
             .then(() => this.api.planningModule.planRoute({constraints}));
 

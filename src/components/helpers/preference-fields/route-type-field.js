@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import PreferencesState, {PreferenceSchema} from '../../../util/preferences-state';
+import {PreferenceSchema} from '../../../util/preferences-state';
 import PreferenceField from './preference-field';
 import Util from '../../../util/util';
 
@@ -19,7 +19,7 @@ const LocationButtonType = {
 export default class RouteTypeField extends Component {
 
     static propTypes = {
-        currentPrefState: PropTypes.instanceOf(PreferencesState).isRequired,
+        currentPrefState: PropTypes.any.isRequired,
         updatePreference: PropTypes.func.isRequired,
         requestNextMapClick: PropTypes.func.isRequired,
     };
