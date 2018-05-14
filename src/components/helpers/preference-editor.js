@@ -25,7 +25,10 @@ export default class PreferenceEditor extends Component {
         super(props);
 
         if (this.props.initialPrefState) this.prefState = this.props.initialPrefState;
-        else this.prefState = new PreferencesState();
+        else {
+            Util.logDebug('No `initialPrefState` specified, initialising brand new pref state.');
+            this.prefState = new PreferencesState();
+        }
         this.state = {
             submitting: false,
         };
@@ -102,6 +105,7 @@ export default class PreferenceEditor extends Component {
             const initialValue = this.prefState.get(preferenceName);
             components.push(<FormComponent updatePreference={this.updatePreference}
                                            requestNextMapClick={this.requestNextMapClickFromParent}
+                                           currentPrefState={this.prefState}
                                            initialValue={initialValue} key={i++}/>);
             components.push(<div key={i++} className="ariadne-divider"/>);
         }

@@ -11,25 +11,24 @@ import Chart from 'chart.js';
 export default class ElevationView extends Component {
 
     static propTypes = {
-        elevationData: PropTypes.object.isRequired,
-        distance: PropTypes.func.isRequired,
+        elevationData: PropTypes.array.isRequired,
+        distance: PropTypes.number.isRequired,
     };
 
     constructor(props) {
         super(props);
 
-        this.blueColor = "#279aec";
-        this.blueColorTransparent = this.blueColor + "80";
+        this.blueColor = '#279aec';
+        this.blueColorTransparent = `${this.blueColor}80`;
         // TODO: get a series of elevations and the overall route distance passed in from
         // the route planner
-        this.elevationData = this.props.elevationData
-        this.distance = this.props.distance
+        this.elevationData = this.props.elevationData;
+        this.distance = this.props.distance;
         this.labels = this.elevationData.map((val, index) => (index * this.distance / this.elevationData.length).toFixed(2));
     }
 
     componentDidMount() {
-        console.log(this.refs);
-        this.chart = new Chart(this.refs.myChart.getContext("2d"), {
+        this.chart = new Chart(this.refs.myChart.getContext('2d'), {
             type: 'line',
             data: {
                 labels: this.labels,
@@ -39,7 +38,7 @@ export default class ElevationView extends Component {
                     backgroundColor: this.blueColorTransparent,
                     data: this.elevationData,
                     fill: true,
-                }]
+                }],
             },
             options: {
                 responsive: true,
@@ -48,38 +47,34 @@ export default class ElevationView extends Component {
                 },
                 scales: {
                     yAxes: [{
-                        scaleLabel: {display: true, labelString: "Elevation (ft)", fontStyle:"bold"}
+                        scaleLabel: {display: true, labelString: 'Elevation (ft)', fontStyle: 'bold'},
                     }],
-                    xAxes:  [{
+                    xAxes: [{
                         scaleLabel: {
                             display: true,
-                            labelString: "Distance along route (mi)",
-                            fontStyle:"bold",
+                            labelString: 'Distance along route (mi)',
+                            fontStyle: 'bold',
                         },
                         ticks: {
                             maxTicksLimit: 6,
-                        }
+                        },
                     }],
                 },
                 tooltips: {
                     displayColors: false,
                     callbacks: {
-                        title: () => {
-                            return "";
-                        },
-                        label: (tooltipItem) => {
-                            return tooltipItem.yLabel + " ft";
-                        }
-                    }
-                }
-            }
+                        title: () => '',
+                        label: (tooltipItem) => `${tooltipItem.yLabel} ft`,
+                    },
+                },
+            },
         });
     }
 
     render() {
         return (
             <div>
-                <canvas ref="myChart"></canvas>
+                <canvas ref="myChart"/>
             </div>
         );
     }

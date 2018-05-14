@@ -7,7 +7,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
-import {PreferenceSchema} from '../../../util/preferences-state';
+import PreferencesState, {PreferenceSchema} from '../../../util/preferences-state';
 import PreferenceField from './preference-field';
 import Util from '../../../util/util';
 
@@ -19,6 +19,7 @@ const LocationButtonType = {
 export default class RouteTypeField extends Component {
 
     static propTypes = {
+        currentPrefState: PropTypes.instanceOf(PreferencesState).isRequired,
         updatePreference: PropTypes.func.isRequired,
         requestNextMapClick: PropTypes.func.isRequired,
     };
@@ -26,13 +27,18 @@ export default class RouteTypeField extends Component {
     constructor(props) {
         super(props);
 
+        /** @var {PreferencesState} */
+        this.prefState = this.props.currentPrefState;
+        const origin = this.prefState.get(PreferenceSchema.origins.name)[0];
+        const destination = this.prefState.get(PreferenceSchema.destinations.name)[0];
+
         this.fieldData = PreferenceSchema.routeType;
         this.fieldName = this.fieldData.name;
         this.state = {
-            routeType: this.fieldData.defaultValue,
+            routeType: this.prefState.get(this.fieldName),
             enabled: this.fieldData.enabledByDefault,
-            originCoordsText: '',
-            destCoordsText: '',
+            originCoordsText: `${origin.latitude.toFixed(3)}, ${origin.longitude.toFixed(3)}`,
+            destCoordsText: `${destination.latitude.toFixed(3)}, ${destination.longitude.toFixed(3)}`,
         };
 
         this.toggle = this.toggle.bind(this);

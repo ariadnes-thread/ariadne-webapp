@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import Promise from 'bluebird';
 
 import PreferenceEditor from '../helpers/preference-editor';
+import PreferencesState from '../../util/preferences-state';
 import RouteSelector from '../helpers/route-selector';
 import Auth from '../../util/auth';
 import Util from '../../util/util';
@@ -37,6 +38,7 @@ export default class RouteCustomizer extends Component {
         };
         this.api = this.props.auth.api;
         this.mapClickHandler = null;
+        this.prefState = new PreferencesState();
 
         this.submitPreferences = this.submitPreferences.bind(this);
         this.showPreferenceEditor = this.showPreferenceEditor.bind(this);
@@ -52,7 +54,6 @@ export default class RouteCustomizer extends Component {
 
     generateRoute(prefState) {
         const constraints =  prefState.getPrefsFormattedForApi();
-        Util.logDebug('Sending route planning request to API. Constraints:', constraints);
         const apiRequestPromise = Promise.resolve()
             .then(() => this.api.planningModule.planRoute({constraints}));
 
@@ -143,7 +144,8 @@ export default class RouteCustomizer extends Component {
                             <TransitionGroup>
                                 {this.state.displayMode === DisplayMode.PreferenceEditor &&
                                 <PreferenceEditor submitPreferences={this.submitPreferences}
-                                                  requestNextMapClick={this.requestNextMapClick}/>}
+                                                  requestNextMapClick={this.requestNextMapClick}
+                                                  initialPrefState={this.prefState}/>}
 
                                 {this.state.displayMode === DisplayMode.RouteSelector &&
                                 <RouteSelector routeData={this.state.routeData}

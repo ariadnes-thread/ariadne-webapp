@@ -46,7 +46,6 @@ export default class RouteSelector extends Component {
     // TODO: interface with API (in elevation_utils.py) to get route distance and elevation
     // Right now, just using sample data for going north on Lake (because it shows elevation change)
     getRouteDistance() {
-        console.log(this.props.routeData);
         // For every coordinate in this.props.routeData.route.coordinates:
           // add up the distance between this coordinate and the next
         // Return the sum
