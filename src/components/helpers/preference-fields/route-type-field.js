@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 
 import {PreferenceSchema} from '../../../util/preferences-state';
 import PreferenceField from './preference-field';
+import Util from '../../../util/util';
 
 const LocationButtonType = {
     PickOriginOnMap: 'pick-origin-on-map',
@@ -30,11 +31,9 @@ export default class RouteTypeField extends Component {
         this.state = {
             routeType: this.fieldData.defaultValue,
             enabled: this.fieldData.enabledByDefault,
+            originCoordsText: '',
+            destCoordsText: '',
         };
-
-        // Used to handle the result when `requestNextMapClick()` promise
-        // resolves.
-        this.nextMapClickId = null;
 
         this.toggle = this.toggle.bind(this);
         this.onLocationButtonClick = this.onLocationButtonClick.bind(this);
@@ -49,7 +48,36 @@ export default class RouteTypeField extends Component {
 
     onLocationButtonClick(locButtonType, event) {
         event.preventDefault();
-        this.props.requestNextMapClick();
+
+        let message;
+        if (locButtonType === LocationButtonType.PickOriginOnMap) {
+            message = 'Click somewhere on the map to specify your starting point';
+        } else if (locButtonType === LocationButtonType.PickDestinationOnMap) {
+            message = 'Click somewhere on the map to specify your destination';
+        } else {
+            return Util.showErrorModal({console: 'Unrecognised LocationButtonType in RouteTypeField!'});
+        }
+
+        this.props.requestNextMapClick({message})
+            .then(clickEvent => {
+                // Our promise has been cancelled by someone else.
+                if (clickEvent === false) return;
+
+                const latlng = clickEvent.latlng;
+                const latlngText = `${latlng.lat.toFixed(3)}, ${latlng.lng.toFixed(3)}`;
+                const prefObject = {
+                    latitude: latlng.lat,
+                    longitude: latlng.lng,
+                };
+
+                if (locButtonType === LocationButtonType.PickOriginOnMap) {
+                    this.props.updatePreference(PreferenceSchema.origins.name, [prefObject]);
+                    this.setState({originCoordsText: latlngText});
+                } else if (locButtonType === LocationButtonType.PickDestinationOnMap) {
+                    this.props.updatePreference(PreferenceSchema.destinations.name, [prefObject]);
+                    this.setState({destCoordsText: latlngText});
+                }
+            });
     }
 
     render() {
@@ -72,12 +100,14 @@ export default class RouteTypeField extends Component {
                         <div className="field-body">
                             <div className="field has-addons">
                                 <div className="control">
-                                    <input className="input" type="text" placeholder="Postcode, address"/>
+                                    <input className="input" value={this.state.originCoordsText} readOnly type="text"
+                                           placeholder="Postcode, address"/>
                                 </div>
                                 <div className="control">
                                     <button className="button is-info"
                                             onClick={event => this.onLocationButtonClick(LocationButtonType.PickOriginOnMap, event)}
-                                            >Pick on the map</button>
+                                    >Pick on the map
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -89,12 +119,14 @@ export default class RouteTypeField extends Component {
                         <div className="field-body">
                             <div className="field has-addons">
                                 <div className="control">
-                                    <input className="input" type="text" placeholder="Postcode, address"/>
+                                    <input className="input" value={this.state.destCoordsText} readOnly type="text"
+                                           placeholder="Postcode, address"/>
                                 </div>
                                 <div className="control">
                                     <button className="button is-info"
                                             onClick={event => this.onLocationButtonClick(LocationButtonType.PickDestinationOnMap, event)}
-                                            >Pick on the map</button>
+                                    >Pick on the map
+                                    </button>
                                 </div>
                             </div>
                         </div>

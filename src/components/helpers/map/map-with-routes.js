@@ -226,7 +226,7 @@ export default class MapWithRoutes extends Component {
         return (
             <MapComponent
                 bounds={this.state.bounds ? this.state.bounds : null}
-                clickHandle={this.props.handleClick}
+                clickHandle={this.props.handleMapClick}
                 callbackClick={this.props.parent}
                 defaultZoom={this.props.defaultZoom}
                 defaultCenter={this.props.defaultCenter}

@@ -31,6 +31,7 @@ export default class Map extends Component {
         onMapClick: PropTypes.func,
         geoJsonObjects: PropTypes.arrayOf(PropTypes.object),
         clickMessage: PropTypes.string,
+        onMapClickCancel: PropTypes.func,
     };
 
     static defaultProps = {
@@ -49,7 +50,8 @@ export default class Map extends Component {
             routeLatLngCoordinates: null,
         };
 
-        this.handleClick = this.handleClick.bind(this);
+        this.handleMapClick = this.handleMapClick.bind(this);
+        this.handleCancelClick = this.handleCancelClick.bind(this);
     }
 
     componentDidMount() {
@@ -95,9 +97,15 @@ export default class Map extends Component {
         this.setState(newState);
     }
 
-    handleClick(event) {
+    handleMapClick(event) {
         if (this.props.onMapClick) this.props.onMapClick(event);
         else Util.logWarn(`No 'onMapClick()' function was passed through props, ignoring the map click.`);
+    }
+
+    handleCancelClick(event) {
+        event.preventDefault();
+        if (this.props.onMapClickCancel) this.props.onMapClickCancel(event);
+        else Util.logWarn(`No 'onMapClickCancel()' function was passed through props, ignoring the cancel click.`);
     }
 
     getStartAndFinish(coordinates) {
@@ -146,14 +154,27 @@ export default class Map extends Component {
 
     render() {
         const position = [this.state.lat, this.state.lng];
+        const mapClass = this.props.clickMessage ? 'ariadne-crosshair-cursor' : '';
         return (
-            <LeafletMap ref="map" center={position} zoom={this.state.zoom} onClick={this.handleClick}>
-                <TileLayer
-                    attribution='&copy; <a href="http://osm.org/copyright\">OpenStreetMap</a> contributors'
-                    url={`https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=${this.props.auth.config.mapboxAccessToken}`}
-                />
-                {this.renderGeoJson()}
-            </LeafletMap>
+            <div className="leaflet-container-wrapper">
+                {this.props.clickMessage &&
+                <div className="ariadne-map-text">
+                    <div className="notification is-info is-size-5">
+                        <a className="is-pulled-right" onClick={this.handleCancelClick}>Cancel</a>
+                        {this.props.clickMessage}
+                        <div className="is-clearfix"/>
+                    </div>
+                </div>
+                }
+                <LeafletMap ref="map" className={mapClass} center={position} zoom={this.state.zoom}
+                            onClick={this.handleMapClick}>
+                    <TileLayer
+                        attribution='&copy; <a href="http://osm.org/copyright\">OpenStreetMap</a> contributors'
+                        url={`https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=${this.props.auth.config.mapboxAccessToken}`}
+                    />
+                    {this.renderGeoJson()}
+                </LeafletMap>
+            </div>
         );
     }
 

@@ -67,19 +67,21 @@ export const PreferenceSchema = {
         defaultValue: RouteType.PointToPoint,
         formComponent: RouteTypeField,
     },
-    origin: {
+    origins: {
+        name: 'origins',
         hiddenFromEditor: true,
-        defaultValue: {
+        defaultValue: [{
             latitude: 34.149638,
             longitude: -118.132412,
-        },
+        }],
     },
-    destination: {
+    destinations: {
+        name: 'destinations',
         hiddenFromEditor: true,
-        defaultValue: {
+        defaultValue: [{
             latitude: 34.113537,
             longitude: -118.071555,
-        },
+        }],
     },
 };
 
@@ -103,9 +105,12 @@ export default class PreferencesState {
 
     getPrefsFormattedForApi() {
         return {
-            desiredLength: this.preferences.length,
-            origin: this.preferences.origin,
-            destination: this.preferences.destination,
+            desired_dist: this.preferences.length,
+            origins: this.preferences.origins,
+            dests: this.preferences.destinations,
+            poi_prefs: {},
+            edge_prefs: {},
+            noptions: 2,
         };
     }
 

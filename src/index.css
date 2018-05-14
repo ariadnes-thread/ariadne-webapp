@@ -15,14 +15,32 @@ html, body {
     height: calc(100vh - 3.25rem);
 }
 
+/**
+=============== Leaflet map-related classes
+ */
+
 .leaflet-container-wrapper {
     flex-direction: column;
     display: flex;
+    height: 100%;
 }
 
 .leaflet-container {
     min-height: 400px;
     flex: 1;
+}
+
+.ariadne-map-text {
+    transform: translate(-50%, 0);
+    position: absolute;
+    margin: 0 auto;
+    z-index: 401;
+    top: 2.5rem;
+    left: 50%;
+}
+
+.ariadne-crosshair-cursor {
+    cursor: crosshair;
 }
 
 /**
@@ -54,7 +72,7 @@ html, body {
 }
 
 .ariadne-route-svg-shadow {
-    -webkit-filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.5)); 
+    -webkit-filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.5));
     filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.5));
 }
 

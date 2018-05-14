@@ -81,8 +81,8 @@ export default class PreferenceEditor extends Component {
             Promise.resolve()
                 .then(() => this.setState({submitting: true}))
                 .then(() => this.props.submitPreferences(this.prefState))
-                .finally(() => this.setState({submitting: false}))
-                .catch(error => alert(error.message));
+                .catch(error => alert(error.message))
+                .finally(() => this.setState({submitting: false}));
         }
         else {
             Util.logWarn(`No 'submitPreferences()' function has been supplied through props, doing nothing on form submit.`);

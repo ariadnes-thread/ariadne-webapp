@@ -4,7 +4,30 @@
  * @license GPL-3.0
  */
 
-class Util {
+import Swal from 'sweetalert2';
+
+export default class Util {
+
+    /**
+     * @param {object} data
+     * @param {string} [data.title]
+     * @param {string} [data.message]
+     * @param {*} [data.console] Object or error to log to console.
+     */
+    static showErrorModal(data) {
+        if (!data) data = {};
+        const errorData = {
+            title: data.title ? data.title : 'Oops...',
+            message: data.message ? data.message : 'Something went wrong!',
+        };
+
+        if (data.console) {
+            Util.logError(data.console);
+            errorData.message += ' Check console for more details.';
+        }
+
+        Swal(errorData.title, errorData.message, 'error');
+    }
 
     /**
      * @param {object} data
@@ -31,11 +54,10 @@ class Util {
      * @param {*} data
      */
     static logDebug(data) {
+        let args = [].slice.call(arguments);
         /* eslint-disable no-console */
-        console.debug(data);
+        console.debug.apply(null, args);
         /* eslint-enable no-console */
     }
 
 }
-
-module.exports = Util;

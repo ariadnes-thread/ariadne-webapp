@@ -36,12 +36,13 @@ export default class RouteCustomizer extends Component {
             mapClickMessage: null,
         };
         this.api = this.props.auth.api;
-        this.mapClickHandlers = [];
+        this.mapClickHandler = null;
 
         this.submitPreferences = this.submitPreferences.bind(this);
         this.showPreferenceEditor = this.showPreferenceEditor.bind(this);
-        this.routeMapClick = this.routeMapClick.bind(this);
+        this.handleMapClick = this.handleMapClick.bind(this);
         this.requestNextMapClick = this.requestNextMapClick.bind(this);
+        this.cancelMapClickHandler = this.requestNextMapClick.bind(this);
     }
 
     submitPreferences(prefState) {
@@ -50,16 +51,22 @@ export default class RouteCustomizer extends Component {
     }
 
     generateRoute(prefState) {
+        const constraints =  prefState.getPrefsFormattedForApi();
+        Util.logDebug('Sending route planning request to API. Constraints:', constraints);
         const apiRequestPromise = Promise.resolve()
-            .then(() => this.api.planningModule.planRoute({constraints: prefState.getPrefsFormattedForApi()}));
+            .then(() => this.api.planningModule.planRoute({constraints}));
 
         // Separate promise chain
         apiRequestPromise
-            .then(routeData => this.visualizeRoute(routeData))
-            .catch(error => Util.logError({
-                error,
-                message: `Error occurred while calling 'visualizeRoute()' - this was not supposed to happen.`,
-            }));
+            .then(routeData =>
+                // This syntax is intentional - creating a separate promise chain.
+                Promise.resolve()
+                    .then(() => this.visualizeRoute(routeData))
+                    .catch(error => Util.logError({
+                        error,
+                        message: `Error occurred while calling 'visualizeRoute()' - this was not supposed to happen.`,
+                    }))
+            );
 
         // Note that we return a promise *without* the last visualizeRoute() part - this is so the
         return apiRequestPromise;
@@ -79,23 +86,45 @@ export default class RouteCustomizer extends Component {
      * to tell the user what their next click will do.
      */
     requestNextMapClick(data) {
-        this.setState({
-            mapClickMessage: data.message,
-        });
-
         return Promise.resolve()
             .then(() => {
-                
+                if (this.mapClickHandler) {
+                    // Previous handler got interrupted, and we tell it by passing `false`.
+                    this.mapClickHandler(false);
+                }
+
+                this.setState({
+                    mapClickMessage: data ? data.message : null,
+                });
+
+                return new Promise(resolve => {
+                    this.mapClickHandler = resolve;
+                });
             });
-        alert('Route Customizer reached!');
+    }
+
+    cancelMapClickHandler() {
+        if (this.mapClickHandler) {
+            // Previous handler got interrupted, and we tell it by passing `false`.
+            this.mapClickHandler(false);
+            this.mapClickHandler = null;
+        }
+        this.setState({
+            mapClickMessage: null,
+        });
     }
 
     /**
      * Routes the map click to the right listener. The supplied even object
      * is the Leaflet map click event.
      */
-    routeMapClick(event) {
-        console.log(event);
+    handleMapClick(event) {
+        if (this.mapClickHandler) {
+            this.mapClickHandler(event);
+            this.mapClickHandler = null;
+        }
+
+        this.setState({mapClickMessage: null});
     }
 
     showPreferenceEditor() {
@@ -124,12 +153,12 @@ export default class RouteCustomizer extends Component {
 
                     <div className="column is-two-thirds-desktop is-12-tablet is-12-mobile" style={{height: '100%'}}>
                         <div className="card" style={{height: '100%'}}>
-                            <div className="card-content is-paddingless leaflet-container-wrapper"
-                                 style={{height: '100%'}}>
-                                 <Map auth={this.props.auth}
-                                      geoJsonObjects={this.state.geoJsonObjects}
-                                      onMapClick={this.routeMapClick}
-                                      clickMessage={this.state.mapClickMessage}/>
+                            <div className="card-content is-paddingless leaflet-container-wrapper">
+                                <Map auth={this.props.auth}
+                                     geoJsonObjects={this.state.geoJsonObjects}
+                                     onMapClick={this.handleMapClick}
+                                     clickMessage={this.state.mapClickMessage}
+                                     onMapClickCancel={this.cancelMapClickHandler}/>
                             </div>
                         </div>
                     </div>
