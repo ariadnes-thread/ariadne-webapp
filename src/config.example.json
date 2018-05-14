@@ -1,6 +1,0 @@
-{
-  "baseUri": "/",
-  "apiHost": "https://api.ariadnes-thread.me",
-  "googleApiKey": "your-key-here",
-  "mapboxAccessToken": "mapbox-token-here"
-}

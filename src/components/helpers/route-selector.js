@@ -11,6 +11,7 @@ import {TweenMax} from 'gsap';
 
 import Card from './card';
 import IconButton from './icon-button';
+import ElevationView from './elevation-view';
 
 export default class RouteSelector extends Component {
 
@@ -39,6 +40,23 @@ export default class RouteSelector extends Component {
             {x: 0, opacity: 1, position: 'absolute'},
             {x: 200, opacity: 0, onComplete: callback}
         );
+    }
+
+
+    // TODO: interface with API (in elevation_utils.py) to get route distance and elevation
+    // Right now, just using sample data for going north on Lake (because it shows elevation change)
+    getRouteDistance() {
+        console.log(this.props.routeData);
+        // For every coordinate in this.props.routeData.route.coordinates:
+          // add up the distance between this coordinate and the next
+        // Return the sum
+        return 4.4;
+    }
+
+    // TODO: see above comment
+    getElevationData() {
+        // get a reasonable sampling of the elevation data (uniformly spaced along the route)
+        return [788.3, 803.9, 826.6, 846.7, 867.6, 889.0, 910.9, 944.7, 991.2, 1042.0, 1098.9, 1152.4, 1203.1, 1262.5, 1360.6, 1461.3, 1577.0, 1700.7, 1810.8];
     }
 
     render() {
@@ -95,6 +113,9 @@ export default class RouteSelector extends Component {
                             </div>
                         </div>
                         <br/>
+                    </div>
+                    <div>
+                        <ElevationView distance={this.getRouteDistance()} elevationData={this.getElevationData()}/>
                     </div>
                     <IconButton icon="arrow-left" onClick={this.props.showPreferenceEditor}>Back to
                         preferences</IconButton>
