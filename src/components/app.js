@@ -5,7 +5,7 @@
  * @license GPL-3.0
  */
 
-import {Switch, Route, Redirect, BrowserRouter} from 'react-router-dom';
+import {Switch, Route, BrowserRouter} from 'react-router-dom';
 import faFreeSolid from '@fortawesome/fontawesome-free-solid';
 import fontawesome from '@fortawesome/fontawesome';
 import React, {Component} from 'react';
@@ -16,8 +16,9 @@ import RouteCustomizer from './views/route-customizer';
 import SavedRoutes from './views/saved-routes';
 import DebugPanel from './views/debug-panel';
 import LoginPanel from './views/login-panel';
-import Auth from '../util/auth';
+import NotFound from './views/not-found';
 import Navbar from './helpers/navbar';
+import Auth from '../util/auth';
 import Home from './views/home';
 
 fontawesome.library.add(faFreeSolid);
@@ -30,10 +31,8 @@ export default class App extends Component {
 
     constructor(props) {
         super(props);
-
         this.preferencesState = new PreferencesState();
     }
-
 
     render() {
         return (
@@ -53,10 +52,11 @@ export default class App extends Component {
 
                         <Route exact path="/" component={(props) => <Home{...props} />}/>
 
-                        <Route><Redirect to="/"/></Route>
+                        <Route component={NotFound}/>
                     </Switch>
                 </div>
             </BrowserRouter>
         );
     }
+
 }
