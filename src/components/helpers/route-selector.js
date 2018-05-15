@@ -47,7 +47,7 @@ export default class RouteSelector extends Component {
     // Right now, just using sample data for going north on Lake (because it shows elevation change)
     getRouteDistance() {
         // For every coordinate in this.props.routeData.route.coordinates:
-          // add up the distance between this coordinate and the next
+        // add up the distance between this coordinate and the next
         // Return the sum
         return 4.4;
     }
@@ -82,9 +82,8 @@ export default class RouteSelector extends Component {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="is-divider-vertical"/>
                         <div className="column">
-                            <div className="timeline">
+                            <div className="timeline is-centered">
                                 <header className="timeline-header">
                                     <span className="tag is-medium is-primary">Start</span>
                                 </header>
@@ -111,7 +110,6 @@ export default class RouteSelector extends Component {
                                 </div>
                             </div>
                         </div>
-                        <br/>
                     </div>
                     <div>
                         <ElevationView distance={this.getRouteDistance()} elevationData={this.getElevationData()}/>

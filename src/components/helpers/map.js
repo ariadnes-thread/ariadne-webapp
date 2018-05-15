@@ -61,14 +61,6 @@ export default class Map extends Component {
         this.prefUpdateListener = this.prefUpdateListener.bind(this);
         this.handleMapClick = this.handleMapClick.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
-
-        this.prefState.addUpdateListener(this.prefUpdateListener);
-        const origins = this.prefState.get(PreferenceSchema.origins.name);
-        const dests = this.prefState.get(PreferenceSchema.destinations.name);
-        if (origins && origins.length > 0)
-            this.state.start = [origins[0].latitude, origins[0].longitude];
-        if (dests && dests.length > 0)
-            this.state.start = [dests[0].latitude, dests[0].longitude];
     }
 
     /**
@@ -77,16 +69,19 @@ export default class Map extends Component {
      * @param {string} data.value
      */
     prefUpdateListener(data) {
-        if (data.name === PreferenceSchema.origins.name && data.value && data.value.length > 0) {
+        if (data.name === PreferenceSchema.origins.name
+            && data.value && data.value.length > 0) {
             const coords = data.value[0];
             this.setState({start: [coords.latitude, coords.longitude]});
-        } else if (data.name === PreferenceSchema.destinations.name && data.value && data.value.length > 0) {
+        } else if (data.name === PreferenceSchema.destinations.name
+            && data.value && data.value.length > 0) {
             const coords = data.value[0];
             this.setState({finish: [coords.latitude, coords.longitude]});
         }
     }
 
     componentDidMount() {
+        this.prefState.addUpdateListener(this.prefUpdateListener, {forceUpdate: true});
         this.leafletElement = this.refs.map.leafletElement;
     }
 

@@ -98,9 +98,18 @@ export default class PreferencesState {
 
     /**
      * @param {function} listener
+     * @param {object} options
+     * @param {boolean} options.forceUpdate Sends all current values of preferences to the listener as if they were just
+     * updated.
      */
-    addUpdateListener(listener) {
+    addUpdateListener(listener, options = {}) {
        this.updateListeners.push(listener);
+
+       if (options.forceUpdate) {
+           _.forIn(this.preferences, (value, key) => {
+               listener({name: key, value});
+           });
+       }
     }
 
     get(name) {
