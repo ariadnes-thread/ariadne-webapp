@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 
 import PreferencesState from '../util/preferences-state';
 import RouteCustomizer from './views/route-customizer';
-import SavedRoutes from './views/saved-routes';
+// import SavedRoutes from './views/saved-routes';
 import DebugPanel from './views/debug-panel';
 import LoginPanel from './views/login-panel';
 import NotFound from './views/not-found';
@@ -48,7 +48,7 @@ export default class App extends Component {
                         <Route path="/plan-route" component={(props) => <RouteCustomizer
                             {...props} preferencesState={this.preferencesState} auth={this.props.auth}/>}/>
 
-                        <Route path="/saved" component={(props) => <SavedRoutes {...props} auth={this.props.auth}/>}/>
+                        {/*<Route path="/saved" component={(props) => <SavedRoutes {...props} auth={this.props.auth}/>}/>*/}
 
                         <Route exact path="/" component={(props) => <Home{...props} />}/>
 

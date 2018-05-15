@@ -146,7 +146,7 @@ export default class RouteCustomizer extends Component {
                                 {this.state.displayMode === DisplayMode.PreferenceEditor &&
                                 <PreferenceEditor submitPreferences={this.submitPreferences}
                                                   requestNextMapClick={this.requestNextMapClick}
-                                                  initialPrefState={this.prefState}/>}
+                                                  prefState={this.prefState}/>}
 
                                 {this.state.displayMode === DisplayMode.RouteSelector &&
                                 <RouteSelector routeData={this.state.routeData}
@@ -162,7 +162,8 @@ export default class RouteCustomizer extends Component {
                                      geoJsonObjects={this.state.geoJsonObjects}
                                      onMapClick={this.handleMapClick}
                                      clickMessage={this.state.mapClickMessage}
-                                     onMapClickCancel={this.cancelMapClickHandler}/>
+                                     onMapClickCancel={this.cancelMapClickHandler}
+                                     prefState={this.prefState}/>
                             </div>
                         </div>
                     </div>

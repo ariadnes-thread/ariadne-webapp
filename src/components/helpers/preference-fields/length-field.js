@@ -13,8 +13,8 @@ import PreferenceField from './preference-field';
 export default class LengthField extends Component {
 
     static propTypes = {
+        currentPrefState: PropTypes.any.isRequired,
         updatePreference: PropTypes.func.isRequired,
-        initialValue: PropTypes.any.isRequired,
     };
 
     constructor(props) {
@@ -23,7 +23,8 @@ export default class LengthField extends Component {
         this.fieldData = PreferenceSchema.length;
         this.fieldName = this.fieldData.name;
 
-        const initialValue = this.props.initialValue ? this.props.initialValue : PreferenceSchema.length.defaultValue;
+        let initialValue = this.props.currentPrefState.get(this.fieldName);
+        if (!initialValue) initialValue = PreferenceSchema.length.defaultValue;
         this.state = {
             length: initialValue,
         };

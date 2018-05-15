@@ -9,6 +9,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
+import PreferencesState, {PreferenceSchema} from '../../util/preferences-state';
 import Auth from '../../util/auth';
 import Util from '../../util/util';
 
@@ -27,6 +28,7 @@ const purpleRouteStyle = {
 export default class Map extends Component {
 
     static propTypes = {
+        prefState: PropTypes.instanceOf(PreferencesState),
         auth: PropTypes.instanceOf(Auth).isRequired,
         onMapClick: PropTypes.func,
         geoJsonObjects: PropTypes.arrayOf(PropTypes.object),
@@ -38,8 +40,12 @@ export default class Map extends Component {
         geoJsonObjects: [],
     };
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        if (this.props.prefState) this.prefState = this.props.prefState;
+        else throw new Error('No `prefState` specified in PreferenceEditor props!');
+
         this.state = {
             lat: 34.139,
             lng: -118.125,
@@ -48,10 +54,36 @@ export default class Map extends Component {
             routeStyle: blueRouteStyle,
             geoJsonObjects: [],
             routeLatLngCoordinates: null,
+            start: null,
+            finish: null,
         };
 
+        this.prefUpdateListener = this.prefUpdateListener.bind(this);
         this.handleMapClick = this.handleMapClick.bind(this);
         this.handleCancelClick = this.handleCancelClick.bind(this);
+
+        this.prefState.addUpdateListener(this.prefUpdateListener);
+        const origins = this.prefState.get(PreferenceSchema.origins.name);
+        const dests = this.prefState.get(PreferenceSchema.destinations.name);
+        if (origins && origins.length > 0)
+            this.state.start = [origins[0].latitude, origins[0].longitude];
+        if (dests && dests.length > 0)
+            this.state.start = [dests[0].latitude, dests[0].longitude];
+    }
+
+    /**
+     * @param {object} data
+     * @param {string} data.name
+     * @param {string} data.value
+     */
+    prefUpdateListener(data) {
+        if (data.name === PreferenceSchema.origins.name && data.value && data.value.length > 0) {
+            const coords = data.value[0];
+            this.setState({start: [coords.latitude, coords.longitude]});
+        } else if (data.name === PreferenceSchema.destinations.name && data.value && data.value.length > 0) {
+            const coords = data.value[0];
+            this.setState({finish: [coords.latitude, coords.longitude]});
+        }
     }
 
     componentDidMount() {
@@ -59,6 +91,11 @@ export default class Map extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (this.props.prefState !== nextProps.prefState) {
+            this.prefState = nextProps.prefState;
+            this.prefState.addUpdateListener(this.prefUpdateListener);
+        }
+
         if (this.props.geoJsonObjects !== nextProps.geoJsonObjects)
             this.prepareForNewRoute(nextProps.geoJsonObjects);
     }
@@ -88,7 +125,7 @@ export default class Map extends Component {
                 const lat = coordinates[i * 2 + 1];
                 latLngCoordinates[i] = [lat, lng];
             }
-            this.leafletElement.fitBounds(latLngCoordinates);
+            this.leafletElement.fitBounds(latLngCoordinates, {padding: [5, 5]});
             newState.routeLatLngCoordinates = latLngCoordinates;
             newState.start = latLngCoordinates[0];
             newState.finish = latLngCoordinates[coordinateCount - 1];
@@ -128,8 +165,9 @@ export default class Map extends Component {
     renderGeoJson() {
         const geoJsonObjects = this.state.geoJsonObjects;
         const count = geoJsonObjects.length;
-        const components = new Array(count * 4);
-        for (let i = 0; i < count; i++) {
+        const components = new Array(count * 2);
+        let i;
+        for (i = 0; i < count; i++) {
             const data = geoJsonObjects[i];
             const pathStyle = {
                 color: this.state.routeStyle.color,
@@ -141,14 +179,21 @@ export default class Map extends Component {
             };
 
             const key = `${i}-${Math.random()}`;
-            components[i * 4] =
+            components[i * 2] =
                 <GeoJSON className="ariadne-route-svg-shadow" key={`${key}-o`} data={data} style={outlineStyle}/>;
-            components[i * 4 + 1] = <GeoJSON key={`${key}-p`} data={data} style={pathStyle}/>;
+            components[i * 2 + 1] = <GeoJSON key={`${key}-p`} data={data} style={pathStyle}/>;
 
-            const points = this.getStartAndFinish(data.coordinates);
-            components[i * 4 + 2] = <Marker key={`${key}-s`} position={points.start}/>;
-            components[i * 4 + 3] = <Marker key={`${key}-f`} position={points.finish}/>;
         }
+        return components;
+    }
+
+    renderMarkers() {
+        const components = new Array(2);
+        if (this.state.start)
+            components[0] = <Marker key={`${0}-${Math.random()}-s`} position={this.state.start}/>;
+        if (this.state.finish)
+            components[1] = <Marker key={`${1}-${Math.random()}-f`} position={this.state.finish}/>;
+
         return components;
     }
 
@@ -173,6 +218,7 @@ export default class Map extends Component {
                         url={`https://api.mapbox.com/styles/v1/mapbox/streets-v9/tiles/256/{z}/{x}/{y}?access_token=${this.props.auth.config.mapboxAccessToken}`}
                     />
                     {this.renderGeoJson()}
+                    {this.renderMarkers()}
                 </LeafletMap>
             </div>
         );

@@ -16,19 +16,17 @@ import Card from './card';
 export default class PreferenceEditor extends Component {
 
     static propTypes = {
+        prefState: PropTypes.instanceOf(PreferencesState).isRequired,
         submitPreferences: PropTypes.func, // Optional, but nothing will happen on submit if this is not provided
-        initialPrefState: PropTypes.instanceOf(PreferencesState), // Optional, used if parent extracted from localStorage
         requestNextMapClick: PropTypes.func,
     };
 
     constructor(props) {
         super(props);
 
-        if (this.props.initialPrefState) this.prefState = this.props.initialPrefState;
-        else {
-            Util.logDebug('No `initialPrefState` specified, initialising brand new pref state.');
-            this.prefState = new PreferencesState();
-        }
+        if (this.props.prefState) this.prefState = this.props.prefState;
+        else throw new Error('No `prefState` specified in PreferenceEditor props!');
+
         this.state = {
             submitting: false,
         };
@@ -51,11 +49,6 @@ export default class PreferenceEditor extends Component {
             {x: 0, opacity: 1, top: 0, position: 'absolute'},
             {x: -200, opacity: 0, onComplete: callback}
         );
-    }
-
-    resetPreferences() {
-        this.prefState = new PreferencesState();
-        this.forceUpdate();
     }
 
     /**

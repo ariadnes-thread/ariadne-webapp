@@ -89,10 +89,18 @@ export default class PreferencesState {
 
     constructor() {
         this.preferences = {};
+        this.updateListeners = [];
 
         _.forIn(PreferenceSchema, (value, key) => {
             this.preferences[key] = value.defaultValue;
         });
+    }
+
+    /**
+     * @param {function} listener
+     */
+    addUpdateListener(listener) {
+       this.updateListeners.push(listener);
     }
 
     get(name) {
@@ -101,6 +109,10 @@ export default class PreferencesState {
 
     set(name, value) {
         this.preferences[name] = value;
+
+        for (const updateListener of this.updateListeners) {
+            updateListener({name, value});
+        }
     }
 
     getPrefsFormattedForApi() {

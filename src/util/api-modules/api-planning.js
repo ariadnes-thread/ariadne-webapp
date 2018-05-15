@@ -34,7 +34,7 @@ export default class ApiPlanningModule {
      */
     fetchPointsOfInterest() {
         return this.api.getWithAuth('/v1/planning/points-of-interest')
-            .then(responseBody => responseBody.pointsOfInterest)
+            .then(responseBody => responseBody.pointsOfInterest);
     }
 
 }

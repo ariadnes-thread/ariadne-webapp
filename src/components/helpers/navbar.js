@@ -9,15 +9,14 @@ import Icon from '@fortawesome/react-fontawesome';
 import {NavLink} from 'react-router-dom';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-// import LoginPanel from './login-panel';
-import swal from 'sweetalert2'
+import swal from 'sweetalert2';
 
 import Auth from '../../util/auth';
 
 export default class Navbar extends Component {
 
     static contextTypes = {
-        router: PropTypes.object.isRequired
+        router: PropTypes.object.isRequired,
     };
 
     static propTypes = {
@@ -35,7 +34,6 @@ export default class Navbar extends Component {
         this.toggleBurgerMenu = this.toggleBurgerMenu.bind(this);
         this.buttonClick = this.buttonClick.bind(this);
         this.loginButtonAction = this.loginButtonAction.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
     componentDidMount() {
@@ -55,16 +53,9 @@ export default class Navbar extends Component {
         this.setState({burgerMenuActive: false});
     }
 
-
-    handleChange(event) {
-        console.log("Made it to handle change");
-        console.log(event);
-    }
-
     loginButtonAction() {
         this.buttonClick();
-        if (this.props.auth.isAuthenticated())
-        {
+        if (this.props.auth.isAuthenticated()) {
             swal({
                 title: 'Log Out',
                 text: 'Do you want to continue?',
@@ -73,7 +64,7 @@ export default class Navbar extends Component {
                 confirmButtonText: 'Yes, Logout',
 
             }).then((result) => {
-                console.log("Logging out...");
+                console.log('Logging out...');
                 this.props.auth.handleLogout();
             });
         }
@@ -105,7 +96,7 @@ export default class Navbar extends Component {
                                 <div className="field is-grouped">
                                     <p className="control">
                                         <NavLink className="button is-info" activeClassName="is-active"
-                                                 exact to="/route" onClick={this.buttonClick}>
+                                                 exact to="/" onClick={this.buttonClick}>
                                         <span className="icon">
                                             <Icon icon="home"/>
                                         </span>
@@ -121,15 +112,15 @@ export default class Navbar extends Component {
                                             <span>Plan a route</span>
                                         </NavLink>
                                     </p>
-                                    <p className="control">
-                                        <NavLink className="button is-info" activeClassName="is-active"
-                                                 to="/saved" onClick={this.buttonClick}>
-                                        <span className="icon">
-                                            <Icon icon="star"/>
-                                        </span>
-                                            <span>Saved Routes</span>
-                                        </NavLink>
-                                    </p>
+                                    {/*<p className="control">*/}
+                                    {/*<NavLink className="button is-info" activeClassName="is-active"*/}
+                                    {/*to="/saved" onClick={this.buttonClick}>*/}
+                                    {/*<span className="icon">*/}
+                                    {/*<Icon icon="star"/>*/}
+                                    {/*</span>*/}
+                                    {/*<span>Saved Routes</span>*/}
+                                    {/*</NavLink>*/}
+                                    {/*</p>*/}
                                     <p className="control">
                                         <NavLink className="button is-info" activeClassName="is-active"
                                                  to="/debug" onClick={this.buttonClick}>
@@ -151,8 +142,8 @@ export default class Navbar extends Component {
                                         <a className="button is-info" onClick={this.loginButtonAction}>
                                             <span className="icon"><Icon icon="sign-out-alt"/></span>
                                             <span>{[this.props.auth.isAuthenticated()]
-                                                ? "Logout"
-                                                : "Sign in"}</span>
+                                                ? 'Logout'
+                                                : 'Sign in'}</span>
                                         </a>
                                     </p>
                                 </div>
