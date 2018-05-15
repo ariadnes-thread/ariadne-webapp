@@ -65,7 +65,7 @@ export default class Navbar extends Component {
 
             }).then((result) => {
                 console.log('Logging out...');
-                this.props.auth.handleLogout();
+                this.props.auth.logout();
             });
         }
         else {

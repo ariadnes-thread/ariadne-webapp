@@ -22,7 +22,7 @@ export default class ApiAuthModule {
 
     /**
      * @param {object} data
-     * @param {string} data.username
+     * @param {string} data.email
      * @param {string} data.password
      * @returns {Promise<TokenData>}
      */

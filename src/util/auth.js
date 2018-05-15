@@ -6,7 +6,13 @@
 
 import Promise from 'bluebird';
 
+import Util from './util';
 import Api from './api';
+
+const LSNames = {
+    AccessToken: 'accessToken',
+    UserData: 'userData',
+};
 
 export default class Auth {
 
@@ -20,54 +26,46 @@ export default class Auth {
     }
 
     init() {
-        console.log(localStorage);
-        // TODO: Do auth initialization here - extract auth data from localStorage, redirect, etc.
         return Promise.resolve()
-            .then(() => {
-                if (!this.isAuthenticated())
-                {
-                    // TODO: For now, just automatically initializing
-                    console.log("Missing authentication data!  (Automatically logging in for debugging purposes)");
-                    return this.doLogin({email: 'test@test.com', password: 'qwerty123456'});
-                }
-                else
-                {
-                    console.log("Has authentication data! :)");
-                    return {accessToken: localStorage.accessToken, userData: localStorage.userData};
-                }
-            }).then(tokenData => this.consumeAccessTokenData(tokenData));
-        //.then(() => this.api.clearAllDataLoaderCache())
-    }
-
-    /*
-    * Checks if accessToken and userData are present (has an authenticated user logged in).
-    */
-    isAuthenticated() {
-        return !(localStorage.getItem('accessToken') === null || localStorage.getItem('userData') === null)
-    }
-
-    doLogin(loginObj) {
-        Promise.resolve()
-            .then(() => {
-                return this.authenticateStaff(loginObj);
-            }).then((res) => {
-                console.log(res);
-                localStorage.setItem('accessToken', res.accessToken);
-                localStorage.setItem('userData', res.userData);
-            }
-        )
+            .then(() => this.api.clearAllDataLoaderCache())
+            .then(() => this.attemptAuthFromLocalStorage())
             .catch(error => {
-                console.error(JSON.stringify(error, null, 2));
-                console.error(error);
-                // TODO: Replace with user-friendly warning/modal
-                alert('Error occurred during form submission. Check console.');
+                // Authorization through local storage failed for whatever reason, logging in again.
+                let message = `Authorization through local storage failed, logging in again. (${error.message})`;
+                Util.logDebug(message);
+                this.clearAuthData();
+
+                // TODO: Replace this with proper auth
+                return this.authenticateStaff({email: 'test@test.com', password: 'qwerty123456'});
             });
     }
-    /*
-    * Clears the local storage (accessToken and userData) when the user logs out.
-    */
-    handleLogout() {
-        localStorage.clear();
+
+    attemptAuthFromLocalStorage() {
+        return Promise.resolve()
+            .then(() => {
+                const lsAccessToken = localStorage.getItem(LSNames.AccessToken);
+                const lsUserData = JSON.parse(localStorage.getItem(LSNames.UserData));
+
+                if (!lsAccessToken || !lsUserData) {
+                    // Local storage auth data is corrupted, clear it, proceed like it never existed.
+                    Auth.clearAuthLocalStorage();
+                    throw new Error('Auth local storage data either not existent or corrupted.');
+                }
+
+                // Local storage data seems to be in tact, let's check if it's valid.
+                this.accessToken = lsAccessToken;
+                return Promise.resolve()
+                    .then(() => this.api.userModule.profileLoader.load(lsUserData.userId))
+                    .then(userData => ({accessToken: lsAccessToken, userData}))
+                    .then(tokenData => this.consumeAccessTokenData(tokenData));
+            });
+    }
+
+    /**
+     * Logs the user out and clears data loader cache.
+     */
+    logout() {
+        this.clearAuthData();
         this.api.clearAllDataLoaderCache();
     }
 
@@ -81,16 +79,30 @@ export default class Auth {
     authenticateStaff(data) {
         return Promise.resolve()
             .then(() => this.api.authModule.fetchStaffAccessTokenData(data))
-            .then(tokenData => this.consumeAccessTokenData(tokenData))
+            .then(tokenData => this.consumeAccessTokenData(tokenData));
     }
 
     /**
      * @param {TokenData} tokenData
+     * @returns {TokenData}
      */
     consumeAccessTokenData(tokenData) {
         this.accessToken = tokenData.accessToken;
         this.userData = tokenData.userData;
+        localStorage.setItem(LSNames.AccessToken, this.accessToken);
+        localStorage.setItem(LSNames.UserData, JSON.stringify(this.userData));
         return tokenData;
+    }
+
+    clearAuthData() {
+        this.accessToken = null;
+        this.userData = null;
+        Auth.clearAuthLocalStorage();
+    }
+
+    static clearAuthLocalStorage() {
+        localStorage.removeItem(LSNames.AccessToken);
+        localStorage.removeItem(LSNames.UserData);
     }
 
     getGoogleApiUrl() {

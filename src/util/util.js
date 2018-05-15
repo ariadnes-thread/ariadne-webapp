@@ -4,6 +4,7 @@
  * @license GPL-3.0
  */
 
+import DataLoader from 'dataloader';
 import Swal from 'sweetalert2';
 
 export default class Util {
@@ -27,6 +28,31 @@ export default class Util {
         }
 
         Swal(errorData.title, errorData.message, 'error');
+    }
+
+    /**
+     * Prepares instances of the `dataloader` package.
+     * @see https://github.com/facebook/dataloader
+     * @param {function} funcReturningAPromise
+     * @param {function} cacheKeyFn
+     * @returns {DataLoader | DataLoader<any, any>}
+     */
+    static prepareDataLoader(funcReturningAPromise, cacheKeyFn = id => id) {
+        return new DataLoader(Util.arraifyPromiseFunc(funcReturningAPromise), {batch: false, cacheKeyFn});
+    }
+
+    /**
+     * `dataloader` package expects functions that take an array and return a Promise<array>. This function converts
+     * functions with a single argument/single return value into `dataloader` style functions.
+     *
+     * @param {function} funcReturningAPromise
+     * @returns {function(array)}
+     */
+    static arraifyPromiseFunc(funcReturningAPromise) {
+        return array => {
+            return funcReturningAPromise(array[0])
+                .then(returnValue => [returnValue]);
+        };
     }
 
     /**

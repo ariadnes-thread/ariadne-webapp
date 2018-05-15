@@ -8,6 +8,7 @@ import request from 'superagent';
 
 import ApiAuthModule from './api-modules/api-auth';
 import ApiPlanningModule from './api-modules/api-planning';
+import ApiUserModule from './api-modules/api-user';
 
 export default class Api {
 
@@ -20,6 +21,7 @@ export default class Api {
         const moduleConfig = {auth: this.auth, api: this};
         this.authModule = new ApiAuthModule(moduleConfig);
         this.planningModule = new ApiPlanningModule(moduleConfig);
+        this.userModule = new ApiUserModule(moduleConfig);
     }
 
     /**
@@ -29,6 +31,7 @@ export default class Api {
     clearAllDataLoaderCache() {
         this.authModule.clearDataLoaderCache();
         this.planningModule.clearDataLoaderCache();
+        this.userModule.clearDataLoaderCache();
     }
 
     /**

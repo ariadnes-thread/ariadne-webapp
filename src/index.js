@@ -9,7 +9,7 @@ import Promise from 'bluebird';
 import React from 'react';
 
 import 'bulma/css/bulma.css';
-import 'bulma-extensions/dist/bulma-extensions.min.css'
+import 'bulma-extensions/dist/bulma-extensions.min.css';
 
 // TODO: Uncomment once development is complete, scroll down for more info.
 // import registerServiceWorker from './util/registerServiceWorker';
@@ -17,6 +17,7 @@ import StartupError from './components/startup-error';
 import rawConfig from './config.json';
 import App from './components/app';
 import Auth from './util/auth';
+import Util from './util/util';
 import './index.css';
 
 // Initialise an instance of Auth class - this instance is not global, it should be passed down to
@@ -36,7 +37,7 @@ Promise.resolve()
     // Initialization failed, render an error message
     .catch(error => {
         componentToRender = <StartupError/>;
-        console.error(error);
+        Util.logError(error);
     })
 
     .finally(() => {
