@@ -72,12 +72,14 @@ export default class PreferenceEditor extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        // TODO: Replace `alert()` with a swal2 modal
         if (this.props.submitPreferences) {
             Promise.resolve()
                 .then(() => this.setState({submitting: true}))
                 .then(() => this.props.submitPreferences(this.prefState))
-                .catch(error => alert(error.message))
+                .catch(error => Util.showErrorModal({
+                    message: 'An error occurred while visualising your route.',
+                    console: error,
+                }))
                 .finally(() => this.setState({submitting: false}));
         }
         else {

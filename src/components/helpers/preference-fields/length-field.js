@@ -48,12 +48,10 @@ export default class LengthField extends Component {
     render() {
         return (
             <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
-                <input className="slider has-output" step="100" min="100" max="10000"
-                       value={this.state.length}
-                       onChange={this.handleChange}
-                       id="routeLengthSlider"
-                       type="range"/>
-                <span style={{display: 'inline-block', width: '3rem'}}>{this.state.length}</span>
+                <input className="slider has-output" step={this.fieldData.step} min={this.fieldData.min}
+                       max={this.fieldData.max} value={this.state.length} onChange={this.handleChange}
+                       id="routeLengthSlider" type="range"/>
+                <span style={{display: 'inline-block', width: '4rem'}}>{this.state.length} m</span>
             </PreferenceField>
         );
     }

@@ -66,6 +66,7 @@ export const PreferenceSchema = {
         displayName: 'Scan area',
         description: 'Scan area defines the region of the map which our route planner will consider when generating' +
         ' your route.',
+        hiddenFromEditor: true,
         enabledByDefault: false,
         defaultValue: ScanArea.CurrentlyVisibleMap,
         formComponent: ScanAreaField,
@@ -76,6 +77,9 @@ export const PreferenceSchema = {
         description: null,
         enabledByDefault: true,
         defaultValue: 5000.0,
+        min: 200,
+        max: 10000,
+        step: 100,
         formComponent: LengthField,
     },
     routeType: {
@@ -156,12 +160,12 @@ export default class PreferencesState {
 
     getPrefsFormattedForApi() {
         const constraints = {
-            desired_dist: this.preferences.length,
-            origins: this.preferences.origins,
-            dests: this.preferences.destinations,
+            origins: this.preferences.origins ? this.preferences.origins : PreferenceSchema.origins.defaultValue,
+            dests: this.preferences.destinations ? this.preferences.destinations : PreferenceSchema.destinations.defaultValue,
             noptions: 3,
             edge_prefs: {green: 1.0, popularity: 2.0},
         };
+        if (this.preferences.length) constraints.desired_dist = this.preferences.length;
         if (this.preferences.pointsOfInterest) constraints.poi_prefs = this.preferences.pointsOfInterest;
 
         return constraints;

@@ -43,8 +43,7 @@ export default class PoiField extends Component {
     }
 
     toggle(enabled) {
-        const value = 123;
-        if (enabled) this.props.updatePreference(this.fieldName, value);
+        if (enabled) this.props.updatePreference(this.fieldName, PoiField.getPoisObject(this.state.tags));
         else this.props.updatePreference(this.fieldName, null);
     }
 
@@ -61,12 +60,16 @@ export default class PoiField extends Component {
 
     componentWillUpdate(nextProps, nextState) {
         if (this.state.tags !== nextState.tags) {
-            const newObject = {};
-            for (const tag of nextState.tags) {
-                newObject[tag.id] = 1;
-            }
-            this.props.updatePreference(this.fieldName, newObject);
+            this.props.updatePreference(this.fieldName, PoiField.getPoisObject(nextState.tags));
         }
+    }
+
+    static getPoisObject(tags) {
+        const poiObject = {};
+        for (const tag of tags) {
+            poiObject[tag.id] = 1;
+        }
+        return poiObject;
     }
 
     render() {
