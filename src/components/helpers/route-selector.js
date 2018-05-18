@@ -44,18 +44,17 @@ export default class RouteSelector extends Component {
 
 
     // TODO: interface with API (in elevation_utils.py) to get route distance and elevation
-    // Right now, just using sample data for going north on Lake (because it shows elevation change)
-    getRouteDistance() {
-        // For every coordinate in this.props.routeData.route.coordinates:
-        // add up the distance between this coordinate and the next
-        // Return the sum
-        return 4.4;
-    }
-
-    // TODO: see above comment
     getElevationData() {
-        // get a reasonable sampling of the elevation data (uniformly spaced along the route)
-        return [788.3, 803.9, 826.6, 846.7, 867.6, 889.0, 910.9, 944.7, 991.2, 1042.0, 1098.9, 1152.4, 1203.1, 1262.5, 1360.6, 1461.3, 1577.0, 1700.7, 1810.8];
+        let distance = 0;
+        let elevations = [];
+        let labels = [];
+        for (let i = 0; i < this.props.routeData.elevationData.length; i++)
+        {
+            elevations.push((this.props.routeData.elevationData[i][1]).toFixed(2));
+            labels.push((distance/5280).toFixed(2));
+            distance += this.props.routeData.elevationData[i][0]
+        }
+        return {data: elevations, labels: labels}
     }
 
     render() {
@@ -112,7 +111,7 @@ export default class RouteSelector extends Component {
                         </div>
                     </div>
                     <div>
-                        <ElevationView distance={this.getRouteDistance()} elevationData={this.getElevationData()}/>
+                        <ElevationView elevationData={this.getElevationData()}/>
                     </div>
                     <IconButton icon="arrow-left" onClick={this.props.showPreferenceEditor}>Back to
                         preferences</IconButton>

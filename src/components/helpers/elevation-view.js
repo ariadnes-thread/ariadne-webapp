@@ -11,8 +11,7 @@ import Chart from 'chart.js';
 export default class ElevationView extends Component {
 
     static propTypes = {
-        elevationData: PropTypes.array.isRequired,
-        distance: PropTypes.number.isRequired,
+        elevationData: PropTypes.object.isRequired,
     };
 
     constructor(props) {
@@ -20,11 +19,8 @@ export default class ElevationView extends Component {
 
         this.blueColor = '#279aec';
         this.blueColorTransparent = `${this.blueColor}80`;
-        // TODO: get a series of elevations and the overall route distance passed in from
-        // the route planner
-        this.elevationData = this.props.elevationData;
-        this.distance = this.props.distance;
-        this.labels = this.elevationData.map((val, index) => (index * this.distance / this.elevationData.length).toFixed(2));
+        this.elevationData = this.props.elevationData.data;
+        this.labels = this.props.elevationData.labels;
     }
 
     componentDidMount() {
