@@ -33,20 +33,20 @@ export const RouteType = {
 
 /** @enum {string} */
 export const PoiTypes = {
-    atm: {name: 'atm', displayName: 'ATM'},
-    bakery: {name: 'bakery', displayName: 'Bakery'},
-    bank: {name: 'bank', displayName: 'Bank'},
-    busStation: {name: 'bus_station', displayName: 'Bus station'},
-    cafe: {name: 'cafe', displayName: 'Cafe'},
-    church: {name: 'church', displayName: 'Church'},
-    gasStation: {name: 'gas_station', displayName: 'Gas station'},
-    gym: {name: 'gym', displayName: 'Gym'},
+    atm: {name: 'atm', displayName: 'ATMs'},
+    bakery: {name: 'bakery', displayName: 'Bakeries'},
+    bank: {name: 'bank', displayName: 'Banks'},
+    busStation: {name: 'bus_station', displayName: 'Bus stations'},
+    cafe: {name: 'cafe', displayName: 'Cafes'},
+    church: {name: 'church', displayName: 'Churchs'},
+    gasStation: {name: 'gas_station', displayName: 'Gas stations'},
+    gym: {name: 'gym', displayName: 'Gyms'},
     hairCare: {name: 'hair_care', displayName: 'Hair care'},
-    library: {name: 'library', displayName: 'Library'},
-    park: {name: 'park', displayName: 'Park'},
+    library: {name: 'library', displayName: 'Libraries'},
+    park: {name: 'park', displayName: 'Parks'},
     parking: {name: 'parking', displayName: 'Parking'},
     pharmacy: {name: 'pharmacy', displayName: 'Pharmacy'},
-    store: {name: 'store', displayName: 'Store'},
+    store: {name: 'store', displayName: 'Stores'},
 };
 
 /**

@@ -38,7 +38,14 @@ export default class RouteCustomizer extends Component {
         };
         this.api = this.props.auth.api;
         this.mapClickHandler = null;
-        this.prefState = new PreferencesState();
+
+        // Check if prefState was provided through a `react-router` link (e.g. from Home page). If not, init new state.
+        if (this.props.location.initialPrefState) {
+           this.prefState = this.props.location.initialPrefState;
+           Util.logDebug('Found prefState passed via react-router link, using it!');
+        } else {
+            this.prefState = new PreferencesState();
+        }
 
         this.submitPreferences = this.submitPreferences.bind(this);
         this.showPreferenceEditor = this.showPreferenceEditor.bind(this);

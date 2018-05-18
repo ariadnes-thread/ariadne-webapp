@@ -5,31 +5,88 @@
  */
 
 import Icon from '@fortawesome/react-fontawesome';
+import ReactTags from 'react-tag-autocomplete';
 import {Link} from 'react-router-dom';
+import _ from 'lodash';
 
+import PreferencesState, {PreferenceSchema, PoiTypes, TransportType} from '../../util/preferences-state';
+import PoiField from '../helpers/preference-fields/poi-field';
 import IconButton from '../helpers/icon-button';
 import React, {Component} from 'react';
 import Card from '../helpers/card';
 
+const LengthType = {
+    Short: 'short',
+    Medium: 'medium',
+    Long: 'long',
+};
+
 export default class Home extends Component {
 
-    renderDummyCheckboxes() {
-        const checkboxItems = ['Parks', 'Restaurants', 'Bars', 'Coffee shops', 'Shopping malls', 'Gyms'];
-        const components = new Array(checkboxItems.length);
-        for (let i = 0, k = 0; i < checkboxItems.length; i++, k++) {
-            const item = checkboxItems[i];
-            const key = `home-${i}-checkbox`;
-            const label = item.replace(' ', '');
-            components[k] = <div key={key} className="control">
-                <input className="is-checkradio is-medium" id={label} type="checkbox" onChange={() => null}/>
-                <label htmlFor={label}>{item}</label>
-            </div>;
-        }
+    constructor(props) {
+        super(props);
 
-        return <div className="field is-grouped is-grouped-multiline is-grouped-right">{components}</div>;
+        this.prefState = new PreferencesState();
+
+        this.state = {
+            transportType: this.prefState.preferences.transportType,
+            lengthType: LengthType.Medium,
+            tags: [],
+            suggestions: [],
+        };
+
+        const initialPois = this.prefState.get(PreferenceSchema.pointsOfInterest.name);
+        _.forEach(PoiTypes, (poiType) => {
+            const tagObject = {id: poiType.name, name: poiType.displayName};
+            if (initialPois[poiType.name]) {
+                this.state.tags.push(tagObject);
+            } else {
+                this.state.suggestions.push(tagObject);
+            }
+        });
+    }
+
+    chooseTransportType(value) {
+        this.prefState.set(PreferenceSchema.transportType.name, value);
+        this.setState({transportType: value});
+    }
+
+    chooseLength(value) {
+        let actualLength = 2000;
+        if (value === LengthType.Short) actualLength = 1000;
+        else if (value === LengthType.Long) actualLength = 9500;
+
+        this.prefState.set(PreferenceSchema.length.name, actualLength);
+        this.setState({lengthType: value});
+    }
+
+    handleDelete(i) {
+        const tags = this.state.tags.slice(0);
+        tags.splice(i, 1);
+        this.setState({tags});
+    }
+
+    handleAddition(tag) {
+        const tags = [].concat(this.state.tags, tag);
+        this.setState({tags});
+    }
+
+    componentWillUpdate(nextProps, nextState) {
+        if (this.state.tags !== nextState.tags) {
+            this.prefState.set(PreferenceSchema.pointsOfInterest.name, PoiField.getPoisObject(nextState.tags));
+        }
     }
 
     render() {
+
+        const walkTypeProp = this.state.transportType === TransportType.Walk ? {active: true, type: 'info'} : {};
+        const runTypeProp = this.state.transportType === TransportType.Run ? {active: true, type: 'info'} : {};
+        const bikeTypeProp = this.state.transportType === TransportType.Bike ? {active: true, type: 'info'} : {};
+
+        const shortTypeProp = this.state.lengthType === LengthType.Short ? {active: true, type: 'info'} : {};
+        const mediumTypeProp = this.state.lengthType === LengthType.Medium ? {active: true, type: 'info'} : {};
+        const longTypeProp = this.state.lengthType === LengthType.Long ? {active: true, type: 'info'} : {};
+
         return (
             <div>
                 <section className="hero is-info">
@@ -51,23 +108,24 @@ export default class Home extends Component {
                 <div className="container">
                     <br/>
                     <div className="columns">
-                        <div className="column is-one-fifth">
-                            <Card>
-                                <div className="field">
-                                    <label className="label">Email</label>
-                                    <div className="control">
-                                        <input className="input" type="text" placeholder="john@example.com"/>
-                                    </div>
-                                </div>
-                                <div className="field">
-                                    <label className="label">Password</label>
-                                    <div className="control">
-                                        <input className="input" type="password" placeholder="*******"/>
-                                    </div>
-                                </div>
-                                <p className="link has-text-centered">Don't have an account?</p>
-                            </Card>
-                        </div>
+                        {/* TODO: Show this when login system is working. */}
+                        {/*<div className="column is-one-fifth">*/}
+                        {/*<Card>*/}
+                        {/*<div className="field">*/}
+                        {/*<label className="label">Email</label>*/}
+                        {/*<div className="control">*/}
+                        {/*<input className="input" type="text" placeholder="john@example.com"/>*/}
+                        {/*</div>*/}
+                        {/*</div>*/}
+                        {/*<div className="field">*/}
+                        {/*<label className="label">Password</label>*/}
+                        {/*<div className="control">*/}
+                        {/*<input className="input" type="password" placeholder="*******"/>*/}
+                        {/*</div>*/}
+                        {/*</div>*/}
+                        {/*<p className="link has-text-centered">Don't have an account?</p>*/}
+                        {/*</Card>*/}
+                        {/*</div>*/}
                         <div className="column">
                             <Card>
                                 <h1 className="title has-text-grey">Let's start planning your perfect route.</h1>
@@ -83,8 +141,8 @@ export default class Home extends Component {
                                     <div className="level-item level-right">
                                         <div className="field">
                                             <div className="control">
-                                                <input className="input is-large is-info" type="text"
-                                                       placeholder="City, postcode, address"/>
+                                                <input className="input is-large is-info" type="text" readOnly disabled
+                                                       placeholder="City, postcode, address" value="Pasadena (demo)"/>
                                             </div>
                                         </div>
                                     </div>
@@ -100,9 +158,12 @@ export default class Home extends Component {
                                     </div>
                                     <div className="level-item level-right">
                                         <div className="buttons has-addons">
-                                            <IconButton icon="male" size="large">Walk</IconButton>
-                                            <IconButton icon="child" size="large" type="info" active>Run</IconButton>
-                                            <IconButton icon="bicycle" size="large">&nbsp;Cycle</IconButton>
+                                            <IconButton icon="male" size="large" {...walkTypeProp}
+                                                        onClick={() => this.chooseTransportType(TransportType.Walk)}>Walk</IconButton>
+                                            <IconButton icon="child" size="large" {...runTypeProp}
+                                                        onClick={() => this.chooseTransportType(TransportType.Run)}>Run</IconButton>
+                                            <IconButton icon="bicycle" size="large" {...bikeTypeProp}
+                                                        onClick={() => this.chooseTransportType(TransportType.Bike)}>&nbsp;Cycle</IconButton>
                                         </div>
                                     </div>
                                 </nav>
@@ -117,10 +178,12 @@ export default class Home extends Component {
                                     </div>
                                     <div className="level-item level-right">
                                         <div className="buttons has-addons">
-                                            <IconButton icon="chess-pawn" size="large" type="info"
-                                                        active>Short</IconButton>
-                                            <IconButton icon="chess-rook" size="large">Medium</IconButton>
-                                            <IconButton icon="chess-king" size="large">&nbsp;Long</IconButton>
+                                            <IconButton icon="chess-pawn" size="large" {...shortTypeProp}
+                                                        onClick={() => this.chooseLength(LengthType.Short)}>Short</IconButton>
+                                            <IconButton icon="chess-rook" size="large" {...mediumTypeProp}
+                                                        onClick={() => this.chooseLength(LengthType.Medium)}>Medium</IconButton>
+                                            <IconButton icon="chess-king" size="large" {...longTypeProp}
+                                                        onClick={() => this.chooseLength(LengthType.Long)}>Long</IconButton>
                                         </div>
                                     </div>
                                 </nav>
@@ -130,11 +193,15 @@ export default class Home extends Component {
                                     <div className="level-item level-left">
                                         <p className="title is-size-4">
                                             <span className="tag is-warning is-rounded is-large">Step 4</span>
-                                            &nbsp;&nbsp;<span>What do you want to see?</span>
+                                            &nbsp;&nbsp;<span>What do you want to see on your route?</span>
                                         </p>
                                     </div>
-                                    <div style={{maxWidth: 600}} className="level-item level-right">
-                                        {this.renderDummyCheckboxes()}
+                                    <div style={{maxWidth: 600}} className="level-item level-right is-size-5">
+                                        <ReactTags
+                                            tags={this.state.tags}
+                                            suggestions={this.state.suggestions}
+                                            handleDelete={this.handleDelete.bind(this)}
+                                            handleAddition={this.handleAddition.bind(this)}/>
                                     </div>
                                 </nav>
                                 <hr/>
@@ -150,7 +217,10 @@ export default class Home extends Component {
                                         </p>
                                     </div>
                                     <p className="level-item level-right">
-                                        <Link to="/plan-route">
+                                        <Link to={{
+                                            pathname: '/plan-route',
+                                            initialPrefState: this.prefState,
+                                        }}>
                                             <IconButton icon="angle-double-right" size="large" iconSize="large"
                                                         trailingIcon="angle-double-left" type="success">
                                                 &nbsp;Start planning&nbsp;
