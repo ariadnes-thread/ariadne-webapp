@@ -44,37 +44,16 @@ export default class RouteSelector extends Component {
 
 
     // TODO: interface with API (in elevation_utils.py) to get route distance and elevation
-    // Right now, just using sample data for going north on Lake (because it shows elevation change)
     getElevationData() {
-        // get a reasonable sampling of the elevation data (uniformly spaced along the route)
-            // For every coordinate in this.props.routeData.route.coordinates:
-              // add up the distance between this coordinate and the next
-              // get a reasonable sampling of points of elevation data
-            // Return the
-        // let distance = 0;
-        // let elevations = [];
-        // let labels = [];
-        // for (let i = 0; i < this.props.routeData.route.coordinates.length - 1; i++)
-        // {
-        //     // eventually might want to do 2 passes, one to get the overall distance, to better decide sampling
-        //     let current = this.props.routeData.route.coordinates[i];
-        //     let next = this.props.routeData.route.coordinates[i+1];
-        //     // Get distance between current and next
-        //     // If distance is greater than 0.5 mi,
-        //     // Sample points in between
-        //     // this.api.planningModule;
-        //     distance += 0;
-        //     elevations.push(0);
-        //     labels.push(distance.toFixed(2));
-        // }
-
-        let distance = 4.4;
-        let elevations = [788.3, 803.9, 826.6, 846.7, 867.6, 889.0, 910.9, 944.7, 991.2, 1042.0, 1098.9, 1152.4, 1203.1, 1262.5, 1360.6, 1461.3, 1577.0, 1700.7, 1810.8];
-        // console.log(elevations);
-        // console.log(elevations.length);
-        let labels = elevations.map((val, index) => (index * distance / elevations.length).toFixed(2));
-        // console.log(elevations);
-        // console.log(labels);
+        let distance = 0;
+        let elevations = [];
+        let labels = [];
+        for (let i = 0; i < this.props.routeData.elevationData.length; i++)
+        {
+            elevations.push((this.props.routeData.elevationData[i][1]).toFixed(2));
+            labels.push((distance/5280).toFixed(2));
+            distance += this.props.routeData.elevationData[i][0]
+        }
         return {data: elevations, labels: labels}
     }
 
