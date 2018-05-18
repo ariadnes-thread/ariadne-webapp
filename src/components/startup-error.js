@@ -15,11 +15,11 @@ export default class StartupError extends Component {
                         <div className="column is-one-third">
                             <article className="message is-danger">
                                 <div className="message-header">
-                                    <p>Ariadne webapp startup error</p>
+                                    <p>TrekStar webapp startup error</p>
                                 </div>
                                 <div className="message-body has-text-left">
                                     An error has occurred during loading. This is an issue with the
-                                    web application itself - please report it to the Ariadne team.
+                                    web application itself - please report it to the TrekStar team.
                                     Check developer console for details.
                                 </div>
                             </article>

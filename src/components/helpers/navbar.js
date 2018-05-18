@@ -79,8 +79,8 @@ export default class Navbar extends Component {
             <nav className="navbar is-info is-fixed-top" aria-label="main navigation">
                 <div className="container">
                     <div className="navbar-brand">
-                        <a className="navbar-item" href={this.props.auth.config.baseUri}>
-                            Ariadne's Thread
+                        <a className="navbar-item" href="/" style={{fontWeight: 'bold'}}>
+                            TrekStar
                         </a>
 
                         <div className="navbar-burger" onClick={this.toggleBurgerMenu}>
@@ -112,6 +112,8 @@ export default class Navbar extends Component {
                                             <span>Plan a route</span>
                                         </NavLink>
                                     </p>
+
+                                    {/* TODO: Show saved routes once they are implemented. */}
                                     {/*<p className="control">*/}
                                     {/*<NavLink className="button is-info" activeClassName="is-active"*/}
                                     {/*to="/saved" onClick={this.buttonClick}>*/}
@@ -121,34 +123,37 @@ export default class Navbar extends Component {
                                     {/*<span>Saved Routes</span>*/}
                                     {/*</NavLink>*/}
                                     {/*</p>*/}
-                                    <p className="control">
-                                        <NavLink className="button is-info" activeClassName="is-active"
-                                                 to="/debug" onClick={this.buttonClick}>
-                                        <span className="icon">
-                                            <Icon icon="magic"/>
-                                        </span>
-                                            <span>Debug</span>
-                                        </NavLink>
-                                    </p>
+
+                                    {/* TODO: Show or remove debug. */}
+                                    {/*<p className="control">*/}
+                                        {/*<NavLink className="button is-info" activeClassName="is-active"*/}
+                                                 {/*to="/debug" onClick={this.buttonClick}>*/}
+                                        {/*<span className="icon">*/}
+                                            {/*<Icon icon="magic"/>*/}
+                                        {/*</span>*/}
+                                            {/*<span>Debug</span>*/}
+                                        {/*</NavLink>*/}
+                                    {/*</p>*/}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="navbar-end">
-                            <div className="navbar-item">
-                                <div className="field is-grouped">
-                                    <p className="control">
+                        {/* TODO: Show logout button when it's relevant */}
+                        {/*<div className="navbar-end">*/}
+                            {/*<div className="navbar-item">*/}
+                                {/*<div className="field is-grouped">*/}
+                                    {/*<p className="control">*/}
 
-                                        <a className="button is-info" onClick={this.loginButtonAction}>
-                                            <span className="icon"><Icon icon="sign-out-alt"/></span>
-                                            <span>{[this.props.auth.isAuthenticated()]
-                                                ? 'Logout'
-                                                : 'Sign in'}</span>
-                                        </a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                                        {/*<a className="button is-info" onClick={this.loginButtonAction}>*/}
+                                            {/*<span className="icon"><Icon icon="sign-out-alt"/></span>*/}
+                                            {/*<span>{[this.props.auth.isAuthenticated()]*/}
+                                                {/*? 'Logout'*/}
+                                                {/*: 'Sign in'}</span>*/}
+                                        {/*</a>*/}
+                                    {/*</p>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
                     </div>
 
                 </div>

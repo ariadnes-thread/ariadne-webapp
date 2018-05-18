@@ -39,7 +39,7 @@ export default class Home extends Component {
                                 <Icon className="icon is-large is-size-1" icon="child"/>
                             </div>
                             <div className="column">
-                                <h1 className="title is-size-1">Welcome to Ariadne Route planner!</h1>
+                                <h1 className="title is-size-1">Welcome to TrekStar Route planner!</h1>
                                 <h2 className="subtitle">
                                     Plan a perfect route to discover a new city, work out or just enjoy your time.
                                 </h2>
