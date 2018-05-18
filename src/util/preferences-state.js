@@ -10,6 +10,7 @@ import TransportTypeField from '../components/helpers/preference-fields/transpor
 import ScanAreaField from '../components/helpers/preference-fields/scan-area-field';
 import LengthField from '../components/helpers/preference-fields/length-field';
 import RouteTypeField from '../components/helpers/preference-fields/route-type-field';
+import PoiField from '../components/helpers/preference-fields/poi-field';
 
 /** @enum {string} */
 export const TransportType = {
@@ -28,6 +29,24 @@ export const ScanArea = {
 export const RouteType = {
     PointToPoint: 'point-to-point',
     Loop: 'loop',
+};
+
+/** @enum {string} */
+export const PoiTypes = {
+    atm: {name: 'atm', displayName: 'ATM'},
+    bakery: {name: 'bakery', displayName: 'Bakery'},
+    bank: {name: 'bank', displayName: 'Bank'},
+    busStation: {name: 'bus_station', displayName: 'Bus station'},
+    cafe: {name: 'cafe', displayName: 'Cafe'},
+    church: {name: 'church', displayName: 'Church'},
+    gasStation: {name: 'gas_station', displayName: 'Gas station'},
+    gym: {name: 'gym', displayName: 'Gym'},
+    hairCare: {name: 'hair_care', displayName: 'Hair care'},
+    library: {name: 'library', displayName: 'Library'},
+    park: {name: 'park', displayName: 'Park'},
+    parking: {name: 'parking', displayName: 'Parking'},
+    pharmacy: {name: 'pharmacy', displayName: 'Pharmacy'},
+    store: {name: 'store', displayName: 'Store'},
 };
 
 /**
@@ -67,6 +86,17 @@ export const PreferenceSchema = {
         defaultValue: RouteType.PointToPoint,
         formComponent: RouteTypeField,
     },
+    pointsOfInterest: {
+        name: 'pointsOfInterest',
+        displayName: 'Points of interest',
+        description: 'These define what you want to see on your route. For example, a Park, Gym, Cafe, or an ATM.',
+        enabledByDefault: true,
+        defaultValue: {
+            [PoiTypes.atm.name]: 1.0,
+            [PoiTypes.park.name]: 1.0,
+        },
+        formComponent: PoiField,
+    },
     origins: {
         name: 'origins',
         hiddenFromEditor: true,
@@ -103,13 +133,13 @@ export default class PreferencesState {
      * updated.
      */
     addUpdateListener(listener, options = {}) {
-       this.updateListeners.push(listener);
+        this.updateListeners.push(listener);
 
-       if (options.forceUpdate) {
-           _.forIn(this.preferences, (value, key) => {
-               listener({name: key, value});
-           });
-       }
+        if (options.forceUpdate) {
+            _.forIn(this.preferences, (value, key) => {
+                listener({name: key, value});
+            });
+        }
     }
 
     get(name) {
@@ -125,14 +155,16 @@ export default class PreferencesState {
     }
 
     getPrefsFormattedForApi() {
-        return {
+        const constraints = {
             desired_dist: this.preferences.length,
             origins: this.preferences.origins,
             dests: this.preferences.destinations,
-            poi_prefs: {},
-            edge_prefs: {},
-            noptions: 2,
+            noptions: 3,
+            edge_prefs: {green: 1.0, popularity: 2.0},
         };
+        if (this.preferences.pointsOfInterest) constraints.poi_prefs = this.preferences.pointsOfInterest;
+
+        return constraints;
     }
 
 }
