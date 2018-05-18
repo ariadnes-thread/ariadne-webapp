@@ -51,7 +51,7 @@ export default class RouteSelector extends Component {
         for (let i = 0; i < this.props.routeData.elevationData.length; i++)
         {
             elevations.push((this.props.routeData.elevationData[i][1]).toFixed(2));
-            labels.push((distance/5280).toFixed(2));
+            labels.push((distance/1609.34).toFixed(2));
             distance += this.props.routeData.elevationData[i][0]
         }
         return {data: elevations, labels: labels}
