@@ -59,7 +59,6 @@ export default class TransportTypeField extends Component {
 
             components[i] = <IconButton key={i}
                                         icon={option.icon}
-                                        size="medium"
                                         type={type}
                                         onClick={() => this.setOption(option.value)}>{option.name}</IconButton>;
         }

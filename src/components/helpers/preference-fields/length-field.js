@@ -51,7 +51,7 @@ export default class LengthField extends Component {
                 <input className="slider has-output" step={this.fieldData.step} min={this.fieldData.min}
                        max={this.fieldData.max} value={this.state.length} onChange={this.handleChange}
                        id="routeLengthSlider" type="range"/>
-                <span style={{display: 'inline-block', width: '4rem'}}>{this.state.length} m</span>
+                <span style={{display: 'inline-block', width: '4.1rem'}}>{this.state.length} m</span>
             </PreferenceField>
         );
     }

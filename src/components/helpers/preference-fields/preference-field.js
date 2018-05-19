@@ -35,7 +35,9 @@ export default class PreferenceField extends Component {
     }
 
     render() {
-        let wrapperStyle = {};
+        let wrapperStyle = {
+            marginBottom: '1rem',
+        };
         if (!this.state.enabled) {
             wrapperStyle.opacity = 0.5;
         }
@@ -44,7 +46,7 @@ export default class PreferenceField extends Component {
                 <div className="columns is-vcentered">
                     <div className="column is-narrow">
                         <div className="field">
-                            <input className="is-checkradio is-medium" onChange={this.toggleEnable}
+                            <input className="is-checkradio" onChange={this.toggleEnable}
                                    type="checkbox" id={this.label} checked={this.state.enabled}/>
                             <label htmlFor={this.label}>{this.fieldData.displayName}</label>
                             {this.fieldData.description &&

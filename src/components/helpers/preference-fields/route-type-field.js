@@ -90,7 +90,7 @@ export default class RouteTypeField extends Component {
         return (
             <div>
                 <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
-                    <div className="select is-medium">
+                    <div className="select">
                         <select disabled>
                             <option>Point to point</option>
                         </select>
@@ -98,7 +98,6 @@ export default class RouteTypeField extends Component {
                 </PreferenceField>
                 {this.state.enabled &&
                 <div>
-                    <br/>
                     <div className="field is-horizontal">
                         <div className="field-label is-normal">
                             <label className="label">Start</label>

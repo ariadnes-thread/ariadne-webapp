@@ -118,11 +118,13 @@ export default class PreferenceEditor extends Component {
                         for you. If you care about a particular route feature, turn it on and specify a
                         value. Click "Generate route" once you're done!</p>
                 </Card>
-                <Card>
-                    {this.renderFields()}
+                <div className="card">
+                    <div className="card-content" style={{padding: '1rem'}}>
+                        {this.renderFields()}
 
-                    <button ref="genRoute" className={generateButtonClass}>Generate route</button>
-                </Card>
+                        <button ref="genRoute" className={generateButtonClass}>Generate route</button>
+                    </div>
+                </div>
             </form>
         );
     }

@@ -75,7 +75,7 @@ export default class PoiField extends Component {
     render() {
         return (
             <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
-                <div className="has-text-left is-size-6">
+                <div className="has-text-left is-size-7">
                     <ReactTags
                         tags={this.state.tags}
                         suggestions={this.state.suggestions}

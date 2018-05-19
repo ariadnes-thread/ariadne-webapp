@@ -67,6 +67,10 @@ html, body {
     color: #ccc;
 }
 
+.ariadne-preference-info:before {
+    width: 200px;
+}
+
 .ariadne-timeline-item {
     padding-bottom: 0.5rem !important;
 }
