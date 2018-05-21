@@ -11,6 +11,7 @@ import ScanAreaField from '../components/helpers/preference-fields/scan-area-fie
 import LengthField from '../components/helpers/preference-fields/length-field';
 import RouteTypeField from '../components/helpers/preference-fields/route-type-field';
 import PoiField from '../components/helpers/preference-fields/poi-field';
+import EdgePreferenceField from '../components/helpers/preference-fields/edge-preference-field';
 
 /** @enum {string} */
 export const TransportType = {
@@ -47,6 +48,18 @@ export const PoiTypes = {
     parking: {name: 'parking', displayName: 'Parking'},
     pharmacy: {name: 'pharmacy', displayName: 'Pharmacy'},
     store: {name: 'store', displayName: 'Stores'},
+};
+
+/** @enum {string} */
+export const EdgeTypes = {
+    green: {
+        name: 'green',
+        displayName: 'Roads rich in greenery',
+    },
+    popularity: {
+        name: 'popularity',
+        displayName: 'Popular roads',
+    },
 };
 
 /**
@@ -100,6 +113,14 @@ export const PreferenceSchema = {
             [PoiTypes.park.name]: 1.0,
         },
         formComponent: PoiField,
+    },
+    edgePreference: {
+        name: 'edgePreference',
+        displayName: 'Road preference',
+        description: 'This prerenfece indicates the type of road you prefer.',
+        enabledByDefault: true,
+        defaultValue: {},
+        formComponent: EdgePreferenceField,
     },
     origins: {
         name: 'origins',
@@ -163,7 +184,7 @@ export default class PreferencesState {
             origins: this.preferences.origins ? this.preferences.origins : PreferenceSchema.origins.defaultValue,
             dests: this.preferences.destinations ? this.preferences.destinations : PreferenceSchema.destinations.defaultValue,
             noptions: 3,
-            edge_prefs: {green: 1.0, popularity: 2.0},
+            edge_prefs: this.preferences.edgePreference,
         };
         if (this.preferences.length) constraints.desired_dist = this.preferences.length;
         if (this.preferences.pointsOfInterest) constraints.poi_prefs = this.preferences.pointsOfInterest;
