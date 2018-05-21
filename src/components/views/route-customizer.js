@@ -67,15 +67,17 @@ export default class RouteCustomizer extends Component {
 
         // Separate promise chain
         apiRequestPromise
-            .then(routesResponse =>
+            .catch(() => false) // This error is handled elsewhere
+            .then(routesResponse => {
+                if (routesResponse === false) return;
                 // This syntax is intentional - creating a separate promise chain.
                 Promise.resolve()
                     .then(() => this.visualizeRoutes(routesResponse.routes))
                     .catch(error => Util.logError({
                         error,
                         message: `Error occurred while calling 'visualizeRoute()'!`,
-                    }))
-            );
+                    }));
+            });
 
         // Note that we return a promise *without* the last visualizeRoutes() part - this is so the
         return apiRequestPromise;

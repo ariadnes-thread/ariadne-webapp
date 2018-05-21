@@ -49,22 +49,57 @@ export default class Util {
      * @returns {function(array)}
      */
     static arraifyPromiseFunc(funcReturningAPromise) {
-        return array => {
-            return funcReturningAPromise(array[0])
+        return array => funcReturningAPromise(array[0])
                 .then(returnValue => [returnValue]);
-        };
     }
 
     /**
-     * @param {object} data
+     * Prints out the error in a nice way, e.g. parses JSON in case of an API
+     * error.
+     * @param {Error} error
+     */
+    static prettyPrintError(error) {
+        /* eslint-disable no-console */
+        if (error.response) {
+            // We're dealing with an API error
+            const code = error.response.statusCode;
+            let text = error.response.statusText;
+            let message = '---';
+            if (error.response.body && error.response.body.error) {
+                const errorData = error.response.body.error;
+                text = errorData.name;
+                message = errorData.message;
+            }
+
+            const req = error.response.req;
+            console.error(`API error occurred on ${req.method} request to ${req.url} (details below).`);
+            console.error(`${text} ${code}: ${message}`);
+        } else {
+            console.error(error);
+        }
+        /* eslint-enable no-console */
+    }
+
+    /**
+     * @param {object|Error} data
      * @param {*} data.error Error object that will be parsed for human readable output
      * @param {string} [data.message] Optional message to give some context to the error
      */
     static logError(data) {
+        let message;
+        let error;
+        if (data instanceof Error) {
+            message = null;
+            error = data;
+        } else {
+            message = data.message;
+            error = data.error;
+        }
+
         /* eslint-disable no-console */
-        if (data.message) console.error(data.message);
-        console.error(data.error);
+        if (message) console.error(message);
         /* eslint-enable no-console */
+        Util.prettyPrintError(error);
     }
 
     /**

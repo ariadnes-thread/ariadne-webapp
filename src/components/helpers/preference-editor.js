@@ -77,7 +77,7 @@ export default class PreferenceEditor extends Component {
                 .then(() => this.setState({submitting: true}))
                 .then(() => this.props.submitPreferences(this.prefState))
                 .catch(error => Util.showErrorModal({
-                    message: 'An error occurred while visualising your route.',
+                    message: 'An error occurred while generating your route.',
                     console: error,
                 }))
                 .finally(() => this.setState({submitting: false}));
