@@ -4,7 +4,6 @@
  * @license GPL-3.0
  */
 
-import ReactTags from 'react-tag-autocomplete';
 import 'react-select/dist/react-select.css';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
