@@ -19,52 +19,55 @@ export default class ElevationView extends Component {
 
         this.blueColor = '#279aec';
         this.blueColorTransparent = `${this.blueColor}80`;
-        this.elevationData = this.props.elevationData.data;
-        this.labels = this.props.elevationData.labels;
+        this.elevationData = this.props.elevationData ? this.props.elevationData.data : null;
+        this.labels = this.props.elevationData ? this.props.elevationData.labels : null;
     }
 
     componentDidMount() {
-        this.chart = new Chart(this.refs.myChart.getContext('2d'), {
-            type: 'line',
-            data: {
-                labels: this.labels,
-                datasets: [{
-                    label: 'Elevation',
-                    borderColor: this.blueColor,
-                    backgroundColor: this.blueColorTransparent,
-                    data: this.elevationData,
-                    fill: true,
-                }],
-            },
-            options: {
-                responsive: true,
-                legend: {
-                    display: false,
-                },
-                scales: {
-                    yAxes: [{
-                        scaleLabel: {display: true, labelString: 'Elevation (ft)', fontStyle: 'bold'},
-                    }],
-                    xAxes: [{
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Distance along route (mi)',
-                            fontStyle: 'bold',
-                        },
-                        ticks: {
-                            maxTicksLimit: 6,
-                        },
+        if (this.elevationData && this.elevationData.length > 0) {
+            console.log(this.elevationData.length)
+            this.chart = new Chart(this.refs.myChart.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: this.labels,
+                    datasets: [{
+                        label: 'Elevation',
+                        borderColor: this.blueColor,
+                        backgroundColor: this.blueColorTransparent,
+                        data: this.elevationData,
+                        fill: true,
                     }],
                 },
-                tooltips: {
-                    displayColors: false,
-                    callbacks: {
-                        title: () => '',
-                        label: (tooltipItem) => `${tooltipItem.yLabel} ft`,
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: false,
+                    },
+                    scales: {
+                        yAxes: [{
+                            scaleLabel: {display: true, labelString: 'Elevation (ft)', fontStyle: 'bold'},
+                        }],
+                        xAxes: [{
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Distance along route (mi)',
+                                fontStyle: 'bold',
+                            },
+                            ticks: {
+                                maxTicksLimit: 6,
+                            },
+                        }],
+                    },
+                    tooltips: {
+                        displayColors: false,
+                        callbacks: {
+                            title: () => '',
+                            label: (tooltipItem) => `${tooltipItem.yLabel} ft`,
+                        },
                     },
                 },
-            },
-        });
+            });
+        }
     }
 
     render() {
