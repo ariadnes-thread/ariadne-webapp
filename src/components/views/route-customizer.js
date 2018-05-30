@@ -33,8 +33,9 @@ export default class RouteCustomizer extends Component {
         this.state = {
             geoJsonObjects: [],
             displayMode: DisplayMode.PreferenceEditor,
-            routeData: null,
             mapClickMessage: null,
+            allRoutes: [],
+            selectedRoute: null,
         };
         this.api = this.props.auth.api;
         this.mapClickHandler = null;
@@ -52,6 +53,7 @@ export default class RouteCustomizer extends Component {
         this.handleMapClick = this.handleMapClick.bind(this);
         this.requestNextMapClick = this.requestNextMapClick.bind(this);
         this.cancelMapClickHandler = this.requestNextMapClick.bind(this);
+        this.chooseRoute = this.chooseRoute.bind(this);
     }
 
     submitPreferences(prefState) {
@@ -72,10 +74,10 @@ export default class RouteCustomizer extends Component {
                 if (routesResponse === false) return;
                 // This syntax is intentional - creating a separate promise chain.
                 Promise.resolve()
-                    .then(() => this.visualizeRoutes(routesResponse.routes))
-                    .catch(error => Util.logError({
-                        error,
-                        message: `Error occurred while calling 'visualizeRoute()'!`,
+                    .then(() => this.visualizeRoutes(routesResponse))
+                    .catch(error => Util.showErrorModal({
+                        message: 'An error occurred while visualizing your route.',
+                        console: error,
                     }));
             });
 
@@ -83,12 +85,29 @@ export default class RouteCustomizer extends Component {
         return apiRequestPromise;
     }
 
-    visualizeRoutes(routes) {
-        const firstRoute = routes[0];
+    visualizeRoutes(routesResponse) {
+        // At the moment, the API only returns a single route, but we can support more - just concatenate all of them
+        // into an array.
+        const singleRoute = routesResponse.routes;
+        const allRoutes = [singleRoute];
+
         this.setState({
-            geoJsonObjects: [JSON.parse(firstRoute.json)],
+            allRoutes: allRoutes,
+        });
+        this.chooseRoute(0);
+    }
+
+    chooseRoute(routeIndex) {
+        if (routeIndex >= this.state.allRoutes.length) {
+            Util.logError('Invalid route index specified in `chooseRoute()`!');
+            return;
+        }
+
+        const route = this.state.allRoutes[routeIndex];
+        this.setState({
             displayMode: DisplayMode.RouteSelector,
-            routeData: firstRoute,
+            geoJsonObjects: [route.geojson],
+            selectedRoute: routeIndex,
         });
     }
 
@@ -158,7 +177,9 @@ export default class RouteCustomizer extends Component {
                                                   prefState={this.prefState}/>}
 
                                 {this.state.displayMode === DisplayMode.RouteSelector &&
-                                <RouteSelector routeData={this.state.routeData}
+                                <RouteSelector allRoutes={this.state.allRoutes}
+                                               selectedRoute={this.state.selectedRoute}
+                                               chooseRoute={this.chooseRoute}
                                                showPreferenceEditor={this.showPreferenceEditor}/>}
                             </TransitionGroup>
                         </div>

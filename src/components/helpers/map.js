@@ -69,13 +69,11 @@ export default class Map extends Component {
      * @param {string} data.value
      */
     prefUpdateListener(data) {
-        if (data.name === PreferenceSchema.origins.name
-            && data.value && data.value.length > 0) {
-            const coords = data.value[0];
+        if (data.name === PreferenceSchema.origin.name && data.value) {
+            const coords = data.value;
             this.setState({start: [coords.latitude, coords.longitude]});
-        } else if (data.name === PreferenceSchema.destinations.name
-            && data.value && data.value.length > 0) {
-            const coords = data.value[0];
+        } else if (data.name === PreferenceSchema.destination.name && data.value) {
+            const coords = data.value;
             this.setState({finish: [coords.latitude, coords.longitude]});
         }
     }

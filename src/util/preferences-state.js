@@ -122,21 +122,21 @@ export const PreferenceSchema = {
         defaultValue: {},
         formComponent: EdgePreferenceField,
     },
-    origins: {
-        name: 'origins',
+    origin: {
+        name: 'origin',
         hiddenFromEditor: true,
-        defaultValue: [{
+        defaultValue: {
             latitude: 34.149638,
             longitude: -118.132412,
-        }],
+        },
     },
-    destinations: {
-        name: 'destinations',
+    destination: {
+        name: 'destination',
         hiddenFromEditor: true,
-        defaultValue: [{
+        defaultValue: {
             latitude: 34.113537,
             longitude: -118.071555,
-        }],
+        },
     },
 };
 
@@ -181,8 +181,8 @@ export default class PreferencesState {
 
     getPrefsFormattedForApi() {
         const constraints = {
-            origins: this.preferences.origins ? this.preferences.origins : PreferenceSchema.origins.defaultValue,
-            dests: this.preferences.destinations ? this.preferences.destinations : PreferenceSchema.destinations.defaultValue,
+            origin: this.preferences.origin ? this.preferences.origin : PreferenceSchema.origin.defaultValue,
+            dest: this.preferences.destination ? this.preferences.destination : PreferenceSchema.destination.defaultValue,
             noptions: 3,
             edge_prefs: this.preferences.edgePreference,
         };

@@ -29,8 +29,8 @@ export default class RouteTypeField extends Component {
 
         /** @var {PreferencesState} */
         this.prefState = this.props.currentPrefState;
-        const origin = this.prefState.get(PreferenceSchema.origins.name)[0];
-        const destination = this.prefState.get(PreferenceSchema.destinations.name)[0];
+        const origin = this.prefState.get(PreferenceSchema.origin.name);
+        const destination = this.prefState.get(PreferenceSchema.destination.name);
 
         this.fieldData = PreferenceSchema.routeType;
         this.fieldName = this.fieldData.name;
@@ -77,10 +77,10 @@ export default class RouteTypeField extends Component {
                 };
 
                 if (locButtonType === LocationButtonType.PickOriginOnMap) {
-                    this.props.updatePreference(PreferenceSchema.origins.name, [prefObject]);
+                    this.props.updatePreference(PreferenceSchema.origin.name, prefObject);
                     this.setState({originCoordsText: latlngText});
                 } else if (locButtonType === LocationButtonType.PickDestinationOnMap) {
-                    this.props.updatePreference(PreferenceSchema.destinations.name, [prefObject]);
+                    this.props.updatePreference(PreferenceSchema.destination.name, prefObject);
                     this.setState({destCoordsText: latlngText});
                 }
             });

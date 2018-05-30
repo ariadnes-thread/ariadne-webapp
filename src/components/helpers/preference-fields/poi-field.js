@@ -50,7 +50,6 @@ export default class PoiField extends Component {
 
 	onChange(value) {
 		this.setState({poiSelectValue: value});
-		console.log('Numeric Select value changed to', value);
     } 
 
     componentWillUpdate(nextProps, nextState) {
