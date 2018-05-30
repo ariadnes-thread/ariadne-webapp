@@ -183,9 +183,21 @@ export default class PreferencesState {
         const constraints = {
             origin: this.preferences.origin ? this.preferences.origin : PreferenceSchema.origin.defaultValue,
             dest: this.preferences.destination ? this.preferences.destination : PreferenceSchema.destination.defaultValue,
-            noptions: 3,
             edge_prefs: this.preferences.edgePreference,
         };
+        if (constraints.origin && constraints.dest) {
+            const maxLat = Math.max(constraints.origin.latitude, constraints.dest.latitude);
+            const minLat = Math.min(constraints.origin.latitude, constraints.dest.latitude);
+            const maxLng = Math.max(constraints.origin.longitude, constraints.dest.longitude);
+            const minLng = Math.min(constraints.origin.longitude, constraints.dest.longitude);
+            const buffer = 0.2;
+            constraints.bbox = {
+                xmin: minLng - buffer,
+                ymin: minLat - buffer,
+                xmax: maxLng + buffer,
+                ymax: maxLat + buffer,
+            };
+        }
         if (this.preferences.length) constraints.desired_dist = this.preferences.length;
         if (this.preferences.pointsOfInterest) constraints.poi_prefs = this.preferences.pointsOfInterest;
 
