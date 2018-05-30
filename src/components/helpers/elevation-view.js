@@ -7,7 +7,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'chart.js';
-import Util from '../../util/util';
 
 export default class ElevationView extends Component {
 
@@ -25,7 +24,7 @@ export default class ElevationView extends Component {
     }
 
     componentDidMount() {
-        if (!this.elevationData || this.elevationData.length == 0) return;
+        if (!this.elevationData || this.elevationData.length === 0) return;
 
         this.chart = new Chart(this.refs.myChart.getContext('2d'), {
             type: 'line',
