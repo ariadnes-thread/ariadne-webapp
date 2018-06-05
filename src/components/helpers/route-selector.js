@@ -18,6 +18,7 @@ export default class RouteSelector extends Component {
     static propTypes = {
         allRoutes: PropTypes.array.isRequired,
         selectedRoute: PropTypes.number.isRequired,
+        highlightRouteUntil: PropTypes.func.isRequired,
         showPreferenceEditor: PropTypes.func.isRequired,
         chooseRoute: PropTypes.func.isRequired,
     };
@@ -154,7 +155,7 @@ export default class RouteSelector extends Component {
                             {/*</div>*/}
                         {/*</div>*/}
                     </div>
-                    <ElevationView elevationData={this.getElevationData(currentRouteData)}/>
+                    <ElevationView elevationData={this.getElevationData(currentRouteData)} highlightRouteUntil={this.props.highlightRouteUntil}/>
                     <br/>
                     <IconButton icon="arrow-left" onClick={this.props.showPreferenceEditor}>Back to
                         preferences</IconButton>

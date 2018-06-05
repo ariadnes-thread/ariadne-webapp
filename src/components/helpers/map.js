@@ -17,12 +17,16 @@ const blueRouteStyle = {
     name: 'blue',
     color: '#5587c6',
     outline: '#2b297a',
+    highlight: '#ff0000',
+    highlightOutline: '#420000',
 };
 
 const purpleRouteStyle = {
     name: 'purple',
     color: '#d581c2',
     outline: '#612050',
+    highlight: '#ff0000',
+    highlightOutline: '#420000',
 };
 
 export default class Map extends Component {
@@ -34,6 +38,7 @@ export default class Map extends Component {
         geoJsonObjects: PropTypes.arrayOf(PropTypes.object),
         clickMessage: PropTypes.string,
         onMapClickCancel: PropTypes.func,
+        highlightUntilIndex: PropTypes.number,
     };
 
     static defaultProps = {
@@ -157,11 +162,24 @@ export default class Map extends Component {
 
     renderGeoJson() {
         const geoJsonObjects = this.state.geoJsonObjects;
-        const count = geoJsonObjects.length;
-        const components = new Array(count * 2);
-        let i;
-        for (i = 0; i < count; i++) {
-            const data = geoJsonObjects[i];
+        const components = [];
+        for (const data of geoJsonObjects) {
+            // Create separate data for the highlight line
+            const coords = data.coordinates;
+            const highlightData = {
+                type: data.type,
+                coordinates: this.props.highlightUntilIndex ?
+                    coords.slice(coords.length - this.props.highlightUntilIndex - 1) : [],
+            };
+
+            const highlightStyle = {
+                color: this.state.routeStyle.highlight,
+                weight: 8,
+            };
+            const highlightOutlineStyle = {
+                color: this.state.routeStyle.highlightOutline,
+                weight: 12,
+            };
             const pathStyle = {
                 color: this.state.routeStyle.color,
                 weight: 4,
@@ -171,12 +189,17 @@ export default class Map extends Component {
                 weight: 7,
             };
 
-            const key = `${i}-${Math.random()}`;
-            components[i * 2] =
-                <GeoJSON className="ariadne-route-svg-shadow" key={`${key}-o`} data={data} style={outlineStyle}/>;
-            components[i * 2 + 1] = <GeoJSON key={`${key}-p`} data={data} style={pathStyle}/>;
+            const key = `${Math.random()}`;
+            components.push(
+                <GeoJSON className="ariadne-route-svg-shadow" key={`${key}-o`} data={data} style={outlineStyle}/>);
+            components.push(<GeoJSON key={`${key}-p`} data={data} style={pathStyle}/>);
 
+            if (this.props.highlightUntilIndex !== null) {
+                components.push(<GeoJSON key={`${key}-h`} data={highlightData} style={highlightOutlineStyle}/>);
+                components.push(<GeoJSON key={`${key}-ho`} data={highlightData} style={highlightStyle}/>);
+            }
         }
+
         return components;
     }
 

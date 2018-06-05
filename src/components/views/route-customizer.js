@@ -36,6 +36,7 @@ export default class RouteCustomizer extends Component {
             mapClickMessage: null,
             allRoutes: [],
             selectedRoute: null,
+            highlightUntilIndex: null,
         };
         this.api = this.props.auth.api;
         this.mapClickHandler = null;
@@ -53,6 +54,7 @@ export default class RouteCustomizer extends Component {
         this.handleMapClick = this.handleMapClick.bind(this);
         this.requestNextMapClick = this.requestNextMapClick.bind(this);
         this.cancelMapClickHandler = this.requestNextMapClick.bind(this);
+        this.highlightRouteUntil = this.highlightRouteUntil.bind(this);
         this.chooseRoute = this.chooseRoute.bind(this);
     }
 
@@ -93,6 +95,7 @@ export default class RouteCustomizer extends Component {
 
         this.setState({
             allRoutes: allRoutes,
+            highlightUntilIndex: null,
         });
         this.chooseRoute(0);
     }
@@ -158,6 +161,16 @@ export default class RouteCustomizer extends Component {
         this.setState({mapClickMessage: null});
     }
 
+    /**
+     * Highlights route up until the node with the specified index.
+     * @param {int} index
+     */
+    highlightRouteUntil(index) {
+        this.setState({
+            highlightUntilIndex: index,
+        });
+    }
+
     showPreferenceEditor() {
         this.setState({
             displayMode: DisplayMode.PreferenceEditor,
@@ -180,6 +193,7 @@ export default class RouteCustomizer extends Component {
                                 <RouteSelector allRoutes={this.state.allRoutes}
                                                selectedRoute={this.state.selectedRoute}
                                                chooseRoute={this.chooseRoute}
+                                               highlightRouteUntil={this.highlightRouteUntil}
                                                showPreferenceEditor={this.showPreferenceEditor}/>}
                             </TransitionGroup>
                         </div>
@@ -193,6 +207,7 @@ export default class RouteCustomizer extends Component {
                                      onMapClick={this.handleMapClick}
                                      clickMessage={this.state.mapClickMessage}
                                      onMapClickCancel={this.cancelMapClickHandler}
+                                     highlightUntilIndex={this.state.highlightUntilIndex}
                                      prefState={this.prefState}/>
                             </div>
                         </div>

@@ -8,10 +8,25 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Chart from 'chart.js';
 
+
+function debounce(fn, delay) {
+    let timer = null;
+    return function (/*arguments*/) {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            fn.apply(null, args);
+        }, delay);
+    };
+}
+
+
 export default class ElevationView extends Component {
 
     static propTypes = {
         elevationData: PropTypes.object,
+        highlightRouteUntil: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -21,6 +36,13 @@ export default class ElevationView extends Component {
         this.blueColorTransparent = `${this.blueColor}80`;
         this.elevationData = this.props.elevationData ? this.props.elevationData.data : null;
         this.labels = this.props.elevationData ? this.props.elevationData.labels : null;
+
+        this.onPointHover = debounce(this.onPointHover.bind(this), 20);
+    }
+
+    onPointHover(element) {
+        const index = element._index;
+        this.props.highlightRouteUntil(index);
     }
 
     componentDidMount() {
@@ -39,6 +61,16 @@ export default class ElevationView extends Component {
                 }],
             },
             options: {
+                events: ['mousemove'],
+                onHover: (data, elements) => {
+                    if (elements.length < 1) return;
+                    this.onPointHover(elements[0]);
+                },
+                hover: {
+                    mode: 'index',
+                    intersect: false,
+                },
+
                 responsive: true,
                 legend: {
                     display: false,
@@ -59,6 +91,8 @@ export default class ElevationView extends Component {
                     }],
                 },
                 tooltips: {
+                    mode: 'index',
+                    intersect: false,
                     displayColors: false,
                     callbacks: {
                         title: () => '',
