@@ -169,7 +169,7 @@ export default class Map extends Component {
             const highlightData = {
                 type: data.type,
                 coordinates: this.props.highlightUntilIndex ?
-                    coords.slice(coords.length - this.props.highlightUntilIndex - 1) : [],
+                    coords.slice(0, this.props.highlightUntilIndex + 1) : [],
             };
 
             const highlightStyle = {

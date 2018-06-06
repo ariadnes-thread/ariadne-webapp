@@ -88,11 +88,12 @@ export default class RouteSelector extends Component {
     }
 
     renderPois() {
-        const pois = this.props.allRoutes[this.props.selectedRoute].pois;
+        const route = this.props.allRoutes[this.props.selectedRoute];
+        const pois = route.pois;
 
         const components = [];
         for (const poi of pois) {
-            const key = Math.random();
+            const key = `${route.id}${Math.random()}`;
             const poiType = PoiTypes[poi.type];
 
             let typeName = poiType ? poiType.displayName : null;

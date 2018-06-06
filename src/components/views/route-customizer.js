@@ -91,6 +91,7 @@ export default class RouteCustomizer extends Component {
         // At the moment, the API only returns a single route, but we can support more - just concatenate all of them
         // into an array.
         const singleRoute = routesResponse.routes;
+        singleRoute.id = Math.random();
         const allRoutes = [singleRoute];
 
         this.setState({

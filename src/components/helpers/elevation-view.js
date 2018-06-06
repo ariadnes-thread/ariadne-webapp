@@ -36,7 +36,7 @@ export default class ElevationView extends Component {
         this.elevationData = this.props.elevationData ? this.props.elevationData.data : null;
         this.labels = this.props.elevationData ? this.props.elevationData.labels : null;
 
-        this.onPointHover = debounce(this.onPointHover.bind(this), 20);
+        this.onPointHover = debounce(this.onPointHover.bind(this), 10);
     }
 
     onPointHover(element) {
