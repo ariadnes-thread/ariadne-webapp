@@ -12,7 +12,6 @@ import {TweenMax} from 'gsap';
 import {PoiTypes} from '../../util/preferences-state';
 import ElevationView from './elevation-view';
 import IconButton from './icon-button';
-import Card from './card';
 
 export default class RouteSelector extends Component {
 
@@ -125,56 +124,58 @@ export default class RouteSelector extends Component {
         const currentRouteData = this.props.allRoutes[currentRouteIndex];
 
         return (
-            <div ref={this.containerRef} style={{minWidth: '100%'}}>
-                <Card>
-                    <h1 className="title is-size-4">Here's a route we prepared for you:</h1>
-                    {this.props.allRoutes.length > 1 &&
-                    <p>There are also some other options: {this.renderOtherRouteOptions()}</p>
-                    }
+            <div ref={this.containerRef} style={{minWidth: '100%', position: 'relative'}}>
+                <div className="card" style={{overflowY: 'scroll', maxHeight: 'calc(100vh - 100px)', position: 'relative'}}>
+                    <div className="card-content">
+                        <h1 className="title is-size-4">Here's a route we prepared for you:</h1>
+                        {this.props.allRoutes.length > 1 &&
+                        <p>There are also some other options: {this.renderOtherRouteOptions()}</p>
+                        }
 
-                    <hr/>
-                    <h2 className="is-size-6">&nbsp;&nbsp;&nbsp;&nbsp;Elevation profile:</h2>
-                    <br/>
-                    <ElevationView elevationData={this.getElevationData(currentRouteData)}
-                                   highlightRouteUntil={this.props.highlightRouteUntil}/>
-                    <hr style={{marginBottom: 0}}/>
-
-                    <table className="table is-fullwidth is-marginless">
-                        <tbody>
-                        <tr>
-                            <td>Length:</td>
-                            <td>{Math.round(currentRouteData.length)} m</td>
-                        </tr>
-                        {/* TODO: Show this when greenery/rating score is up. */}
-                        {/*<tr>*/}
-                        {/*<td>Greenery rating:</td>*/}
-                        {/*<td className="has-text-success">97%</td>*/}
-                        {/*</tr>*/}
-                        <tr>
-                            <td>Time (approx.):</td>
-                            <td>{Math.round(currentRouteData.length / 160.0)} minute(s)</td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    {currentRouteData.pois.length > 0 &&
-                    <div>
+                        <hr/>
+                        <h2 className="is-size-6">&nbsp;&nbsp;&nbsp;&nbsp;Elevation profile:</h2>
                         <br/>
-                        <div className="timeline">
-                            <header className="timeline-header">
-                                <span className="tag is-medium is-primary">Start</span>
-                            </header>
-                            {this.renderPois()}
-                            <div className="timeline-header">
-                                <span className="tag is-medium is-primary">Finish</span>
+                        <ElevationView elevationData={this.getElevationData(currentRouteData)}
+                                       highlightRouteUntil={this.props.highlightRouteUntil}/>
+                        <hr style={{marginBottom: 0}}/>
+
+                        <table className="table is-fullwidth is-marginless">
+                            <tbody>
+                            <tr>
+                                <td>Length:</td>
+                                <td>{Math.round(currentRouteData.length)} m</td>
+                            </tr>
+                            {/* TODO: Show this when greenery/rating score is up. */}
+                            {/*<tr>*/}
+                            {/*<td>Greenery rating:</td>*/}
+                            {/*<td className="has-text-success">97%</td>*/}
+                            {/*</tr>*/}
+                            <tr>
+                                <td>Time (approx.):</td>
+                                <td>{Math.round(currentRouteData.length / 160.0)} minute(s)</td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                        {currentRouteData.pois.length > 0 &&
+                        <div>
+                            <br/>
+                            <div className="timeline">
+                                <header className="timeline-header">
+                                    <span className="tag is-medium is-primary">Start</span>
+                                </header>
+                                {this.renderPois()}
+                                <div className="timeline-header">
+                                    <span className="tag is-medium is-primary">Finish</span>
+                                </div>
                             </div>
                         </div>
+                        }
+                        <br/>
+                        <IconButton icon="arrow-left" onClick={this.props.showPreferenceEditor}>Back to
+                            preferences</IconButton>
                     </div>
-                    }
-                    <br/>
-                    <IconButton icon="arrow-left" onClick={this.props.showPreferenceEditor}>Back to
-                        preferences</IconButton>
-                </Card>
+                </div>
             </div>
         );
     }
