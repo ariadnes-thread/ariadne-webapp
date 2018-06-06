@@ -34,20 +34,20 @@ export const RouteType = {
 
 /** @enum {string} */
 export const PoiTypes = {
-    atm: {name: 'atm', displayName: 'ATMs'},
-    bakery: {name: 'bakery', displayName: 'Bakeries'},
-    bank: {name: 'bank', displayName: 'Banks'},
-    busStation: {name: 'bus_station', displayName: 'Bus stations'},
-    cafe: {name: 'cafe', displayName: 'Cafes'},
-    church: {name: 'church', displayName: 'Churchs'},
-    gasStation: {name: 'gas_station', displayName: 'Gas stations'},
-    gym: {name: 'gym', displayName: 'Gyms'},
-    hairCare: {name: 'hair_care', displayName: 'Hair care'},
-    library: {name: 'library', displayName: 'Libraries'},
-    park: {name: 'park', displayName: 'Parks'},
-    parking: {name: 'parking', displayName: 'Parking'},
-    pharmacy: {name: 'pharmacy', displayName: 'Pharmacy'},
-    store: {name: 'store', displayName: 'Stores'},
+    atm: {name: 'atm', displayName: 'ATMs', icon: 'dollar-sign'},
+    bakery: {name: 'bakery', displayName: 'Bakeries', icon: 'birthday-cake'},
+    bank: {name: 'bank', displayName: 'Banks', icon: 'university'},
+    busStation: {name: 'bus_station', displayName: 'Bus stations', icon: 'bus'},
+    cafe: {name: 'cafe', displayName: 'Cafes', icon: 'coffee'},
+    church: {name: 'church', displayName: 'Churchs', icon: 'church'},
+    gasStation: {name: 'gas_station', displayName: 'Gas stations', icon: 'gas-pump'},
+    gym: {name: 'gym', displayName: 'Gyms', icon: 'basketball-ball'},
+    hairCare: {name: 'hair_care', displayName: 'Hair care', icon: 'user-astronaut'},
+    library: {name: 'library', displayName: 'Libraries', icon: 'book'},
+    park: {name: 'park', displayName: 'Parks', icon: 'tree'},
+    parking: {name: 'parking', displayName: 'Parking', icon: 'parking'},
+    pharmacy: {name: 'pharmacy', displayName: 'Pharmacy', icon: 'medkit'},
+    store: {name: 'store', displayName: 'Stores', icon: 'store-alt'},
 };
 
 /** @enum {string} */

@@ -4,11 +4,12 @@
  * @license GPL-3.0
  */
 
-// import Icon from '@fortawesome/react-fontawesome';
+import Icon from '@fortawesome/react-fontawesome';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import {TweenMax} from 'gsap';
 
+import {PoiTypes} from '../../util/preferences-state';
 import ElevationView from './elevation-view';
 import IconButton from './icon-button';
 import Card from './card';
@@ -87,6 +88,35 @@ export default class RouteSelector extends Component {
         return components;
     }
 
+    renderPois() {
+        const pois = this.props.allRoutes[this.props.selectedRoute].pois;
+
+        const components = [];
+        for (const poi of pois) {
+            const key = Math.random();
+            const poiType = PoiTypes[poi.type];
+
+            let typeName = poiType ? poiType.displayName : null;
+            if (!typeName) typeName = poi.type.replace(/^\w/, c => c.toUpperCase());
+
+            let iconName = poiType ? poiType.icon : null;
+            if (!iconName) iconName = 'star';
+
+            components.push(
+                <div key={key} className="timeline-item ariadne-timeline-item">
+                    <div className="timeline-marker is-image is-32x32 has-text-centered">
+                        <Icon icon={iconName}/>
+                    </div>
+                    <div className="timeline-content">
+                        <p className="heading">{typeName}</p>
+                        <p>{poi.name}</p>
+                    </div>
+                </div>
+            );
+        }
+        return components;
+    }
+
     render() {
         let currentRouteIndex = this.props.selectedRoute;
         if (currentRouteIndex === null || currentRouteIndex === undefined) {
@@ -99,63 +129,48 @@ export default class RouteSelector extends Component {
                 <Card>
                     <h1 className="title is-size-4">Here's a route we prepared for you:</h1>
                     {this.props.allRoutes.length > 1 &&
-                        <p>There are also some other options: {this.renderOtherRouteOptions()}</p>
+                    <p>There are also some other options: {this.renderOtherRouteOptions()}</p>
                     }
-                    <div className="columns is-marginless">
-                        <div className="column">
-                            <table className="table is-fullwidth is-marginless">
-                                <tbody>
-                                <tr>
-                                    <td>Length:</td>
-                                    <td>{Math.round(currentRouteData.length)} m</td>
-                                </tr>
-                                {/* TODO: Show this when greenery/rating score is up. */}
-                                {/*<tr>*/}
-                                    {/*<td>Greenery rating:</td>*/}
-                                    {/*<td className="has-text-success">97%</td>*/}
-                                {/*</tr>*/}
-                                <tr>
-                                    <td>Time (approx.):</td>
-                                    <td>{Math.round(currentRouteData.length / 160.0)} minute(s)</td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={2}>Elevation profile:</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
 
-                        {/* TODO: Show this when POI data is provided with the route. */}
-                        {/*<div className="column">*/}
-                            {/*<div className="timeline is-centered">*/}
-                                {/*<header className="timeline-header">*/}
-                                    {/*<span className="tag is-medium is-primary">Start</span>*/}
-                                {/*</header>*/}
-                                {/*<div className="timeline-item ariadne-timeline-item">*/}
-                                    {/*<div className="timeline-marker is-image is-32x32 has-text-centered">*/}
-                                        {/*<Icon icon="leaf"/>*/}
-                                    {/*</div>*/}
-                                    {/*<div className="timeline-content">*/}
-                                        {/*<p className="heading">Park</p>*/}
-                                        {/*<p>Villa Park</p>*/}
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                                {/*<div className="timeline-item ariadne-timeline-item">*/}
-                                    {/*<div className="timeline-marker is-image is-32x32 has-text-centered">*/}
-                                        {/*<Icon icon="utensils"/>*/}
-                                    {/*</div>*/}
-                                    {/*<div className="timeline-content">*/}
-                                        {/*<p className="heading">Restaurant</p>*/}
-                                        {/*<p>Zankou Chicken</p>*/}
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                                {/*<div className="timeline-header">*/}
-                                    {/*<span className="tag is-medium is-primary">Finish</span>*/}
-                                {/*</div>*/}
-                            {/*</div>*/}
-                        {/*</div>*/}
+                    <hr/>
+                    <h2 className="is-size-6">&nbsp;&nbsp;&nbsp;&nbsp;Elevation profile:</h2>
+                    <br/>
+                    <ElevationView elevationData={this.getElevationData(currentRouteData)}
+                                   highlightRouteUntil={this.props.highlightRouteUntil}/>
+                    <hr style={{marginBottom: 0}}/>
+
+                    <table className="table is-fullwidth is-marginless">
+                        <tbody>
+                        <tr>
+                            <td>Length:</td>
+                            <td>{Math.round(currentRouteData.length)} m</td>
+                        </tr>
+                        {/* TODO: Show this when greenery/rating score is up. */}
+                        {/*<tr>*/}
+                        {/*<td>Greenery rating:</td>*/}
+                        {/*<td className="has-text-success">97%</td>*/}
+                        {/*</tr>*/}
+                        <tr>
+                            <td>Time (approx.):</td>
+                            <td>{Math.round(currentRouteData.length / 160.0)} minute(s)</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    {currentRouteData.pois.length > 0 &&
+                    <div>
+                        <br/>
+                        <div className="timeline">
+                            <header className="timeline-header">
+                                <span className="tag is-medium is-primary">Start</span>
+                            </header>
+                            {this.renderPois()}
+                            <div className="timeline-header">
+                                <span className="tag is-medium is-primary">Finish</span>
+                            </div>
+                        </div>
                     </div>
-                    <ElevationView elevationData={this.getElevationData(currentRouteData)} highlightRouteUntil={this.props.highlightRouteUntil}/>
+                    }
                     <br/>
                     <IconButton icon="arrow-left" onClick={this.props.showPreferenceEditor}>Back to
                         preferences</IconButton>

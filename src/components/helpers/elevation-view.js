@@ -12,7 +12,6 @@ import Chart from 'chart.js';
 function debounce(fn, delay) {
     let timer = null;
     return function (/*arguments*/) {
-        const context = this;
         const args = arguments;
         clearTimeout(timer);
         timer = setTimeout(function () {
