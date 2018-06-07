@@ -37,6 +37,7 @@ export default class RouteCustomizer extends Component {
             allRoutes: [],
             selectedRoute: null,
             highlightUntilIndex: null,
+            pois: null,
         };
         this.api = this.props.auth.api;
         this.mapClickHandler = null;
@@ -112,6 +113,7 @@ export default class RouteCustomizer extends Component {
             displayMode: DisplayMode.RouteSelector,
             geoJsonObjects: [route.geojson],
             selectedRoute: routeIndex,
+            pois: route.pois,
         });
     }
 
@@ -209,6 +211,7 @@ export default class RouteCustomizer extends Component {
                                      clickMessage={this.state.mapClickMessage}
                                      onMapClickCancel={this.cancelMapClickHandler}
                                      highlightUntilIndex={this.state.highlightUntilIndex}
+                                     pois={this.state.pois}
                                      prefState={this.prefState}/>
                             </div>
                         </div>

@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import PreferencesState, {PreferenceSchema} from '../../util/preferences-state';
+import {PoiTypes} from '../../util/preferences-state';
 import Auth from '../../util/auth';
 import Util from '../../util/util';
 
@@ -39,6 +40,7 @@ export default class Map extends Component {
         clickMessage: PropTypes.string,
         onMapClickCancel: PropTypes.func,
         highlightUntilIndex: PropTypes.number,
+        pois: PropTypes.array,
     };
 
     static defaultProps = {
@@ -86,6 +88,90 @@ export default class Map extends Component {
     componentDidMount() {
         this.prefState.addUpdateListener(this.prefUpdateListener, {forceUpdate: true});
         this.leafletElement = this.refs.map.leafletElement;
+
+        /* eslint-disable no-undef */
+        this.Icon = L.Icon.extend({
+            options: {
+                iconSize: [35, 45],
+                iconAnchor: [17, 42],
+                popupAnchor: [1, -32],
+                shadowAnchor: [10, 12],
+                shadowSize: [36, 16],
+                className: 'awesome-marker',
+                prefix: 'fa',
+                spinClass: 'fa-spin',
+                extraClasses: '',
+                icon: 'home',
+                markerColor: 'blue',
+                iconColor: 'white',
+            },
+            initialize: function (options) {
+                options = L.Util.setOptions(this, options);
+            },
+            createIcon: function () {
+                let div = document.createElement('div'),
+                    options = this.options;
+                if (options.icon) {
+                    div.innerHTML = this._createInner();
+                }
+                if (options.bgPos) {
+                    div.style.backgroundPosition =
+                        `${-options.bgPos.x}px ${-options.bgPos.y}px`;
+                }
+                this._setIconStyles(div, `icon-${options.markerColor}`);
+                return div;
+            },
+            _createInner: function () {
+                let iconClass, iconSpinClass = '', iconColorClass = '', iconColorStyle = '';
+                const options = this.options;
+                if (options.icon.slice(0, options.prefix.length + 1) === `${options.prefix}-`) {
+                    iconClass = options.icon;
+                } else {
+                    iconClass = `${options.prefix}-${options.icon}`;
+                }
+                if (options.spin && typeof options.spinClass === 'string') {
+                    iconSpinClass = options.spinClass;
+                }
+
+                if (options.iconColor) {
+                    if (options.iconColor === 'white' || options.iconColor === 'black') {
+                        iconColorClass = `icon-${options.iconColor}`;
+                    } else {
+                        iconColorStyle = `style='color: ${options.iconColor}' `;
+                    }
+                }
+                return `<i ${iconColorStyle}class='${options.extraClasses} ${options.prefix} ${iconClass} ${iconSpinClass} ${iconColorClass}'></i>`;
+            },
+            _setIconStyles: function (img, name) {
+                const options = this.options;
+                const size = L.point(options[name === 'shadow' ? 'shadowSize' : 'iconSize']);
+                let anchor;
+                if (name === 'shadow') {
+                    anchor = L.point(options.shadowAnchor || options.iconAnchor);
+                } else {
+                    anchor = L.point(options.iconAnchor);
+                }
+                if (!anchor && size) {
+                    anchor = size.divideBy(2, true);
+                }
+                img.className = `awesome-marker-${name} ${options.className}`;
+                if (anchor) {
+                    img.style.marginLeft = `${-anchor.x}px`;
+                    img.style.marginTop = `${-anchor.y}px`;
+                }
+                if (size) {
+                    img.style.width = `${size.x}px`;
+                    img.style.height = `${size.y}px`;
+                }
+            },
+            createShadow: function () {
+                const div = document.createElement('div');
+                this._setIconStyles(div, 'shadow');
+                return div;
+            },
+        });
+        this.forceUpdate();
+        /* eslint-enable no-undef */
     }
 
     componentWillReceiveProps(nextProps) {
@@ -204,11 +290,58 @@ export default class Map extends Component {
     }
 
     renderMarkers() {
-        const components = new Array(2);
-        if (this.state.start)
-            components[0] = <Marker key={`${0}-${Math.random()}-s`} position={this.state.start}/>;
-        if (this.state.finish)
-            components[1] = <Marker key={`${1}-${Math.random()}-f`} position={this.state.finish}/>;
+
+        const markers = [];
+
+        if (this.props.pois) {
+            for (const poi of this.props.pois) {
+                const key = `${Math.random()}`;
+                const poiType = PoiTypes[poi.type];
+
+                let typeName = poiType ? poiType.displayName : null;
+                if (!typeName) typeName = poi.type.replace(/^\w/, c => c.toUpperCase());
+
+                let iconName = poiType ? poiType.icon : null;
+                if (!iconName) iconName = 'star';
+
+                markers.push({
+                    key,
+                    iconName,
+                    position: [poi.location.latitude, poi.location.longitude],
+                    color: 'green',
+                });
+            }
+        }
+
+        if (this.state.start) {
+            markers.push({
+                key: `${Math.random()}-s`,
+                iconName: 'asterisk',
+                position: this.state.start,
+                color: 'blue',
+            });
+        }
+        if (this.state.finish) {
+            markers.push({
+                key: `${Math.random()}-f`,
+                iconName: 'flag',
+                position: this.state.finish,
+                color: 'blue',
+            });
+        }
+
+        const components = new Array(markers.length);
+        for (let i = 0; i < markers.length; i++) {
+            const marker = markers[i];
+            let style = null;
+            if (this.Icon) {
+                style = new this.Icon({
+                    icon: marker.iconName,
+                    markerColor: marker.color,
+                });
+            }
+            components[i] = <Marker key={marker.key} icon={style} position={marker.position}/>;
+        }
 
         return components;
     }

@@ -35,13 +35,14 @@ export default class ElevationView extends Component {
         this.blueColorTransparent = `${this.blueColor}80`;
         this.elevationData = this.props.elevationData ? this.props.elevationData.data : null;
         this.labels = this.props.elevationData ? this.props.elevationData.labels : null;
+        this.indices = this.props.elevationData ? this.props.elevationData.indices : null;
 
         this.onPointHover = debounce(this.onPointHover.bind(this), 10);
     }
 
     onPointHover(element) {
-        const index = element._index;
-        this.props.highlightRouteUntil(index);
+        const routeIndex = this.indices[element._index];
+        this.props.highlightRouteUntil(routeIndex);
     }
 
     componentDidMount() {

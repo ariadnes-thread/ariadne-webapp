@@ -134,8 +134,8 @@ export const PreferenceSchema = {
         name: 'destination',
         hiddenFromEditor: true,
         defaultValue: {
-            latitude: 34.113537,
-            longitude: -118.071555,
+            latitude: 34.146,
+            longitude: -118.121,
         },
     },
 };

@@ -53,6 +53,7 @@ export default class RouteSelector extends Component {
         let distance = 0;
         let elevations = [];
         let labels = [];
+        let indices = new Array(elevationData.length)
         for (let i = 0; i < elevationData.length; i++) {
             if (elevationData[i][1]) {
                 elevations.push((elevationData[i][1]).toFixed(2));
@@ -61,8 +62,9 @@ export default class RouteSelector extends Component {
             if (elevationData[i][0]) {
                 distance += elevationData[i][0];
             }
+            indices[i] = elevationData[i][2];
         }
-        return {data: elevations, labels: labels};
+        return {data: elevations, labels, indices};
     }
 
     onRouteClick(routeIndex) {

@@ -10,6 +10,7 @@ import React from 'react';
 
 import 'bulma/css/bulma.css';
 import 'bulma-extensions/dist/bulma-extensions.min.css';
+import './util/fontawesome/css/fontawesome-all.min.css';
 
 // TODO: Uncomment once development is complete, scroll down for more info.
 // import registerServiceWorker from './util/registerServiceWorker';
