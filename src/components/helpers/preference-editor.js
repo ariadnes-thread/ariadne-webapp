@@ -11,7 +11,6 @@ import {TweenMax} from 'gsap';
 
 import PreferencesState, {PreferenceSchema} from '../../util/preferences-state';
 import Util from '../../util/util';
-import Card from './card';
 
 export default class PreferenceEditor extends Component {
 
