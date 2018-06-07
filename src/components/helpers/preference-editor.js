@@ -112,13 +112,13 @@ export default class PreferenceEditor extends Component {
         if (this.state.submitting) generateButtonClass += ' is-loading';
 
         return (
-            <form ref={this.containerRef} onSubmit={this.handleSubmit} style={{minWidth: '100%'}}>
-                <Card>
+            <form ref={this.containerRef} onSubmit={this.handleSubmit} style={{minWidth: '100%', position: 'relative'}}>
+                <div className="card" style={{overflowY: 'scroll', maxHeight: 'calc(100vh - 100px)', position: 'relative'}}>
+                    <div className="card-content" style={{borderBottom: 'solid 1px rgba(10, 10, 10, 0.1)'}}>
                     <p>You're almost there! Tell us about your preferences to help us find a perfect route
                         for you. If you care about a particular route feature, turn it on and specify a
                         value. Click "Generate route" once you're done!</p>
-                </Card>
-                <div className="card">
+                    </div>
                     <div className="card-content" style={{padding: '1rem'}}>
                         {this.renderFields()}
 
