@@ -22,11 +22,12 @@ export default class EdgePreferenceField extends Component {
         super(props);
         this.fieldData = PreferenceSchema.edgePreference;
         this.fieldName = this.fieldData.name;
+        this.prefState = this.props.currentPrefState;
 
         const roadPref = {};
+        const currVal = this.prefState.get(this.fieldName);
         _.forIn(EdgeTypes, edgeType => {
-            const bool = !!this.fieldData.defaultValue[edgeType.name];
-            roadPref[edgeType.name] = bool;
+            roadPref[edgeType.name] = !!currVal[edgeType.name];
         });
 
         this.state = {
@@ -51,8 +52,8 @@ export default class EdgePreferenceField extends Component {
     }
 
     toggle(enabled) {
-        if (enabled) this.props.updatePreference(this.fieldName, this.getEdgePrefObject());
-        else this.props.updatePreference(this.fieldName, {});
+        if (enabled) this.prefState.enable(this.fieldName);
+        else this.prefState.disable(this.fieldName);
     }
 
     handleInputChange(event) {
@@ -73,8 +74,9 @@ export default class EdgePreferenceField extends Component {
 
         _.forIn(EdgeTypes, edgeType => {
             const key = `edge-type-checkbox-${edgeType.name}`;
+            const value = this.state.roadPref[edgeType.name];
             components.push(<div key={key} className="control">
-                <input className="is-checkradio" name={edgeType.name} value={this.state.roadPref[edgeType.name]} id={key} type="checkbox" onChange={this.handleInputChange}/>
+                <input className="is-checkradio" name={edgeType.name} checked={value} id={key} type="checkbox" onChange={this.handleInputChange}/>
                 <label htmlFor={key}>{edgeType.displayName}</label>
             </div>);
         });
@@ -84,7 +86,7 @@ export default class EdgePreferenceField extends Component {
 
     render() {
         return (
-            <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
+            <PreferenceField fieldData={this.fieldData} toggle={this.toggle} enabled={this.prefState.isEnabled(this.fieldName)}>
                 <div className="has-text-left is-size-7">
                     {this.renderCheckboxes()}
                 </div>

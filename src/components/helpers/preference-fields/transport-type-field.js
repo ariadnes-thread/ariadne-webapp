@@ -14,8 +14,8 @@ import IconButton from '../icon-button';
 export default class TransportTypeField extends Component {
 
     static propTypes = {
+        currentPrefState: PropTypes.any.isRequired,
         updatePreference: PropTypes.func.isRequired,
-        initialValue: PropTypes.any.isRequired,
     };
 
     constructor(props) {
@@ -23,8 +23,9 @@ export default class TransportTypeField extends Component {
 
         this.fieldData = PreferenceSchema.transportType;
         this.fieldName = this.fieldData.name;
+        this.prefState = this.props.currentPrefState;
 
-        const initialValue = this.props.initialValue ? this.props.initialValue : PreferenceSchema.transportType.defaultValue;
+        const initialValue = this.prefState.get(this.fieldName);
         this.state = {
             transportType: initialValue,
         };
@@ -33,8 +34,8 @@ export default class TransportTypeField extends Component {
     }
 
     toggle(enabled) {
-        if (enabled) this.props.updatePreference(this.fieldName, this.state.transportType);
-        else this.props.updatePreference(this.fieldName, null);
+        if (enabled) this.prefState.enable(this.fieldName);
+        else this.prefState.disable(this.fieldName);
     }
 
     setOption(value) {
@@ -67,7 +68,7 @@ export default class TransportTypeField extends Component {
 
     render() {
         return (
-            <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
+            <PreferenceField fieldData={this.fieldData} toggle={this.toggle} enabled={this.prefState.isEnabled(this.fieldName)}>
                 <div className="buttons has-addons is-right">
                     {this.renderOptions()}
                 </div>

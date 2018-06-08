@@ -89,7 +89,7 @@ export default class RouteTypeField extends Component {
     render() {
         return (
             <div>
-                <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
+                <PreferenceField fieldData={this.fieldData} toggle={this.toggle} toggleable={false}>
                     <div className="select">
                         <select disabled>
                             <option>Point to point</option>

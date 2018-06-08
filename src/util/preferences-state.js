@@ -84,6 +84,14 @@ export const PreferenceSchema = {
         defaultValue: ScanArea.CurrentlyVisibleMap,
         formComponent: ScanAreaField,
     },
+    routeType: {
+        name: 'routeType',
+        displayName: 'Route type',
+        description: null,
+        enabledByDefault: true,
+        defaultValue: RouteType.PointToPoint,
+        formComponent: RouteTypeField,
+    },
     length: {
         name: 'length',
         displayName: 'Length',
@@ -94,14 +102,6 @@ export const PreferenceSchema = {
         max: 10000,
         step: 100,
         formComponent: LengthField,
-    },
-    routeType: {
-        name: 'routeType',
-        displayName: 'Route type',
-        description: null,
-        enabledByDefault: true,
-        defaultValue: RouteType.PointToPoint,
-        formComponent: RouteTypeField,
     },
     pointsOfInterest: {
         name: 'pointsOfInterest',
@@ -144,10 +144,14 @@ export default class PreferencesState {
 
     constructor() {
         this.preferences = {};
+        this.enabled = {};
+
         this.updateListeners = [];
+        this.enableListeners = [];
 
         _.forIn(PreferenceSchema, (value, key) => {
             this.preferences[key] = value.defaultValue;
+            this.enabled[key] = value.enabledByDefault;
         });
     }
 
@@ -167,6 +171,22 @@ export default class PreferencesState {
         }
     }
 
+    /**
+     * @param {function} listener
+     * @param {object} options
+     * @param {boolean} options.forceUpdate Sends all current values of preferences to the listener as if they were just
+     * updated.
+     */
+    addEnableListener(listener, options = {}) {
+        this.enableListeners.push(listener);
+
+        if (options.forceUpdate) {
+            _.forIn(this.enabled, (value, key) => {
+                listener({name: key, enabled: value});
+            });
+        }
+    }
+
     get(name) {
         return this.preferences[name];
     }
@@ -179,11 +199,31 @@ export default class PreferencesState {
         }
     }
 
+    isEnabled(name) {
+        return this.enabled[name];
+    }
+
+    enable(name) {
+        this.enabled[name] = true;
+
+        for (const enableListener of this.enableListeners) {
+            enableListener({name, enabled: this.enabled[name]});
+        }
+    }
+
+    disable(name) {
+        this.enabled[name] = false;
+
+        for (const enableListener of this.enableListeners) {
+            enableListener({name, enabled: this.enabled[name]});
+        }
+    }
+
     getPrefsFormattedForApi() {
         const constraints = {
             origin: this.preferences.origin ? this.preferences.origin : PreferenceSchema.origin.defaultValue,
             dest: this.preferences.destination ? this.preferences.destination : PreferenceSchema.destination.defaultValue,
-            edge_prefs: this.preferences.edgePreference,
+            edge_prefs: this.enabled.edgePreference ? this.preferences.edgePreference : {},
         };
         if (constraints.origin && constraints.dest) {
             const maxLat = Math.max(constraints.origin.latitude, constraints.dest.latitude);
@@ -198,8 +238,10 @@ export default class PreferencesState {
                 ymax: maxLat + buffer,
             };
         }
-        if (this.preferences.length) constraints.desired_dist = this.preferences.length;
-        if (this.preferences.pointsOfInterest) constraints.poi_prefs = this.preferences.pointsOfInterest;
+        if (this.enabled.length && this.preferences.length)
+            constraints.desired_dist = this.preferences.length;
+        if (this.enabled.pointsOfInterest && this.preferences.pointsOfInterest)
+            constraints.poi_prefs = this.preferences.pointsOfInterest;
 
         return constraints;
     }

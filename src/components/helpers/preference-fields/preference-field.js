@@ -13,6 +13,13 @@ export default class PreferenceField extends Component {
     static propTypes = {
         fieldData: PropTypes.object.isRequired,
         toggle: PropTypes.func.isRequired,
+        toggleable: PropTypes.bool,
+        enabled: PropTypes.bool,
+    };
+
+    static defaultProps = {
+        toggleable: true,
+        enabled: true,
     };
 
     constructor(props) {
@@ -21,13 +28,15 @@ export default class PreferenceField extends Component {
         this.fieldData = this.props.fieldData;
         this.label = `${this.fieldData.name}Cb`;
         this.state = {
-            enabled: this.fieldData.enabledByDefault,
+            enabled: this.props.enabled,
         };
 
         this.toggleEnable = this.toggleEnable.bind(this);
     }
 
     toggleEnable(event) {
+        if (!this.props.toggleable) return;
+
         this.props.toggle(event.target.checked);
         this.setState({
             enabled: event.target.checked,
@@ -41,14 +50,22 @@ export default class PreferenceField extends Component {
         if (!this.state.enabled) {
             wrapperStyle.opacity = 0.5;
         }
+
         return (
             <div style={wrapperStyle}>
                 <div className="columns is-vcentered">
                     <div className="column is-narrow">
                         <div className="field">
-                            <input className="is-checkradio" onChange={this.toggleEnable}
-                                   type="checkbox" id={this.label} checked={this.state.enabled}/>
-                            <label htmlFor={this.label}>{this.fieldData.displayName}</label>
+                            {this.props.toggleable &&
+                            <span>
+                                <input className="is-checkradio" onChange={this.toggleEnable}
+                                       type="checkbox" id={this.label} checked={this.state.enabled}/>
+                                <label htmlFor={this.label}>{this.fieldData.displayName}</label>
+                            </span>
+                            }
+                            {!this.props.toggleable &&
+                            <div style={{marginLeft: '10px'}}>{this.fieldData.displayName}</div>
+                            }
                             {this.fieldData.description &&
                             <span className="ariadne-preference-info tooltip is-tooltip-right is-tooltip-multiline"
                                   data-tooltip={this.fieldData.description}>

@@ -24,6 +24,7 @@ export default class PoiField extends Component {
         super(props);
         this.fieldData = PreferenceSchema.pointsOfInterest;
         this.fieldName = this.fieldData.name;
+        this.prefState = this.props.currentPrefState;
 
         this.state = {
             poiOptions: [],
@@ -44,8 +45,8 @@ export default class PoiField extends Component {
     }
 
     toggle(enabled) {
-        if (enabled) this.props.updatePreference(this.fieldName, PoiField.getPoisObject(this.state.poiSelectValue));
-        else this.props.updatePreference(this.fieldName, null);
+        if (enabled) this.prefState.enable(this.fieldName);
+        else this.prefState.disable(this.fieldName);
     }
 
 	onChange(value) {
@@ -66,7 +67,7 @@ export default class PoiField extends Component {
 
     render() {
         return (
-            <PreferenceField fieldData={this.fieldData} toggle={this.toggle}>
+            <PreferenceField fieldData={this.fieldData} toggle={this.toggle} enabled={this.prefState.isEnabled(this.fieldName)}>
                 <div className="has-text-left is-size-7">
                     <Select
                         options={this.state.poiOptions}
