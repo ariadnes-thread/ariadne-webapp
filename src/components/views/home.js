@@ -5,8 +5,9 @@
  */
 
 import Icon from '@fortawesome/react-fontawesome';
-import ReactTags from 'react-tag-autocomplete';
+import 'react-select/dist/react-select.css';
 import {Link} from 'react-router-dom';
+import Select from 'react-select';
 import _ from 'lodash';
 
 import PreferencesState, {PreferenceSchema, PoiTypes, TransportType} from '../../util/preferences-state';
@@ -31,19 +32,20 @@ export default class Home extends Component {
         this.state = {
             transportType: this.prefState.preferences.transportType,
             lengthType: LengthType.Medium,
-            tags: [],
-            suggestions: [],
+            poiOptions: [],
+            poiSelectValue: [],
         };
 
         const initialPois = this.prefState.get(PreferenceSchema.pointsOfInterest.name);
         _.forEach(PoiTypes, (poiType) => {
-            const tagObject = {id: poiType.name, name: poiType.displayName};
+            const optionObject = {value: poiType.name, label: poiType.displayName};
+            this.state.poiOptions.push(optionObject);
             if (initialPois[poiType.name]) {
-                this.state.tags.push(tagObject);
-            } else {
-                this.state.suggestions.push(tagObject);
+                this.state.poiSelectValue.push(optionObject);
             }
         });
+
+        this.onChange = this.onChange.bind(this);
     }
 
     chooseTransportType(value) {
@@ -60,21 +62,9 @@ export default class Home extends Component {
         this.setState({lengthType: value});
     }
 
-    handleDelete(i) {
-        const tags = this.state.tags.slice(0);
-        tags.splice(i, 1);
-        this.setState({tags});
-    }
-
-    handleAddition(tag) {
-        const tags = [].concat(this.state.tags, tag);
-        this.setState({tags});
-    }
-
-    componentWillUpdate(nextProps, nextState) {
-        if (this.state.tags !== nextState.tags) {
-            this.prefState.set(PreferenceSchema.pointsOfInterest.name, PoiField.getPoisObject(nextState.tags));
-        }
+    onChange(value) {
+        this.setState({poiSelectValue: value});
+        this.prefState.set(PreferenceSchema.pointsOfInterest.name, PoiField.getPoisObject(value));
     }
 
     render() {
@@ -196,12 +186,15 @@ export default class Home extends Component {
                                             &nbsp;&nbsp;<span>What do you want to see on your route?</span>
                                         </p>
                                     </div>
-                                    <div style={{maxWidth: 600}} className="level-item level-right is-size-5">
-                                        <ReactTags
-                                            tags={this.state.tags}
-                                            suggestions={this.state.suggestions}
-                                            handleDelete={this.handleDelete.bind(this)}
-                                            handleAddition={this.handleAddition.bind(this)}/>
+                                    <div style={{maxWidth: 600}} className="level-item level-right is-size-6">
+                                        <div style={{width: '400px'}}>
+                                            <Select
+                                                options={this.state.poiOptions}
+                                                value={this.state.poiSelectValue}
+                                                onChange={this.onChange}
+                                                matchPos="any"
+                                                multi={true}/>
+                                        </div>
                                     </div>
                                 </nav>
                                 <hr/>
